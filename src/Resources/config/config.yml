@@ -1,0 +1,8 @@
+markocupic_sac_event_evaluation:
+  configs:
+    # Default configuration
+    default:
+      name: 'default'
+      feedback_expiration_time: 60 #days
+      send_reminder_after_days: [1,14,30] #days
+

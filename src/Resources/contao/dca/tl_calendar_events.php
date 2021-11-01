@@ -14,7 +14,7 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
 	->addLegend('sac_event_evaluation_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
-	->addField('activateOnlineEvaluation', 'gallery_legend', PaletteManipulator::POSITION_APPEND)
+	->addField('enableOnlineEvaluation', 'gallery_legend', PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('default', 'tl_calendar_events')
     ->applyToPalette('tour', 'tl_calendar_events')
     ->applyToPalette('lastMinuteTour', 'tl_calendar_events')
@@ -22,7 +22,7 @@ PaletteManipulator::create()
     ->applyToPalette('generalEvent', 'tl_calendar_events')
 ;
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['activateOnlineEvaluation'] = array
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEvaluation'] = array
 (
 	'exclude'                 => true,
 	'search'                  => true,

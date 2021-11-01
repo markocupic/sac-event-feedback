@@ -3,8 +3,7 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            #Symfony\Component\HttpKernel\UriSigner: '@uri_signer'
-            #Contao\CoreBundle\Security\User\UserChecker: '@contao.security.user_checker'
+            $onlineEvaluationConfigs: '%markocupic_sac_event_evaluation.configs%'
 
     Markocupic\SacEventEvaluation\:
         resource: ../../

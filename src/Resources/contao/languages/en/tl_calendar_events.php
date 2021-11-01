@@ -11,7 +11,7 @@
  */
 
 // Legends
-$GLOBALS['TL_LANG']['tl_calendar_events']['sac_event_evaluation_legend'] = 'SAC Event Formular Einstellungen';
+$GLOBALS['TL_LANG']['tl_calendar_events']['sac_event_evaluation_legend'] = 'SAC Event-Auswertungs-Formular-Einstellungen';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar_events']['activateOnlineEvaluation'] = array('Online Auswertung aktivieren', 'Lassen Sie die Teilnehmer den Event via Onlineformular auswerten.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableOnlineEvaluation'] = array('Online Auswertung aktivieren', 'Lassen Sie die Teilnehmer den Event via Onlineformular auswerten.');

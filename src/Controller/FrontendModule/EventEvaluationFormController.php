@@ -24,6 +24,7 @@ use Contao\Date;
 use Contao\FrontendUser;
 use Contao\ModuleModel;
 use Contao\PageModel;
+use Contao\System;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,7 +42,6 @@ class EventEvaluationFormController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_evaluation_form';
     public const UUID_TEST = 'b6d3ea2b-d8c4-4aa7-9045-0eb499503e1d';
-
 
     /**
      * @var PageModel
@@ -64,6 +64,9 @@ class EventEvaluationFormController extends AbstractFrontendModuleController
         $request->query->set('uuid', self::UUID_TEST);
 
         $uuid = $request->query->get('uuid');
+
+        $arrReminder = System::getContainer()->getParameter('markocupic_sac_event_evaluation.configurations');
+        die(print_r($arrReminder,true));
 
         if (null === ($this->objEventRegistration = CalendarEventsMemberModel::findByUuid($uuid))) {
             return new Response('Invalid request.');

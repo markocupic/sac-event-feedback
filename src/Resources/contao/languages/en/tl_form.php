@@ -11,7 +11,7 @@
  */
 
 // Legends
-$GLOBALS['TL_LANG']['tl_form']['sac_event_evaluation_legend'] = 'SAC Event Formular Einstellungen';
+$GLOBALS['TL_LANG']['tl_form']['sac_event_evaluation_legend'] = 'SAC Event-Auswertungs-Formular-Einstellungen';
 
 // Fields
 $GLOBALS['TL_LANG']['tl_form']['isSacEventEvaluationForm'] = array('SAC Event Auswertungsformular', 'Soll das Formular als SAC Event Auswertungsformular dienen?');

@@ -21,7 +21,7 @@
         "source": "https://github.com/markocupic/sac-event-evaluation"
     },
     "require": {
-        "contao/core-bundle": "^4.9"
+        "contao/core-bundle": "^4.12"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3",
