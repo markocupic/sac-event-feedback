@@ -12,9 +12,9 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-evaluation
  */
 
-use Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationController;
+use Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationFormController;
 
 /**
  * Frontend modules
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventEvaluationController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][EventEvaluationFormController::TYPE] = '{title_legend},name,headline,type;{include_legend},form;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';

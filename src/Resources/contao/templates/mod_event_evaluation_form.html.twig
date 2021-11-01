@@ -1,0 +1,7 @@
+{% extends '@Contao/block_unsearchable' %}
+
+{% block content %}
+    <h1>Hello from Twig!</h1>
+    {{ form|raw }}
+    {{ parent() }}
+{% endblock %}

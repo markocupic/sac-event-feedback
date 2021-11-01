@@ -12,7 +12,7 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-evaluation
  */
 
-use Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationController;
+use Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationFormController;
 
 /**
  * Backend modules
@@ -24,5 +24,5 @@ $GLOBALS['TL_LANG']['MOD']['event_evaluation'] = ['Event Evaluation', 'Event Eva
  * Frontend modules
  */
 $GLOBALS['TL_LANG']['FMD']['event_evaluation'] = 'Event Evaluation';
-$GLOBALS['TL_LANG']['FMD'][EventEvaluationController::TYPE] = ['Event Evaluation', 'Event Evaluation'];
+$GLOBALS['TL_LANG']['FMD'][EventEvaluationFormController::TYPE] = ['Event Evaluation Form', 'Event Evaluation'];
 

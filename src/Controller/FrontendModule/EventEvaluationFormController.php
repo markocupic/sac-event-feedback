@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 /*
  * This file is part of SAC Event Evaluation Bundle.
- * 
+ *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-evaluatio
  */
 
 namespace Markocupic\SacEventEvaluation\Controller\FrontendModule;
 
+use Contao\CalendarEventsMemberModel;
+use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
@@ -31,39 +33,52 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class EventEvaluationController
+ * Class EventEvaluationFormController.
  *
- * @FrontendModule(EventEvaluationController::TYPE, category="event_evaluation", template="mod_event_evaluation")
+ * @FrontendModule(EventEvaluationFormController::TYPE, category="event_evaluation", template="mod_event_evaluation_form")
  */
-class EventEvaluationController extends AbstractFrontendModuleController
+class EventEvaluationFormController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_evaluation';
+    public const TYPE = 'event_evaluation_form';
+    public const UUID_TEST = 'b6d3ea2b-d8c4-4aa7-9045-0eb499503e1d';
+
 
     /**
      * @var PageModel
      */
-    protected $page;
+    private $page;
 
     /**
-     * This method extends the parent __invoke method,
-     * its usage is usually not necessary
+     * @var CalendarEventsMemberModel
      */
+    private $objEventRegistration;
+
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Get the page model
         $this->page = $page;
 
-        if ($this->page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request))
-        {
+        /*
+         * @todo remove this line
+         */
+        $request->query->set('uuid', self::UUID_TEST);
+
+        $uuid = $request->query->get('uuid');
+
+        if (null === ($this->objEventRegistration = CalendarEventsMemberModel::findByUuid($uuid))) {
+            return new Response('Invalid request.');
+        }
+
+        if ($this->page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
             // If TL_MODE === 'FE'
-            $this->page->loadDetails();
+            //$this->page->loadDetails();
         }
 
         return parent::__invoke($request, $model, $section, $classes);
     }
 
     /**
-     * Lazyload some services
+     * Lazyload some services.
      */
     public static function getSubscribedServices(): array
     {
@@ -79,14 +94,24 @@ class EventEvaluationController extends AbstractFrontendModuleController
     }
 
     /**
-     * Generate the module
+     * Generate the module.
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
+        $template->form = Controller::getForm($model->form);
+
+        return $template->getResponse();
+    }
+
+    /**
+     * Generate the module.
+     */
+    protected function gettResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    {
         $userFirstname = 'DUDE';
         $user = $this->get('security.helper')->getUser();
-        if ($user instanceof FrontendUser)
-        {
+
+        if ($user instanceof FrontendUser) {
             $userFirstname = $user->firstname;
         }
 
@@ -99,25 +124,27 @@ class EventEvaluationController extends AbstractFrontendModuleController
         $dateAdapter = $this->get('contao.framework')->getAdapter(Date::class);
         $intWeekday = $dateAdapter->parse('w');
         $translator = $this->get('translator');
-        $strWeekday = $translator->trans('DAYS.' . $intWeekday, [], 'contao_default');
+        $strWeekday = $translator->trans('DAYS.'.$intWeekday, [], 'contao_default');
 
         $arrGuests = [];
         $stmt = $this->get('database_connection')
             ->executeQuery(
                 'SELECT * FROM tl_member WHERE gender=? ORDER BY lastname',
                 ['female']
-            );
-        while (false !== ($objMember = $stmt->fetch(\PDO::FETCH_OBJ)))
-        {
+            )
+        ;
+
+        while (false !== ($objMember = $stmt->fetch(\PDO::FETCH_OBJ))) {
             $arrGuests[] = $objMember->firstname;
         }
 
         $template->helloTitle = sprintf(
             'Hi %s, and welcome to the "Hello World Module". Today is %s.',
-            $userFirstname, $strWeekday
+            $userFirstname,
+            $strWeekday
         );
 
-        $template->helloText = 'Our guests today are: ' . implode(', ', $arrGuests);
+        $template->helloText = 'Our guests today are: '.implode(', ', $arrGuests);
 
         return $template->getResponse();
     }
