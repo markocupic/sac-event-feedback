@@ -19,6 +19,7 @@ use Contao\ManagerPlugin\Bundle\Parser\DelegatingParser;
 use Contao\TestCase\ContaoTestCase;
 use Markocupic\SacEventEvaluation\ContaoManager\Plugin;
 use Markocupic\SacEventEvaluation\MarkocupicSacEventEvaluation;
+use Markocupic\SacEventToolBundle\MarkocupicSacEventToolBundle;
 
 /**
  * Class PluginTest
@@ -45,10 +46,10 @@ class PluginTest extends ContaoTestCase
         /** @var array $bundles */
         $bundles = $plugin->getBundles(new DelegatingParser());
 
-        $this->assertCount(1, $bundles);
+        $this->assertCount(2, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
         $this->assertSame(MarkocupicSacEventEvaluation::class, $bundles[0]->getName());
-        $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
+        $this->assertSame([ContaoCoreBundle::class, MarkocupicSacEventToolBundle::class], $bundles[0]->getLoadAfter());
     }
 
 }
