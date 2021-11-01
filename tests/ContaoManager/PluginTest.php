@@ -49,7 +49,8 @@ class PluginTest extends ContaoTestCase
         $this->assertCount(2, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
         $this->assertSame(MarkocupicSacEventEvaluation::class, $bundles[0]->getName());
-        $this->assertSame([ContaoCoreBundle::class, MarkocupicSacEventToolBundle::class], $bundles[0]->getLoadAfter());
+        $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
+        $this->assertSame([MarkocupicSacEventToolBundle::class], $bundles[1]->getLoadAfter());
     }
 
 }
