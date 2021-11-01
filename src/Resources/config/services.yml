@@ -1,0 +1,29 @@
+services:
+
+    # Contao frontend module Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationController
+    # We used annotations for tagging the frontend module category, the frontend module type and the frontend module template
+    Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationController:
+        tags:
+            - { name: container.service_subscriber }
+        public: true
+        # Since Symfony 5 the container has to be set manually
+        calls:
+            - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
+    
+    # Custom route
+    Markocupic\SacEventEvaluation\Controller\MyCustomController:
+        arguments:
+            - '@twig'
+        public: true
+        # Since Symfony 5 the container has to be set manually
+        calls:
+            - [ setContainer, [ '@Psr\Container\ContainerInterface' ] ]
+    
+    # Add a session bag
+    Markocupic\SacEventEvaluation\Session\Attribute\ArrayAttributeBag:
+        arguments:
+            - _markocupic_sac_event_evaluation_attributes
+        calls:
+            - [ setName, [ markocupic_sac_event_evaluation ] ]
+
+
