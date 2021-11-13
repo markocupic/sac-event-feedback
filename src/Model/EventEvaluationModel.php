@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * This file is part of SAC Event Evaluation Bundle.
- * 
+ *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
@@ -17,13 +17,9 @@ namespace Markocupic\SacEventEvaluation\Model;
 use Contao\Model;
 
 /**
- * Class EventEvaluationModel
- *
- * @package Markocupic\SacEventEvaluation\Model
+ * Class EventEvaluationModel.
  */
 class EventEvaluationModel extends Model
 {
     protected static $strTable = 'tl_event_evaluation';
-
 }
-

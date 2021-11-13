@@ -22,11 +22,20 @@ PaletteManipulator::create()
 	->applyToPalette('generalEvent', 'tl_calendar_events')
 ;
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEventEvaluation'] = array
+$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['doOnlineEventEvaluation'] = array
 (
 	'exclude'                 => true,
 	'search'                  => true,
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "char(1) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['onlineEventEvaluationData'] = array
+(
+    'exclude'                 => true,
+    'search'                  => true,
+    'inputType'               => 'checkbox',
+    'eval'                    => array('tl_class'=>'w50'),
+    'sql'                     => "mediumtext NULL"
 );

@@ -26,7 +26,8 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 		'enableVersioning' => true,
 		'sql'              => array(
 			'keys' => array(
-				'id' => 'primary'
+				'id' => 'primary',
+                'uuid' => 'index',
 			)
 		),
 	),

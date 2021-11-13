@@ -7,14 +7,14 @@
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluatio
+ * @link https://github.com/markocupic/sac-event-evaluation
  */
 
 // Legends
 $GLOBALS['TL_LANG']['tl_calendar']['sac_event_evaluation_legend'] = 'SAC Event-Auswertungs-Formular-Einstellungen';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar']['enableOnlineEvaluation'] = array('Online Auswertung aktivieren', 'Lassen Sie die Teilnehmer den Event via Onlineformular auswerten.');
+$GLOBALS['TL_LANG']['tl_calendar']['enableOnlineEventEvaluation'] = array('Online Auswertung aktivieren', 'Lassen Sie die Teilnehmer den Event via Onlineformular auswerten.');
 $GLOBALS['TL_LANG']['tl_calendar']['onlineEvaluationConfiguration'] = array('Konfiguration auswählen.', 'Wählen Sie die Konfiguration aus.');
 $GLOBALS['TL_LANG']['tl_calendar']['onlineEvaluationNotification'] = array('Benachrichtigung auswählen.', 'Wählen Sie die Benachrichtigung aus.');
 $GLOBALS['TL_LANG']['tl_calendar']['onlineEvaluationForm'] = array('Auswertungsformular auswählen.', 'Wählen Sie das Auswertungsformular aus.');

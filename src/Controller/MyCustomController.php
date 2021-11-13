@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /*
  * This file is part of SAC Event Evaluation Bundle.
- * 
+ *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace Markocupic\SacEventEvaluation\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 use Twig\Environment as TwigEnvironment;
 
 /**
- * Class MyCustomController
+ * Class MyCustomController.
  *
  * @Route("/my_custom22",
  *     name="markocupic_sac_event_evaluation_my_custom",
@@ -46,25 +46,24 @@ class MyCustomController extends AbstractController
     }
 
     /**
-     * Generate the response
+     * Generate the response.
      */
     public function __invoke()
     {
         $animals = [
-
             [
                 'species' => 'dogs',
-                'color'   => 'white'
+                'color' => 'white',
             ],
             [
                 'species' => 'birds',
-                'color'   => 'black'
+                'color' => 'black',
             ], [
                 'species' => 'cats',
-                'color'   => 'pink'
+                'color' => 'pink',
             ], [
                 'species' => 'cows',
-                'color'   => 'yellow'
+                'color' => 'yellow',
             ],
         ];
 
