@@ -3,13 +3,13 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluatio
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
 use Contao\Backend;
@@ -17,9 +17,9 @@ use Contao\DC_Table;
 use Contao\Input;
 
 /**
- * Table tl_event_evaluation
+ * Table tl_event_feedback
  */
-$GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
+$GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 	// Config
 	'config'   => array(
 		'dataContainer'    => 'Table',
@@ -27,7 +27,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 		'sql'              => array(
 			'keys' => array(
 				'id' => 'primary',
-                'uuid' => 'index',
+				'uuid' => 'index',
 			)
 		),
 	),
@@ -52,23 +52,23 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 		),
 		'operations'        => array(
 			'edit'   => array(
-				'label' => &$GLOBALS['TL_LANG']['tl_event_evaluation']['edit'],
+				'label' => &$GLOBALS['TL_LANG']['tl_event_feedback']['edit'],
 				'href'  => 'act=edit',
 				'icon'  => 'edit.gif'
 			),
 			'copy'   => array(
-				'label' => &$GLOBALS['TL_LANG']['tl_event_evaluation']['copy'],
+				'label' => &$GLOBALS['TL_LANG']['tl_event_feedback']['copy'],
 				'href'  => 'act=copy',
 				'icon'  => 'copy.gif'
 			),
 			'delete' => array(
-				'label'      => &$GLOBALS['TL_LANG']['tl_event_evaluation']['delete'],
+				'label'      => &$GLOBALS['TL_LANG']['tl_event_feedback']['delete'],
 				'href'       => 'act=delete',
 				'icon'       => 'delete.gif',
 				'attributes' => 'onclick="if(!confirm(\'' . $GLOBALS['TL_LANG']['MSC']['deleteConfirm'] . '\'))return false;Backend.getScrollOffset()"'
 			),
 			'show'   => array(
-				'label'      => &$GLOBALS['TL_LANG']['tl_event_evaluation']['show'],
+				'label'      => &$GLOBALS['TL_LANG']['tl_event_feedback']['show'],
 				'href'       => 'act=show',
 				'icon'       => 'show.gif',
 				'attributes' => 'style="margin-right:3px"'
@@ -117,7 +117,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['learningEffectIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
 			'options'   => array('1', '2', '3', '4'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -128,7 +128,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['learningEffectIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
 			'options'   => array('1', '2', '3', '4'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -139,7 +139,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['learningEffectIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
 			'options'   => array('1', '2', '3', '4'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -150,7 +150,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['learningEffectIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
 			'options'   => array('1', '2', '3', '4'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -161,7 +161,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['learningEffectIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
 			'options'   => array('1', '2', '3', '4'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -172,7 +172,7 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'reference' => $GLOBALS['TL_LANG']['tl_event_evaluation']['durationIndexReference'],
+			'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['durationIndexReference'],
 			'options'   => array('1', '2', '3', '4', '5'),
 			'eval'      => array('mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 			'sql'       => "char(1) NOT NULL default ''",
@@ -213,9 +213,9 @@ $GLOBALS['TL_DCA']['tl_event_evaluation'] = array(
 );
 
 /**
- * Class tl_event_evaluation
+ * Class tl_event_feedback
  */
-class tl_event_evaluation extends Backend
+class tl_event_feedback extends Backend
 {
 	/**
 	 * @param $arrButtons
@@ -226,7 +226,7 @@ class tl_event_evaluation extends Backend
 	{
 		if (Input::get('act') === 'edit')
 		{
-			$arrButtons['customButton'] = '<button type="submit" name="customButton" id="customButton" class="tl_submit customButton" accesskey="x">' . $GLOBALS['TL_LANG']['tl_event_evaluation']['customButton'] . '</button>';
+			$arrButtons['customButton'] = '<button type="submit" name="customButton" id="customButton" class="tl_submit customButton" accesskey="x">' . $GLOBALS['TL_LANG']['tl_event_feedback']['customButton'] . '</button>';
 		}
 
 		return $arrButtons;

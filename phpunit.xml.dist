@@ -11,7 +11,7 @@
     </php>
 
     <testsuites>
-        <testsuite name="sac-event-evaluation>">
+        <testsuite name="sac-event-feedback>">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>

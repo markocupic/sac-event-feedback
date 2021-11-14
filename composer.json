@@ -1,9 +1,9 @@
 {
-    "name": "markocupic/sac-event-evaluation",
-    "description": "event evaluation extension for markocupic/sac-event-tool-bundle",
+    "name": "markocupic/sac-event-feedback",
+    "description": "event feedback extension for markocupic/sac-event-tool-bundle",
     "keywords": [
         "contao",
-        "sac event evaluation",
+        "sac event feedback",
         "sac event tool bundle"
     ],
     "type": "contao-bundle",
@@ -12,13 +12,13 @@
         {
             "name": "Marko Cupic",
             "email": "m.cupic@gmx.ch",
-            "homepage": "https://github.com/markocupic/sac-event-evaluation",
+            "homepage": "https://github.com/markocupic/sac-event-feedback",
             "role": "Developer"
         }
     ],
     "support": {
-        "issues": "https://github.com/markocupic/sac-event-evaluation/issues",
-        "source": "https://github.com/markocupic/sac-event-evaluation"
+        "issues": "https://github.com/markocupic/sac-event-feedback/issues",
+        "source": "https://github.com/markocupic/sac-event-feedback"
     },
     "require": {
         "contao/core-bundle": "^4.12"
@@ -33,7 +33,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Markocupic\\SacEventEvaluation\\": "src/"
+            "Markocupic\\SacEventFeedback\\": "src/"
         },
         "classmap": [
             "src/Resources/contao"
@@ -46,7 +46,7 @@
         ]
     },
     "extra": {
-        "contao-manager-plugin": "Markocupic\\SacEventEvaluation\\ContaoManager\\Plugin"
+        "contao-manager-plugin": "Markocupic\\SacEventFeedback\\ContaoManager\\Plugin"
     },
     "version": "1.0"
 }

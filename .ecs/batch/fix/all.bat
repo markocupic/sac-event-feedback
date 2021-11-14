@@ -7,12 +7,12 @@ cd..
 cd..
 cd..
 :: src
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/src --fix --config vendor/markocupic/sac-event-evaluation/.ecs/config/default.php
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/src --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/default.php
 :: tests
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/tests --fix --config vendor/markocupic/sac-event-evaluation/.ecs/config/default.php
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/tests --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/default.php
 :: legacy
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/src/Resources/contao --fix --config vendor/markocupic/sac-event-evaluation/.ecs/config/legacy.php
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/src/Resources/contao --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/legacy.php
 :: templates
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/src/Resources/contao/templates --fix --config vendor/markocupic/sac-event-evaluation/.ecs/config/template.php
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/src/Resources/contao/templates --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/template.php
 ::
-cd vendor/markocupic/sac-event-evaluation/.ecs./batch/fix
+cd vendor/markocupic/sac-event-feedback/.ecs./batch/fix

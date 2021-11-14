@@ -3,9 +3,9 @@ services:
         autowire: true
         autoconfigure: true
         bind:
-            $onlineEvaluationConfigs: '%markocupic_sac_event_evaluation.configs%'
+            $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
 
-    Markocupic\SacEventEvaluation\:
+    Markocupic\SacEventFeedback\:
         resource: ../../
         exclude: ../../{DependencyInjection,Resources,Model}
 

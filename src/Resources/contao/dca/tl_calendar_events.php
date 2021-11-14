@@ -1,20 +1,20 @@
 <?php
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
-	->addLegend('sac_event_evaluation_legend', 'gallery_legend', PaletteManipulator::POSITION_BEFORE)
-	->addField('enableOnlineEventEvaluation', 'sac_event_evaluation_legend', PaletteManipulator::POSITION_APPEND)
+	->addLegend('sac_event_feedback_legend', 'gallery_legend', PaletteManipulator::POSITION_BEFORE)
+	->addField('enableOnlineEventFeedback', 'sac_event_feedback_legend', PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('default', 'tl_calendar_events')
 	->applyToPalette('tour', 'tl_calendar_events')
 	->applyToPalette('lastMinuteTour', 'tl_calendar_events')
@@ -22,7 +22,7 @@ PaletteManipulator::create()
 	->applyToPalette('generalEvent', 'tl_calendar_events')
 ;
 
-$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEventEvaluation'] = array
+$GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEventFeedback'] = array
 (
 	'exclude'                 => true,
 	'search'                  => true,

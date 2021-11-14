@@ -3,30 +3,30 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventEvaluation;
+namespace Markocupic\SacEventFeedback;
 
-use Markocupic\SacEventEvaluation\DependencyInjection\Compiler\AddSessionBagsPass;
-use Markocupic\SacEventEvaluation\DependencyInjection\MarkocupicSacEventEvaluationExtension;
+use Markocupic\SacEventFeedback\DependencyInjection\Compiler\AddSessionBagsPass;
+use Markocupic\SacEventFeedback\DependencyInjection\MarkocupicSacEventFeedbackExtension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 /**
- * Class MarkocupicSacEventEvaluation.
+ * Class MarkocupicSacEventFeedback.
  */
-class MarkocupicSacEventEvaluation extends Bundle
+class MarkocupicSacEventFeedback extends Bundle
 {
-    public function getContainerExtension(): MarkocupicSacEventEvaluationExtension
+    public function getContainerExtension(): MarkocupicSacEventFeedbackExtension
     {
-        return new MarkocupicSacEventEvaluationExtension();
+        return new MarkocupicSacEventFeedbackExtension();
     }
 
     /**

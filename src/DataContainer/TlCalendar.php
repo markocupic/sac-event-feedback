@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventEvaluation\DataContainer;
+namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
@@ -29,24 +29,24 @@ class TlCalendar
     /**
      * @var array
      */
-    private $onlineEvaluationConfigs;
+    private $onlineFeedbackConfigs;
 
-    public function __construct(ContaoFramework $framework, array $onlineEvaluationConfigs)
+    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs)
     {
         $this->framework = $framework;
-        $this->onlineEvaluationConfigs = $onlineEvaluationConfigs;
+        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
     /**
-     * @Callback(table="tl_calendar", target="fields.onlineEvaluationConfiguration.options")
+     * @Callback(table="tl_calendar", target="fields.onlineFeedbackConfiguration.options")
      */
-    public function getOnlineEvaluationConfigurations(DataContainer $dc): array
+    public function getOnlineFeedbackConfigurations(DataContainer $dc): array
     {
-        return array_keys($this->onlineEvaluationConfigs);
+        return array_keys($this->onlineFeedbackConfigs);
     }
 
     /**
-     * @Callback(table="tl_calendar", target="fields.onlineEvaluationNotification.options")
+     * @Callback(table="tl_calendar", target="fields.onlineFeedbackNotification.options")
      */
     public function getNotifications(DataContainer $dc): array
     {
@@ -67,9 +67,9 @@ class TlCalendar
     }
 
     /**
-     * @Callback(table="tl_calendar", target="fields.onlineEvaluationForm.options")
+     * @Callback(table="tl_calendar", target="fields.onlineFeedbackForm.options")
      */
-    public function getOnlineEvaluationForm(DataContainer $dc): array
+    public function getOnlineFeedbackForm(DataContainer $dc): array
     {
         $arrOptions = [];
 
@@ -77,7 +77,7 @@ class TlCalendar
 
         $objDb = $databaseAdapter
             ->getInstance()
-            ->prepare('SELECT * FROM tl_form WHERE isSacEventEvaluationForm=?')
+            ->prepare('SELECT * FROM tl_form WHERE isSacEventFeedbackForm=?')
             ->execute('1')
         ;
 

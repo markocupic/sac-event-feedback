@@ -6,5 +6,5 @@ cd..
 cd..
 cd..
 cd..
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/src --config vendor/markocupic/sac-event-evaluation/.ecs/config/default.php
-cd vendor/markocupic/sac-event-evaluation/.ecs./batch/check
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/src --config vendor/markocupic/sac-event-feedback/.ecs/config/default.php
+cd vendor/markocupic/sac-event-feedback/.ecs./batch/check

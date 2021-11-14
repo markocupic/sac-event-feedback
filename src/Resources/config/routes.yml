@@ -1,4 +1,4 @@
 # config/routes.yml
-markocupic_sac_event_evaluation.controller:
+markocupic_sac_event_feedback.controller:
     resource: ../../../src/Controller
     type: annotation

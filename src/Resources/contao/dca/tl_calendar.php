@@ -1,28 +1,28 @@
 <?php
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
 PaletteManipulator::create()
-	->addLegend('sac_event_evaluation_legend', 'protected_legend', PaletteManipulator::POSITION_BEFORE)
-	->addField('enableOnlineEventEvaluation', 'sac_event_evaluation_legend', PaletteManipulator::POSITION_APPEND)
+	->addLegend('sac_event_feedback_legend', 'protected_legend', PaletteManipulator::POSITION_BEFORE)
+	->addField('enableOnlineEventFeedback', 'sac_event_feedback_legend', PaletteManipulator::POSITION_APPEND)
 	->applyToPalette('default', 'tl_calendar')
 ;
 
 // Palettes
-$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'enableOnlineEventEvaluation';
-$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['enableOnlineEventEvaluation'] = 'onlineEvaluationConfiguration,onlineEvaluationNotification,onlineEvaluationForm';
+$GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'enableOnlineEventFeedback';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['enableOnlineEventFeedback'] = 'onlineFeedbackConfiguration,onlineFeedbackNotification,onlineFeedbackForm';
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['enableOnlineEventEvaluation'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['enableOnlineEventFeedback'] = array
 (
 	'exclude'   => true,
 	'filter'    => true,
@@ -31,7 +31,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['enableOnlineEventEvaluation'] = arr
 	'sql'       => "char(1) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineEvaluationConfiguration'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackConfiguration'] = array
 (
 	'exclude'   => true,
 	'search'    => true,
@@ -40,7 +40,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineEvaluationConfiguration'] = a
 	'sql'       => "varchar(64) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineEvaluationNotification'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackNotification'] = array
 (
 	'exclude'   => true,
 	'search'    => true,
@@ -49,7 +49,7 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineEvaluationNotification'] = ar
 	'sql'       => "varchar(64) NOT NULL default ''"
 );
 
-$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineEvaluationForm'] = array
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackForm'] = array
 (
 	'exclude'   => true,
 	'search'    => true,

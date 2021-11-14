@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventEvaluation\DataContainer;
+namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CalendarEventsMemberModel;
 use Contao\CalendarModel;
@@ -20,7 +20,7 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\FormModel;
-use Markocupic\SacEventEvaluation\Model\EventEvaluationModel;
+use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 
 class TlCalendarEventsMember
 {
@@ -32,12 +32,12 @@ class TlCalendarEventsMember
     /**
      * @var array
      */
-    private $onlineEvaluationConfigs;
+    private $onlineFeedbackConfigs;
 
-    public function __construct(ContaoFramework $framework, array $onlineEvaluationConfigs)
+    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs)
     {
         $this->framework = $framework;
-        $this->onlineEvaluationConfigs = $onlineEvaluationConfigs;
+        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
     /**
@@ -49,39 +49,39 @@ class TlCalendarEventsMember
         $calendarEventsMemberModel = CalendarEventsMemberModel::findByPk($dc->id);
         $calendarEventsModel = CalendarEventsModel::findByPk($calendarEventsMemberModel->eventId);
         $calendarModel = CalendarModel::findByPk($calendarEventsModel->pid);
-        $formModel = FormModel::findByPk($calendarModel->onlineEvaluationForm);
-        $notificationModel = FormModel::findByPk($calendarModel->onlineEvaluationNotification);
+        $formModel = FormModel::findByPk($calendarModel->onlineFeedbackForm);
+        $notificationModel = FormModel::findByPk($calendarModel->onlineFeedbackNotification);
 
-        $eventEvaluationModel = EventEvaluationModel::findByUuid($calendarEventsMemberModel->uuid);
+        $eventFeedbackModel = EventFeedbackModel::findByUuid($calendarEventsMemberModel->uuid);
 
         $arrConfig = null;
 
-        if ($calendarModel && '' !== $calendarModel->onlineEvaluationConfiguration) {
-            $arrConfig = ($this->onlineEvaluationConfigs[$calendarModel->onlineEvaluationConfiguration] ?? null);
+        if ($calendarModel && '' !== $calendarModel->onlineFeedbackConfiguration) {
+            $arrConfig = ($this->onlineFeedbackConfigs[$calendarModel->onlineFeedbackConfiguration] ?? null);
         }
 
-        // Do nothing if event evaluation has already filled out.
-        if (null !== $eventEvaluationModel || null === $calendarModel || null === $calendarEventsMemberModel || null === $calendarEventsModel) {
+        // Do nothing if event feedback has already filled out.
+        if (null !== $eventFeedbackModel || null === $calendarModel || null === $calendarEventsMemberModel || null === $calendarEventsModel) {
             return $value;
         }
 
-        if ('1' === $value && $calendarModel->enableOnlineEventEvaluation && $calendarEventsModel->enableOnlineEventEvaluation) {
-            $calendarEventsMemberModel->doOnlineEventEvaluation = '1';
+        if ('1' === $value && $calendarModel->enableOnlineEventFeedback && $calendarEventsModel->enableOnlineEventFeedback) {
+            $calendarEventsMemberModel->doOnlineEventFeedback = '1';
 
-            if (null !== $formModel && $arrConfig && null === $eventEvaluationModel) {
+            if (null !== $formModel && $arrConfig && null === $eventFeedbackModel) {
                 $arrData = serialize([
                     'form' => $formModel->id,
                     'config' => $arrConfig,
                     'notification' => $notificationModel->id,
                 ]);
-                $calendarEventsMemberModel->onlineEventEvaluationData = serialize($arrData);
+                $calendarEventsMemberModel->onlineEventFeedbackData = serialize($arrData);
                 $calendarEventsMemberModel->save();
             }
         }
 
-        if ('' === $value && null === $eventEvaluationModel) {
-            $calendarEventsMemberModel->doOnlineEventEvaluation = '';
-            $calendarEventsMemberModel->onlineEventEvaluationData = null;
+        if ('' === $value && null === $eventFeedbackModel) {
+            $calendarEventsMemberModel->doOnlineEventFeedback = '';
+            $calendarEventsMemberModel->onlineEventFeedbackData = null;
             $calendarEventsMemberModel->save();
         }
 

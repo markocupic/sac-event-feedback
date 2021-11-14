@@ -3,16 +3,16 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventEvaluation\Controller\FrontendModule;
+namespace Markocupic\SacEventFeedback\Controller\FrontendModule;
 
 use Contao\CalendarEventsMemberModel;
 use Contao\Controller;
@@ -30,13 +30,13 @@ use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * Class EventEvaluationFormController.
+ * Class EventFeedbackFormController.
  *
- * @FrontendModule(EventEvaluationFormController::TYPE, category="event_evaluation", template="mod_event_evaluation_form")
+ * @FrontendModule(EventFeedbackFormController::TYPE, category="event_feedback", template="mod_event_feedback_form")
  */
-class EventEvaluationFormController extends AbstractFrontendModuleController
+class EventFeedbackFormController extends AbstractFrontendModuleController
 {
-    public const TYPE = 'event_evaluation_form';
+    public const TYPE = 'event_feedback_form';
     public const UUID_TEST = 'b6d3ea2b-d8c4-4aa7-9045-0eb499503e1d';
 
     /**
@@ -61,7 +61,7 @@ class EventEvaluationFormController extends AbstractFrontendModuleController
 
         $uuid = $request->query->get('uuid');
 
-        //$arrReminder = System::getContainer()->getParameter('markocupic_sac_event_evaluation.configs');
+        //$arrReminder = System::getContainer()->getParameter('markocupic_sac_event_feedback.configs');
         //die(print_r($arrReminder, true));
 
         if (null === ($this->objEventRegistration = CalendarEventsMemberModel::findByUuid($uuid))) {

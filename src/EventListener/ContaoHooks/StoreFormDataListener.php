@@ -3,21 +3,21 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Evaluation Bundle.
+ * This file is part of SAC Event Feedback Bundle.
  *
  * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-evaluation
+ * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventEvaluation\EventListener\ContaoHooks;
+namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
 use Contao\CalendarEventsMemberModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Form;
-use Markocupic\SacEventEvaluation\Controller\FrontendModule\EventEvaluationFormController;
+use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 /**
@@ -44,11 +44,11 @@ class StoreFormDataListener
         /*
          * @todo remove this line
          */
-        $request->query->set('uuid', EventEvaluationFormController::UUID_TEST);
+        $request->query->set('uuid', EventFeedbackFormController::UUID_TEST);
 
         $uuid = $request->query->get('uuid', null);
 
-        if (empty($uuid) || !$form->isSacEventEvaluationForm) {
+        if (empty($uuid) || !$form->isSacEventFeedbackForm) {
             return $data;
         }
 

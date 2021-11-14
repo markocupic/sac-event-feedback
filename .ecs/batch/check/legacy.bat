@@ -6,5 +6,5 @@ cd..
 cd..
 cd..
 cd..
-vendor\bin\ecs check vendor/markocupic/sac-event-evaluation/src/Resources/contao --config vendor/markocupic/sac-event-evaluation/.ecs/config/legacy.php
-cd vendor/markocupic/sac-event-evaluation/.ecs./batch/check
+vendor\bin\ecs check vendor/markocupic/sac-event-feedback/src/Resources/contao --config vendor/markocupic/sac-event-feedback/.ecs/config/legacy.php
+cd vendor/markocupic/sac-event-feedback/.ecs./batch/check
