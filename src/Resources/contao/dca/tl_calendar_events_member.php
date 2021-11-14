@@ -10,18 +10,6 @@
  * @link https://github.com/markocupic/sac-event-evaluation
  */
 
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
-
-PaletteManipulator::create()
-	->addLegend('sac_event_evaluation_legend', 'gallery_legend', PaletteManipulator::POSITION_BEFORE)
-	->addField('enableOnlineEventEvaluation', 'sac_event_evaluation_legend', PaletteManipulator::POSITION_APPEND)
-	->applyToPalette('default', 'tl_calendar_events')
-	->applyToPalette('tour', 'tl_calendar_events')
-	->applyToPalette('lastMinuteTour', 'tl_calendar_events')
-	->applyToPalette('course', 'tl_calendar_events')
-	->applyToPalette('generalEvent', 'tl_calendar_events')
-;
-
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['doOnlineEventEvaluation'] = array
 (
 	'exclude'                 => true,
