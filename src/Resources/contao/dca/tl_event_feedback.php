@@ -12,10 +12,6 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-use Contao\Backend;
-use Contao\DC_Table;
-use Contao\Input;
-
 /**
  * Table tl_event_feedback
  */
@@ -28,6 +24,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 			'keys' => array(
 				'id' => 'primary',
 				'uuid' => 'index',
+                'uuid' => 'unique',
 			)
 		),
 	),
@@ -108,8 +105,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 			'search'    => true,
 			'filter'    => true,
 			'sorting'   => true,
-			'eval'      => array('mandatory' => true, 'readonly' => true, 'tl_class' => 'w50'),
-			'sql'       => "char(36) NOT NULL default ''",
+			'eval'      => array('mandatory' => true, 'unique'=> true, 'readonly' => true, 'tl_class' => 'w50'),
+            'sql'       => 'varchar(64) BINARY NULL',
 		),
 		'learningEffectIndex'           => array(
 			'inputType' => 'select',
@@ -211,24 +208,3 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 		),
 	)
 );
-
-/**
- * Class tl_event_feedback
- */
-class tl_event_feedback extends Backend
-{
-	/**
-	 * @param $arrButtons
-	 * @param  DC_Table $dc
-	 * @return mixed
-	 */
-	public function buttonsCallback($arrButtons, DC_Table $dc)
-	{
-		if (Input::get('act') === 'edit')
-		{
-			$arrButtons['customButton'] = '<button type="submit" name="customButton" id="customButton" class="tl_submit customButton" accesskey="x">' . $GLOBALS['TL_LANG']['tl_event_feedback']['customButton'] . '</button>';
-		}
-
-		return $arrButtons;
-	}
-}

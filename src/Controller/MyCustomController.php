@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\Controller;
 
+use Contao\CoreBundle\Framework\ContaoFramework;
+use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,8 +24,8 @@ use Twig\Environment as TwigEnvironment;
 /**
  * Class MyCustomController.
  *
- * @Route("/my_custom22",
- *     name="markocupic_sac_event_feedback_my_custom",
+ * @Route("/reminder",
+ *     name="MyCustomController::class",
  *     defaults={
  *         "_scope" = "frontend",
  *         "_token_check" = true
@@ -37,12 +39,21 @@ class MyCustomController extends AbstractController
      */
     private $twig;
 
+    private $framework;
+
+    /**
+     * @var EventFeedbackHelper
+     */
+    private $eventFeedbackHelper;
+
     /**
      * MyCustomController constructor.
      */
-    public function __construct(TwigEnvironment $twig)
+    public function __construct(TwigEnvironment $twig, ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper)
     {
         $this->twig = $twig;
+        $this->framework = $framework;
+        $this->eventFeedbackHelper = $eventFeedbackHelper;
     }
 
     /**
@@ -50,6 +61,9 @@ class MyCustomController extends AbstractController
      */
     public function __invoke()
     {
+        $this->framework->initialize(true);
+        $this->eventFeedbackHelper->sendReminder();
+
         $animals = [
             [
                 'species' => 'dogs',

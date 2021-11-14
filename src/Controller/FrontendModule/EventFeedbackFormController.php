@@ -15,15 +15,19 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Controller\FrontendModule;
 
 use Contao\CalendarEventsMemberModel;
+use Contao\CalendarEventsModel;
+use Contao\CalendarModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
+use Contao\FrontendUser;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
 use Doctrine\DBAL\Connection;
+use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
@@ -39,38 +43,40 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     public const TYPE = 'event_feedback_form';
     public const UUID_TEST = 'b6d3ea2b-d8c4-4aa7-9045-0eb499503e1d';
 
+    private Security $security;
+    private EventFeedbackHelper $eventFeedbackHelper;
+
     /**
      * @var PageModel
      */
     private $page;
 
     /**
+     * @var FrontendUser
+     */
+    private $user;
+
+    /**
      * @var CalendarEventsMemberModel
      */
     private $objEventRegistration;
+
+    public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper)
+    {
+        $this->security = $security;
+        $this->eventFeedbackHelper = $eventFeedbackHelper;
+    }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
         // Get the page model
         $this->page = $page;
 
-        /*
-         * @todo remove this line
-         */
-        $request->query->set('uuid', self::UUID_TEST);
+        // Get logged in user
+        $this->user = $this->security->getUser();
 
-        $uuid = $request->query->get('uuid');
-
-        //$arrReminder = System::getContainer()->getParameter('markocupic_sac_event_feedback.configs');
-        //die(print_r($arrReminder, true));
-
-        if (null === ($this->objEventRegistration = CalendarEventsMemberModel::findByUuid($uuid))) {
-            return new Response('Invalid request.');
-        }
-
-        if ($this->page instanceof PageModel && $this->get('contao.routing.scope_matcher')->isFrontendRequest($request)) {
-            // If TL_MODE === 'FE'
-            //$this->page->loadDetails();
+        if (!$this->user instanceof FrontendUser) {
+            return new Response('', Response::HTTP_NO_CONTENT);
         }
 
         return parent::__invoke($request, $model, $section, $classes);
@@ -97,7 +103,36 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
      */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
-        $template->form = Controller::getForm($model->form);
+        $uuid = $request->query->get('uuid');
+
+        $member = CalendarEventsMemberModel::findByUuid($uuid);
+
+        $template->error = null;
+
+        if (null === $member || $member->sacMemberId !== $this->user->sacMemberId) {
+            $template->error = 'Die UUID passt nicht zum eingeloggten Benutzer.';
+        }
+
+        if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
+            $template->error = 'Der zur UUID passende Event wurde nicht gefunden.';
+        }
+
+        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+            $template->error = 'Der zur UUID passende Kalender wurde nicht gefunden.';
+        }
+
+        if (null !== $event) {
+            $form = $this->eventFeedbackHelper->getForm($event);
+
+            if (null === $form) {
+                $template->error = 'Das zur UUID passende Formular wurde nicht gefunden.';
+            }else{
+                $template->form = Controller::getForm($form->id);
+            }
+        }
+
+        $template->firstname = $member->firstname;
+        $template->lastname = $member->firstname;
 
         return $template->getResponse();
     }

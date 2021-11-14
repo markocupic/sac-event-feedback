@@ -15,16 +15,22 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Cron;
 
     use Contao\CoreBundle\ServiceAnnotation\CronJob;
+    use Markocupic\SacEventFeedback\EventFeedbackHelper;
 
     /**
-     * @CronJob("minutely")
+     * @CronJob("hourly")
      */
     class SendNotification
     {
+        private EventFeedbackHelper $eventFeedbackHelper;
+
+        public function __construct(EventFeedbackHelper $eventFeedbackHelper)
+        {
+            $this->eventFeedbackHelper = $eventFeedbackHelper;
+        }
+
         public function __invoke(): void
         {
-            //$objFile = new File('files/cron.txt');
-            //$objFile->append('executed at '.Date::parse('H:i'));
-            //$objFile->close();
+            $this->eventFeedbackHelper->sendReminder();
         }
     }

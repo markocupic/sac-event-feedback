@@ -15,12 +15,11 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CalendarEventsMemberModel;
-use Contao\CalendarModel;
+use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
-use Contao\FormModel;
-use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventFeedback\EventFeedbackHelper;
 
 class TlCalendarEventsMember
 {
@@ -34,55 +33,38 @@ class TlCalendarEventsMember
      */
     private $onlineFeedbackConfigs;
 
-    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs)
+    /**
+     * @var EventFeedbackHelper
+     */
+    private $eventFeedbackHelper;
+
+    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs, EventFeedbackHelper $eventFeedbackHelper)
     {
         $this->framework = $framework;
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
+        $this->eventFeedbackHelper = $eventFeedbackHelper;
     }
 
     /**
      * @Callback(table="tl_calendar_events_member", target="fields.hasParticipated.save")
      */
-    public function onCompletedEvent($value, DataContainer $dc)
+    public function onCompletedEvent(string $value, DataContainer $dc): string
     {
-        return $value;
         $calendarEventsMemberModel = CalendarEventsMemberModel::findByPk($dc->id);
         $calendarEventsModel = CalendarEventsModel::findByPk($calendarEventsMemberModel->eventId);
-        $calendarModel = CalendarModel::findByPk($calendarEventsModel->pid);
-        $formModel = FormModel::findByPk($calendarModel->onlineFeedbackForm);
-        $notificationModel = FormModel::findByPk($calendarModel->onlineFeedbackNotification);
 
-        $eventFeedbackModel = EventFeedbackModel::findByUuid($calendarEventsMemberModel->uuid);
-
-        $arrConfig = null;
-
-        if ($calendarModel && '' !== $calendarModel->onlineFeedbackConfiguration) {
-            $arrConfig = ($this->onlineFeedbackConfigs[$calendarModel->onlineFeedbackConfiguration] ?? null);
-        }
-
-        // Do nothing if event feedback has already filled out.
-        if (null !== $eventFeedbackModel || null === $calendarModel || null === $calendarEventsMemberModel || null === $calendarEventsModel) {
+        if (null === $calendarEventsMemberModel || null === $calendarEventsModel || !$this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($calendarEventsModel)) {
             return $value;
         }
 
-        if ('1' === $value && $calendarModel->enableOnlineEventFeedback && $calendarEventsModel->enableOnlineEventFeedback) {
-            $calendarEventsMemberModel->doOnlineEventFeedback = '1';
-
-            if (null !== $formModel && $arrConfig && null === $eventFeedbackModel) {
-                $arrData = serialize([
-                    'form' => $formModel->id,
-                    'config' => $arrConfig,
-                    'notification' => $notificationModel->id,
-                ]);
-                $calendarEventsMemberModel->onlineEventFeedbackData = serialize($arrData);
-                $calendarEventsMemberModel->save();
-            }
+        // If $value === ''
+        if (!$value && !$calendarEventsMemberModel->countOnlineEventFeedbackNotifications) {
+            $this->eventFeedbackHelper->deleteFeedbackReminder($calendarEventsMemberModel);
         }
 
-        if ('' === $value && null === $eventFeedbackModel) {
-            $calendarEventsMemberModel->doOnlineEventFeedback = '';
-            $calendarEventsMemberModel->onlineEventFeedbackData = null;
-            $calendarEventsMemberModel->save();
+        // If $value === '1'
+        if ($value && !$calendarEventsMemberModel->countOnlineEventFeedbackNotifications) {
+            $this->eventFeedbackHelper->addFeedbackReminder($calendarEventsMemberModel);
         }
 
         // Return the processed value

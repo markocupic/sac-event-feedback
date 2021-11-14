@@ -1,7 +1,11 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    <h1>Hello from Twig!</h1>
+    {% if error %}
+    <p>{{ error }}</p>
+    {% else %}
+    <h1>Hallo {{ firstname }}!</h1>
     {{ form|raw }}
+    {% endif %}
     {{ parent() }}
 {% endblock %}

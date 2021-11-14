@@ -20,4 +20,5 @@ declare(strict_types=1);
 /**
  * Errors
  */
-//$GLOBALS['TL_LANG']['ERR'][''] = '';
+$GLOBALS['TL_LANG']['ERR']['invalidEventFeedbackConfiguration'] = 'Invalid configuration detected. Please check for a valid form, page, notification and configuration in the events parent calendar.';
+

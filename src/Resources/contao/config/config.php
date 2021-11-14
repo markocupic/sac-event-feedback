@@ -11,15 +11,36 @@
  */
 
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['event_feedback']['event_feedback'] = array(
-	'tables' => array('tl_event_feedback')
+$GLOBALS['BE_MOD']['event_feedback'] = array(
+	'event_feedback' => array(
+		'tables' => array('tl_event_feedback')
+	),
+	'event_feedback_reminder' => array(
+		'tables' => array('tl_event_feedback_reminder')
+	),
 );
 
 /**
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_event_feedback'] = EventFeedbackModel::class;
+$GLOBALS['TL_MODELS']['tl_event_feedback_reminder'] = EventFeedbackReminderModel::class;
+
+/**
+ * Notification center
+ */
+$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['sac_event_tool']['event_feedback_reminder'] = array(
+	// Field in tl_nc_language
+	'email_sender_name'    => array('instructor_name', 'instructor_email', 'admin_email'),
+	'email_sender_address' => array('instructor_email', 'instructor_email', 'admin_email'),
+	'recipients'           => array('participant_email', 'instructor_email', 'admin_email'),
+	'email_replyTo'        => array('instructor_email'),
+	'email_subject'        => array('event_name'),
+	'email_text'           => array('event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'),
+	'email_html'           => array('event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'),
+);

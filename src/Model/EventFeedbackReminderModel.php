@@ -12,9 +12,14 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
+namespace Markocupic\SacEventFeedback\Model;
+
+use Contao\Model;
 
 /**
- * Frontend modules
+ * Class EventFeedbackReminderModel.
  */
-$GLOBALS['TL_DCA']['tl_module']['palettes'][EventFeedbackFormController::TYPE] = '{title_legend},name,headline,type;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+class EventFeedbackReminderModel extends Model
+{
+    protected static $strTable = 'tl_event_feedback_reminder';
+}

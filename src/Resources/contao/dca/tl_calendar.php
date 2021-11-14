@@ -20,7 +20,7 @@ PaletteManipulator::create()
 
 // Palettes
 $GLOBALS['TL_DCA']['tl_calendar']['palettes']['__selector__'][] = 'enableOnlineEventFeedback';
-$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['enableOnlineEventFeedback'] = 'onlineFeedbackConfiguration,onlineFeedbackNotification,onlineFeedbackForm';
+$GLOBALS['TL_DCA']['tl_calendar']['subpalettes']['enableOnlineEventFeedback'] = 'onlineFeedbackConfiguration,onlineFeedbackNotification,onlineFeedbackPage,onlineFeedbackForm';
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['enableOnlineEventFeedback'] = array
 (
@@ -47,6 +47,16 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackNotification'] = arra
 	'inputType' => 'select',
 	'eval'      => array('mandatory' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'),
 	'sql'       => "varchar(64) NOT NULL default ''"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackPage'] = array
+(
+    'exclude'                 => true,
+    'inputType'               => 'pageTree',
+    'foreignKey'              => 'tl_page.title',
+    'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
+    'sql'                     => "int(10) unsigned NOT NULL default 0",
+    'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 );
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackForm'] = array

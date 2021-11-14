@@ -10,6 +10,10 @@
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
+// Table config
+$GLOBALS['TL_DCA']['tl_calendar_events_member']['ctable'][] = 'tl_event_reminder';
+
+// Fields
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['doOnlineEventFeedback'] = array
 (
 	'exclude'                 => true,
@@ -26,4 +30,13 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['onlineEventFeedbackDa
 	'inputType'               => 'checkbox',
 	'eval'                    => array('tl_class'=>'w50'),
 	'sql'                     => "mediumtext NULL"
+);
+
+$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['countOnlineEventFeedbackNotifications'] = array
+(
+    'exclude'                 => true,
+    'search'                  => true,
+    'inputType'               => 'text',
+    'eval'                    => array('rgxp' => 'natural', 'tl_class'=>'w50'),
+    'sql'                     => "int(3) unsigned NOT NULL default 0",
 );

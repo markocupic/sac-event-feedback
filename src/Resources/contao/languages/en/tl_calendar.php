@@ -18,6 +18,7 @@ $GLOBALS['TL_LANG']['tl_calendar']['enableOnlineEventFeedback'] = array('Online 
 $GLOBALS['TL_LANG']['tl_calendar']['onlineFeedbackConfiguration'] = array('Konfiguration auswählen.', 'Wählen Sie die Konfiguration aus.');
 $GLOBALS['TL_LANG']['tl_calendar']['onlineFeedbackNotification'] = array('Benachrichtigung auswählen.', 'Wählen Sie die Benachrichtigung aus.');
 $GLOBALS['TL_LANG']['tl_calendar']['onlineFeedbackForm'] = array('Auswertungsformular auswählen.', 'Wählen Sie das Auswertungsformular aus.');
+$GLOBALS['TL_LANG']['tl_calendar']['onlineFeedbackPage'] = array('Seite mit Auswertungsformular auswählen.', 'Wählen Sie die Seite, welche das Auswertungsformular enthält, aus.');
 
 
 
