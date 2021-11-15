@@ -168,7 +168,12 @@ class EventFeedbackHelper
                     $notification = $this->getNotification($event);
                     $arrTokens = $this->setNotificationTokens($member);
 
-                    $notification->send($arrTokens, $objPage->language);
+                    $arrResult = $notification->send($arrTokens, $objPage->language);
+                    if(is_array($arrResult) && !empty($arrResult))
+                    {
+                        $member->countOnlineEventFeedbackNotifications += 1;
+                        $member->save();
+                    }
                 }
             }
 
