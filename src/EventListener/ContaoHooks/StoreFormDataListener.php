@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
-use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
@@ -69,10 +68,7 @@ class StoreFormDataListener
         }
 
         $uuid = $request->query->get('uuid');
-
-        $form->storeValues = '1';
-        $form->targetTable = 'tl_event_feedback';
-        $event = $this->eventFeedbackHelper->getEventFromUuid($request->query->get('uuid'));
+        $event = $this->eventFeedbackHelper->getEventFromUuid($uuid);
 
         $data['uuid'] = $request->query->get('uuid');
         $data['pid'] = $event->id;

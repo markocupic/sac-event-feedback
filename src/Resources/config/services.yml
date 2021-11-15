@@ -12,3 +12,7 @@ services:
     Markocupic\SacEventFeedback\EventListener\ContaoHooks\StoreFormDataListener:
         tags:
             - { name: contao.hook, hook: storeFormData, method: augmentData, priority: 0 }
+
+    Markocupic\SacEventFeedback\EventListener\ContaoHooks\PrepareFormDataListener:
+        tags:
+            - { name: contao.hook, hook: prepareFormData, method: prepareFormData, priority: 0 }
