@@ -1,10 +1,12 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    {% if error %}
+    {% if hasError==true %}
     <p>{{ error }}</p>
     {% else %}
-    <h1>Hallo {{ firstname }}!</h1>
+    <h1>Auswertung "{{ event.title }}"</h1>
+        <p>Lieber {{ member.firstname }}</p>
+        <p>Vielen Dank, dass du dir die Zeit nimmst uns deine Rückmeldung mitzuteilen. Dein Feedback hilft uns, unser Angebot stetig den Bedürfnissen unserer Sektionsmitglieder anzupassen.</p>
     {{ form|raw }}
     {% endif %}
     {{ parent() }}

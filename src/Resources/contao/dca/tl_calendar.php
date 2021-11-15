@@ -51,12 +51,12 @@ $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackNotification'] = arra
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackPage'] = array
 (
-    'exclude'                 => true,
-    'inputType'               => 'pageTree',
-    'foreignKey'              => 'tl_page.title',
-    'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
-    'sql'                     => "int(10) unsigned NOT NULL default 0",
-    'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
+	'exclude'                 => true,
+	'inputType'               => 'pageTree',
+	'foreignKey'              => 'tl_page.title',
+	'eval'                    => array('mandatory'=>true, 'fieldType'=>'radio', 'tl_class'=>'clr'),
+	'sql'                     => "int(10) unsigned NOT NULL default 0",
+	'relation'                => array('type'=>'hasOne', 'load'=>'lazy')
 );
 
 $GLOBALS['TL_DCA']['tl_calendar']['fields']['onlineFeedbackForm'] = array

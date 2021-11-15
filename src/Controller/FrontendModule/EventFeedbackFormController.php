@@ -19,19 +19,16 @@ use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FrontendUser;
 use Contao\ModuleModel;
 use Contao\PageModel;
 use Contao\Template;
-use Doctrine\DBAL\Connection;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
+use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
-use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * Class EventFeedbackFormController.
@@ -82,58 +79,49 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    /**
-     * Lazyload some services.
-     */
-    public static function getSubscribedServices(): array
-    {
-        $services = parent::getSubscribedServices();
-
-        $services['contao.framework'] = ContaoFramework::class;
-        $services['database_connection'] = Connection::class;
-        $services['contao.routing.scope_matcher'] = ScopeMatcher::class;
-        $services['security.helper'] = Security::class;
-        $services['translator'] = TranslatorInterface::class;
-
-        return $services;
-    }
-
-    /**
-     * Generate the module.
-     */
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
+        $this->template = $template;
+        $this->template->hasError = false;
+
         $uuid = $request->query->get('uuid');
 
         $member = CalendarEventsMemberModel::findByUuid($uuid);
 
-        $template->error = null;
+        $this->template->error = null;
 
         if (null === $member || $member->sacMemberId !== $this->user->sacMemberId) {
-            $template->error = 'Die UUID passt nicht zum eingeloggten Benutzer.';
+            return $this->returnWithError('Die UUID passt nicht zum eingeloggten Benutzer.');
         }
 
         if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
-            $template->error = 'Der zur UUID passende Event wurde nicht gefunden.';
+            return $this->returnWithError('Der zur UUID passende Event wurde nicht gefunden.');
         }
 
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
-            $template->error = 'Der zur UUID passende Kalender wurde nicht gefunden.';
+        if (null === CalendarModel::findByPk($event->pid)) {
+            return $this->returnWithError('Der zur UUID passende Kalender wurde nicht gefunden.');
         }
 
-        if (null !== $event) {
-            $form = $this->eventFeedbackHelper->getForm($event);
-
-            if (null === $form) {
-                $template->error = 'Das zur UUID passende Formular wurde nicht gefunden.';
-            }else{
-                $template->form = Controller::getForm($form->id);
-            }
+        if (null === ($form = $this->eventFeedbackHelper->getForm($event))) {
+            return $this->returnWithError('Das zur UUID passende Formular wurde nicht gefunden.');
         }
 
-        $template->firstname = $member->firstname;
-        $template->lastname = $member->firstname;
+        if (null !== EventFeedbackModel::findByUuid($uuid)) {
+            return $this->returnWithError('Das Formular ist bereits ausgefüllt worden.');
+        }
 
-        return $template->getResponse();
+        $this->template->form = Controller::getForm($form->id);
+        $this->template->member = $member->row();
+        $this->template->event = $event->row();
+
+        return $this->template->getResponse();
+    }
+
+    private function returnWithError(string $errMsg): Response
+    {
+        $this->template->hasError = true;
+        $this->template->error = $errMsg;
+
+        return $this->template->getResponse();
     }
 }

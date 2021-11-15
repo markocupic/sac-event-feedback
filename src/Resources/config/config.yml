@@ -3,6 +3,10 @@ markocupic_sac_event_feedback:
     # Default configuration
     default:
       name: 'default'
+      # Allow Allow feedbacks up to 10 days after event end date
       feedback_expiration_time: 60 #days
-      send_reminder_after_days: [1,14,30] #days
+      # Send reminders: 1 day after event end
+      # Send reminders: 2 day after event end
+      # Send reminders: 3 day after event end
+      send_reminder_after_days: [1,2,3] #days
 

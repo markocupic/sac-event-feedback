@@ -9,3 +9,6 @@ services:
         resource: ../../
         exclude: ../../{DependencyInjection,Resources,Model}
 
+    Markocupic\SacEventFeedback\EventListener\ContaoHooks\StoreFormDataListener:
+        tags:
+            - { name: contao.hook, hook: storeFormData, method: augmentData, priority: 0 }

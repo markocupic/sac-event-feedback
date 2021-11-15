@@ -24,7 +24,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 			'keys' => array(
 				'id' => 'primary',
 				'uuid' => 'index',
-                'uuid' => 'unique',
+				'uuid' => 'unique',
 			)
 		),
 	),
@@ -84,8 +84,9 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 		),
 		'pid'                           => array(
 			'foreignKey' => 'tl_calendar_events.title',
-			'sql'        => "int(10) unsigned NOT NULL default 0",
-			'relation'   => array('type' => 'belongsTo', 'load' => 'lazy')
+            'relation'   => array('type' => 'belongsTo', 'load' => 'lazy'),
+            'eval'       => array('rgxp' => 'natural', 'tl_class' => 'w50 wizard'),
+            'sql'        => "int(10) unsigned NOT NULL default 0",
 		),
 		'tstamp'                        => array(
 			'sql' => "int(10) unsigned NOT NULL default '0'"
@@ -106,7 +107,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 			'filter'    => true,
 			'sorting'   => true,
 			'eval'      => array('mandatory' => true, 'unique'=> true, 'readonly' => true, 'tl_class' => 'w50'),
-            'sql'       => 'varchar(64) BINARY NULL',
+			'sql'       => 'varchar(64) BINARY NULL',
 		),
 		'learningEffectIndex'           => array(
 			'inputType' => 'select',

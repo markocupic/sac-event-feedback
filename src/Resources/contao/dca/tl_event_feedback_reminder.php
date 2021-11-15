@@ -51,7 +51,6 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = array(
 			)
 		),
 		'operations'        => array(
-
 			'edit'   => array(
 				'href'  => 'act=edit',
 				'icon'  => 'edit.gif'
@@ -116,13 +115,13 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = array(
 			'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
 			'sql'       => "varchar(10) NOT NULL default ''",
 		),
-        'feedbackExpirationDate'                     => array
-        (
-            'inputType' => 'text',
-            'sorting'   => true,
-            'flag'      => 6,
-            'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
-            'sql'       => "varchar(10) NOT NULL default ''",
-        ),
+		'feedbackExpirationDate'                     => array
+		(
+			'inputType' => 'text',
+			'sorting'   => true,
+			'flag'      => 6,
+			'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
+			'sql'       => "varchar(10) NOT NULL default ''",
+		),
 	)
 );

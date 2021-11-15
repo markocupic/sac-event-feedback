@@ -10,33 +10,37 @@
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
+use Contao\CoreBundle\DataContainer\PaletteManipulator;
+
+/**
+ * @todo Remove this field from the default palette from the day we reach our first stable release.
+ */
+PaletteManipulator::create()
+	->addLegend(
+		'onlineFeedback_legend',
+		'notes_legend',
+		PaletteManipulator::POSITION_BEFORE
+	)
+	->addField(
+		'countOnlineEventFeedbackNotifications',
+		'onlineFeedback_legend',
+        PaletteManipulator::POSITION_APPEND
+	)
+	->applyToPalette(
+		'default',
+		'tl_calendar_events_member'
+	)
+;
+
 // Table config
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['ctable'][] = 'tl_event_reminder';
 
 // Fields
-$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['doOnlineEventFeedback'] = array
-(
-	'exclude'                 => true,
-	'search'                  => true,
-	'inputType'               => 'checkbox',
-	'eval'                    => array('tl_class'=>'w50'),
-	'sql'                     => "char(1) NOT NULL default ''"
-);
-
-$GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['onlineEventFeedbackData'] = array
-(
-	'exclude'                 => true,
-	'search'                  => true,
-	'inputType'               => 'checkbox',
-	'eval'                    => array('tl_class'=>'w50'),
-	'sql'                     => "mediumtext NULL"
-);
-
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['countOnlineEventFeedbackNotifications'] = array
 (
-    'exclude'                 => true,
-    'search'                  => true,
-    'inputType'               => 'text',
-    'eval'                    => array('rgxp' => 'natural', 'tl_class'=>'w50'),
-    'sql'                     => "int(3) unsigned NOT NULL default 0",
+	'exclude'   => true,
+	'search'    => true,
+	'inputType' => 'text',
+	'eval'      => array('rgxp' => 'natural', 'tl_class' => 'w50'),
+	'sql'       => "int(3) unsigned NOT NULL default 0",
 );

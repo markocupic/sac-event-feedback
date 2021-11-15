@@ -20,6 +20,7 @@ use Contao\CalendarModel;
 use Contao\Database;
 use Contao\Date;
 use Contao\FormModel;
+use Contao\MemberModel;
 use Contao\PageModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
@@ -86,6 +87,32 @@ class EventFeedbackHelper
         ;
     }
 
+    public function getEventFromUuid(string $uuid): ?CalendarEventsModel
+    {
+        $eventMember = CalendarEventsMemberModel::findByUuid($uuid);
+
+        if (null !== $eventMember) {
+            if (null !== ($event = CalendarEventsModel::findByPk($eventMember->eventId))) {
+                return $event;
+            }
+        }
+
+        return null;
+    }
+
+    public function getFrontendUserFromUuid(string $uuid): ?MemberModel
+    {
+        $eventMember = CalendarEventsMemberModel::findByUuid($uuid);
+
+        if (null !== $eventMember) {
+            if (null !== ($member = MemberModel::findByPk($eventMember->contaoMemberId))) {
+                return $member;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @throws \Exception
      */
@@ -105,19 +132,23 @@ class EventFeedbackHelper
             throw new \Exception('Key "feedback_expiration_time" should not be empty!');
         }
 
-        $dateToday = Date::parse('Y-m-d');
+        $dateToday = new \DateTimeImmutable(Date::parse('Y-m-d'));
+        $dateEventEnd = new \DateTimeImmutable(Date::parse('Y-m-d', $event->endDate));
 
-        $eventEndDate = new \DateTime(Date::parse('Y-m-d', $event->endDate));
-        $eventEndDate->modify('+'.$arrConfig['feedback_expiration_time'].' day');
-        $feedbackExpirationTstamp = $eventEndDate->getTimestamp();
+        $dateStartReminding = $dateToday;
+        // Prevent sending reminders before the event end date is reached
+        if ($dateToday->getTimestamp() <= $dateEventEnd->getTimestamp()) {
+            $dateStartReminding = $dateEventEnd;
+        }
+
+        $dateExpiration = $dateStartReminding->modify('+'.$arrConfig['feedback_expiration_time'].' day');
 
         foreach ($arrConfig['send_reminder_after_days'] as $intDays) {
-            $date = new \DateTime($dateToday);
-            $date->modify('+'.$intDays.' day');
+            $dateSendReminder = $dateStartReminding->modify('+'.$intDays.' day');
 
             $objDb = Database::getInstance()
                 ->prepare('SELECT * FROM tl_event_feedback_reminder WHERE uuid=? AND executionDate=?')
-                ->execute($eventMember->uuid, $date->getTimestamp())
+                ->execute($eventMember->uuid, $dateStartReminding->getTimestamp())
             ;
 
             // Prevent inserting duplicate records
@@ -125,10 +156,10 @@ class EventFeedbackHelper
                 $set = [
                     'pid' => $eventMember->id,
                     'uuid' => $eventMember->uuid,
-                    'executionDate' => $date->getTimestamp(),
+                    'executionDate' => $dateSendReminder->getTimestamp(),
                     'dateAdded' => time(),
                     'tstamp' => time(),
-                    'feedbackExpirationDate' => $feedbackExpirationTstamp,
+                    'feedbackExpirationDate' => $dateExpiration->getTimestamp(),
                 ];
 
                 $objReminder = new EventFeedbackReminderModel();
@@ -168,12 +199,7 @@ class EventFeedbackHelper
                     $notification = $this->getNotification($event);
                     $arrTokens = $this->setNotificationTokens($member);
 
-                    $arrResult = $notification->send($arrTokens, $objPage->language);
-                    if(is_array($arrResult) && !empty($arrResult))
-                    {
-                        $member->countOnlineEventFeedbackNotifications += 1;
-                        $member->save();
-                    }
+                    $notification->send($arrTokens, $objPage->language);
                 }
             }
 

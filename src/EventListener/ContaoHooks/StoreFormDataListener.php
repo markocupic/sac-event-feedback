@@ -14,52 +14,76 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
-use Contao\CalendarEventsMemberModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\Database;
 use Contao\Form;
-use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
+use Contao\FrontendUser;
+use Markocupic\SacEventFeedback\EventFeedbackHelper;
+use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\Security\Core\Security;
 
-/**
- * @Hook(StoreFormDataListener::TYPE, priority=StoreFormDataListener::PRIORITY)
- */
 class StoreFormDataListener
 {
     public const TYPE = 'storeFormData';
     public const PRIORITY = 100;
 
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private Security $security;
+    private EventFeedbackHelper $eventFeedbackHelper;
+    private RequestStack $requestStack;
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack)
     {
+        $this->security = $security;
+        $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->requestStack = $requestStack;
     }
 
-    public function __invoke(array $data, Form $form): array
+    /**
+     * Add uuid,tstamp,dateAdded and pid to $submittedData.
+     *
+     * @throws \Exception
+     */
+    public function augmentData(array $data, Form $form): array
     {
+        // Get logged in user
+        $user = $this->security->getUser();
         $request = $this->requestStack->getCurrentRequest();
-        /*
-         * @todo remove this line
-         */
-        $request->query->set('uuid', EventFeedbackFormController::UUID_TEST);
 
-        $uuid = $request->query->get('uuid', null);
-
-        if (empty($uuid) || !$form->isSacEventFeedbackForm) {
+        if (!$form->isSacEventFeedbackForm) {
             return $data;
         }
 
-        if (null === ($objRegistration = CalendarEventsMemberModel::findByUuid($request->query->get('uuid')))) {
+        if (!$request->query->has('uuid') || !$user instanceof FrontendUser) {
+            throw new \Exception('The form is only accessible to logged in contao frontend users.');
+        }
+
+        if (null !== EventFeedbackModel::findByUuid($request->query->has('uuid'))) {
+            throw new \Exception('The record with tl_event_feedback.uuid allready exists.');
+        }
+
+        $member = $this->eventFeedbackHelper->getFrontendUserFromUuid($request->query->get('uuid'));
+
+        if (null === $member || (int) $member->id !== (int) $user->id) {
             return $data;
         }
 
-        $data['uuid'] = $uuid;
-        $data['pid'] = $objRegistration->eventId;
+        $uuid = $request->query->get('uuid');
+
+        $form->storeValues = '1';
+        $form->targetTable = 'tl_event_feedback';
+        $event = $this->eventFeedbackHelper->getEventFromUuid($request->query->get('uuid'));
+
+        $data['uuid'] = $request->query->get('uuid');
+        $data['pid'] = $event->id;
         $data['dateAdded'] = time();
         $data['tstamp'] = time();
+
+        // Delete no more used reminders
+        Database::getInstance()
+            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid=?')
+            ->execute($uuid)
+        ;
 
         return $data;
     }

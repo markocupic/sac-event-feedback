@@ -18,7 +18,7 @@ namespace Markocupic\SacEventFeedback\Cron;
     use Markocupic\SacEventFeedback\EventFeedbackHelper;
 
     /**
-     * @CronJob("hourly")
+     * @CronJob("minutely")
      */
     class SendNotification
     {
