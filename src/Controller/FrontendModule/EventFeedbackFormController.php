@@ -86,7 +86,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
         $uuid = $request->query->get('uuid');
 
-        $member = CalendarEventsMemberModel::findByUuid($uuid);
+        $member = CalendarEventsMemberModel::findOneByUuid($uuid);
 
         $this->template->error = null;
 
@@ -106,7 +106,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
             return $this->returnWithError('Das zur UUID passende Formular wurde nicht gefunden.');
         }
 
-        if (null !== EventFeedbackModel::findByUuid($uuid)) {
+        if (null !== EventFeedbackModel::findOneByUuid($uuid)) {
             return $this->returnWithError('Das Formular ist bereits ausgefüllt worden.');
         }
 

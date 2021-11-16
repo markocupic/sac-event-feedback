@@ -57,7 +57,7 @@ class StoreFormDataListener
             throw new \Exception('The form is only accessible to logged in contao frontend users.');
         }
 
-        if (null !== EventFeedbackModel::findByUuid($request->query->has('uuid'))) {
+        if (null !== EventFeedbackModel::findOneByUuid($request->query->has('uuid'))) {
             throw new \Exception('The record with tl_event_feedback.uuid allready exists.');
         }
 

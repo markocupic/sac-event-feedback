@@ -22,6 +22,7 @@ use Contao\Date;
 use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\PageModel;
+use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use NotificationCenter\Model\Notification;
@@ -87,9 +88,14 @@ class EventFeedbackHelper
         ;
     }
 
+    public function getEventFeedbackFromUuid(string $uuid): ?EventFeedbackModel
+    {
+        return EventFeedbackModel::findOneByUuid($uuid);
+    }
+
     public function getEventFromUuid(string $uuid): ?CalendarEventsModel
     {
-        $eventMember = CalendarEventsMemberModel::findByUuid($uuid);
+        $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
         if (null !== $eventMember) {
             if (null !== ($event = CalendarEventsModel::findByPk($eventMember->eventId))) {
@@ -102,7 +108,7 @@ class EventFeedbackHelper
 
     public function getFrontendUserFromUuid(string $uuid): ?MemberModel
     {
-        $eventMember = CalendarEventsMemberModel::findByUuid($uuid);
+        $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
         if (null !== $eventMember) {
             if (null !== ($member = MemberModel::findByPk($eventMember->contaoMemberId))) {
@@ -189,7 +195,7 @@ class EventFeedbackHelper
         ;
 
         while ($objReminder->next()) {
-            if (null !== ($member = CalendarEventsMemberModel::findByUuid($objReminder->uuid))) {
+            if (null !== ($member = CalendarEventsMemberModel::findOneByUuid($objReminder->uuid))) {
                 $event = CalendarEventsModel::findByPk($member->eventId);
 
                 if (null !== $event) {
@@ -199,7 +205,12 @@ class EventFeedbackHelper
                     $notification = $this->getNotification($event);
                     $arrTokens = $this->setNotificationTokens($member);
 
-                    $notification->send($arrTokens, $objPage->language);
+                    $arrResult = $notification->send($arrTokens, $objPage->language);
+                    if(is_array($arrResult) && !empty($arrResult))
+                    {
+                        $member->countOnlineEventFeedbackNotifications += 1;
+                        $member->save();
+                    }
                 }
             }
 

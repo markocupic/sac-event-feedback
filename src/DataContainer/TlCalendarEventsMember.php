@@ -57,6 +57,12 @@ class TlCalendarEventsMember
             return $value;
         }
 
+        // Do nothing if member did already a feedback
+        if(null !== $this->eventFeedbackHelper->getEventFeedbackFromUuid($calendarEventsMemberModel->uuid))
+        {
+            return $value;
+        }
+
         // If $value === ''
         if (!$value && !$calendarEventsMemberModel->countOnlineEventFeedbackNotifications) {
             $this->eventFeedbackHelper->deleteFeedbackReminder($calendarEventsMemberModel);
