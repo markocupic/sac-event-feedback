@@ -18,7 +18,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use NotificationCenter\Model\Message;
 
 /**
- * @Hook(SendNotificationListener::TYPE, priority=SendNotificationListener::PRIORITY)
+ * @Hook("SendNotificationListener::TYPE", priority=SendNotificationListener::PRIORITY)
  */
 class SendNotificationListener
 {

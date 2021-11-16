@@ -14,14 +14,18 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Form;
 
+/**
+ * @Hook(PrepareFormDataListener::TYPE, priority=PrepareFormDataListener::PRIORITY)
+ */
 class PrepareFormDataListener
 {
     public const TYPE = 'prepareFormData';
     public const PRIORITY = 100;
 
-    public function prepareFormData($arrSubmitted, $arrLabels, $arrFields, Form $form): void
+    public function __invoke($arrSubmitted, $arrLabels, $arrFields, Form $form): void
     {
         if ($form->isSacEventFeedbackForm) {
             $form->storeValues = '1';

@@ -48,7 +48,6 @@ class MarkocupicSacEventFeedbackExtension extends Extension
 
         $loader->load('parameters.yml');
         $loader->load('services.yml');
-        $loader->load('listener.yml');
 
         $rootKey = $this->getAlias();
 

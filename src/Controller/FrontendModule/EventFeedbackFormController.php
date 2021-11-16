@@ -31,7 +31,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 
 /**
- * Class EventFeedbackFormController.
  *
  * @FrontendModule(EventFeedbackFormController::TYPE, category="event_feedback", template="mod_event_feedback_form")
  */
@@ -39,24 +38,16 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_feedback_form';
     public const UUID_TEST = 'b6d3ea2b-d8c4-4aa7-9045-0eb499503e1d';
+    public const MODE_ERROR = 'has_error';
+    public const MODE_FORM = 'show_form';
+    public const MODE_CHECKOUT = 'checkout';
 
     private Security $security;
     private EventFeedbackHelper $eventFeedbackHelper;
-
-    /**
-     * @var PageModel
-     */
-    private $page;
-
-    /**
-     * @var FrontendUser
-     */
-    private $user;
-
-    /**
-     * @var CalendarEventsMemberModel
-     */
-    private $objEventRegistration;
+    private ?PageModel $page = null;
+    private ?FrontendUser $user = null;
+    private ?CalendarEventsMemberModel $objEventRegistration = null;
+    private string $mode;
 
     public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper)
     {
@@ -82,13 +73,22 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
     {
         $this->template = $template;
-        $this->template->hasError = false;
+        $this->mode = self::MODE_FORM;
+        $this->template->mode = $this->mode;
 
-        $uuid = $request->query->get('uuid');
-
+        $uuid = $request->query->get('event-reg-uuid');
         $member = CalendarEventsMemberModel::findOneByUuid($uuid);
 
-        $this->template->error = null;
+        $session = $request->getSession();
+        if ($session->isStarted())
+        {
+            $flashBag = $session->getFlashBag();
+            if($flashBag->has('insert_sac_event_feedback')){
+                if($uuid === $flashBag->get('insert_sac_event_feedback')[0]){
+                    $this->mode  = self::MODE_CHECKOUT;
+                }
+            }
+        }
 
         if (null === $member || $member->sacMemberId !== $this->user->sacMemberId) {
             return $this->returnWithError('Die UUID passt nicht zum eingeloggten Benutzer.');
@@ -106,11 +106,16 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
             return $this->returnWithError('Das zur UUID passende Formular wurde nicht gefunden.');
         }
 
-        if (null !== EventFeedbackModel::findOneByUuid($uuid)) {
+        if ($this->mode !== self::MODE_CHECKOUT && null !== EventFeedbackModel::findOneByUuid($uuid)) {
             return $this->returnWithError('Das Formular ist bereits ausgefüllt worden.');
         }
 
-        $this->template->form = Controller::getForm($form->id);
+        if($this->mode === self::MODE_FORM)
+        {
+            $this->template->form = Controller::getForm($form->id);
+        }
+
+        $this->template->mode = $this->mode;
         $this->template->member = $member->row();
         $this->template->event = $event->row();
 
@@ -119,8 +124,9 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
     private function returnWithError(string $errMsg): Response
     {
-        $this->template->hasError = true;
-        $this->template->error = $errMsg;
+        $this->mode = self::MODE_ERROR;
+        $this->template->mode = $this->mode;
+        $this->template->errorMsg = $errMsg;
 
         return $this->template->getResponse();
     }

@@ -300,7 +300,7 @@ class EventFeedbackHelper
         $arrTokens['participant_email'] = $member->email;
         $arrTokens['participant_uuid'] = $member->uuid;
         $arrTokens['event_name'] = $event->title;
-        $arrTokens['feedback_url'] = sprintf('%s?action=sendEventFeedback&uuid=%s', $page->getAbsoluteUrl(), $member->uuid);
+        $arrTokens['feedback_url'] = sprintf('%s?action=sendEventFeedback&event-reg-uuid=%s', $page->getAbsoluteUrl(), $member->uuid);
 
         return $arrTokens;
     }

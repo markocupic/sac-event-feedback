@@ -1,13 +1,31 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    {% if hasError==true %}
-    <p>{{ error }}</p>
-    {% else %}
-    <h1>Auswertung "{{ event.title }}"</h1>
-        <p>Lieber {{ member.firstname }}</p>
-        <p>Vielen Dank, dass du dir die Zeit nimmst uns deine Rückmeldung mitzuteilen. Dein Feedback hilft uns, unser Angebot stetig den Bedürfnissen unserer Sektionsmitglieder anzupassen.</p>
-    {{ form|raw }}
+    {% if mode=='has_error' %}
+    <p>{{ errorMsg }}</p>
+    {% elseif mode=='show_form' %}
+        <h4>Event-Auswertungsformular zu</h4>
+        <h2>"{{ event.title }}"</h2>
+        <p class="mt-3"><strong>Teilnehmerin/Teilnehmer: </strong>{{ member.firstname }} {{ member.lastname}} [{{ member.sacMemberId }}]</p>
+        <div class="event-feedback-form mt-4 pt-4">
+            {{ form|raw }}
+        </div>
+    {% elseif mode=='checkout' %}
+        <p>
+        {% if member.gender=='female' %}
+            Liebe {{ member.firstname }}<br>
+        {% else %}
+            Lieber {{ member.firstname }}<br>
+        {% endif %}
+            <br>
+            Vielen Dank für dein Feedback. Deine Rückmeldung hilft uns die Angebote stetig zu verbessern und diese den Bedürfnissen der Teilnehmer anzupasen.
+            <br>
+            <br>
+            Hoffentlich bis bald
+            <br>
+            SAC Touren- und Kursadministration
+        </p>
     {% endif %}
+
     {{ parent() }}
 {% endblock %}

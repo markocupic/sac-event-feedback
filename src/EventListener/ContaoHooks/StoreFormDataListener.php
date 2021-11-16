@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
+use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
@@ -22,6 +23,9 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
+/**
+ * @Hook(StoreFormDataListener::TYPE, priority=StoreFormDataListener::PRIORITY)
+ */
 class StoreFormDataListener
 {
     public const TYPE = 'storeFormData';
@@ -39,41 +43,42 @@ class StoreFormDataListener
     }
 
     /**
-     * Add uuid,tstamp,dateAdded and pid to $submittedData.
+     * Add uuid,tstamp,dateAdded and pid to $arrData.
      *
      * @throws \Exception
      */
-    public function augmentData(array $data, Form $form): array
+    public function __invoke(array $arrData, Form $form): array
     {
         // Get logged in user
         $user = $this->security->getUser();
         $request = $this->requestStack->getCurrentRequest();
 
         if (!$form->isSacEventFeedbackForm) {
-            return $data;
+            return $arrData;
         }
 
-        if (!$request->query->has('uuid') || !$user instanceof FrontendUser) {
+        if (!$request->query->has('event-reg-uuid') || !$user instanceof FrontendUser) {
             throw new \Exception('The form is only accessible to logged in contao frontend users.');
         }
 
-        if (null !== EventFeedbackModel::findOneByUuid($request->query->has('uuid'))) {
+        if (null !== EventFeedbackModel::findOneByUuid($request->query->has('event-reg-uuid'))) {
             throw new \Exception('The record with tl_event_feedback.uuid allready exists.');
         }
 
-        $member = $this->eventFeedbackHelper->getFrontendUserFromUuid($request->query->get('uuid'));
+        $member = $this->eventFeedbackHelper->getFrontendUserFromUuid($request->query->get('event-reg-uuid'));
 
         if (null === $member || (int) $member->id !== (int) $user->id) {
-            return $data;
+            return $arrData;
         }
 
-        $uuid = $request->query->get('uuid');
+        $uuid = $request->query->get('event-reg-uuid');
         $event = $this->eventFeedbackHelper->getEventFromUuid($uuid);
 
-        $data['uuid'] = $request->query->get('uuid');
-        $data['pid'] = $event->id;
-        $data['dateAdded'] = time();
-        $data['tstamp'] = time();
+        // Augment $arrData
+        $arrData['uuid'] = $uuid;
+        $arrData['pid'] = $event->id;
+        $arrData['dateAdded'] = time();
+        $arrData['tstamp'] = time();
 
         // Delete no more used reminders
         Database::getInstance()
@@ -81,6 +86,14 @@ class StoreFormDataListener
             ->execute($uuid)
         ;
 
-        return $data;
+        // Store new uuid in the session flash bag
+        $session = $request->getSession();
+
+        if ($session->isStarted()) {
+            $flashBag = $session->getFlashBag();
+            $flashBag->set('insert_sac_event_feedback', $uuid);
+        }
+
+        return $arrData;
     }
 }
