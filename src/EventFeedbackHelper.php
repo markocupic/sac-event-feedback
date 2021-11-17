@@ -23,7 +23,6 @@ use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\PageModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
-use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use NotificationCenter\Model\Notification;
 
@@ -145,18 +144,19 @@ class EventFeedbackHelper
         }
 
         $dateExpiration = $dateStartReminding->modify('+'.$arrConfig['feedback_expiration_time'].' day');
+        $sets = [];
 
         foreach ($arrConfig['send_reminder_after_days'] as $intDays) {
             $dateSendReminder = $dateStartReminding->modify('+'.$intDays.' day');
 
             $objDb = Database::getInstance()
-                ->prepare('SELECT * FROM tl_event_feedback_reminder WHERE uuid=? AND executionDate=?')
+                ->prepare('SELECT id FROM tl_event_feedback_reminder WHERE uuid=? AND executionDate=?')
                 ->execute($eventMember->uuid, $dateStartReminding->getTimestamp())
             ;
 
             // Prevent inserting duplicate records
-            if (!$objDb->numRows) {
-                $set = [
+            if ($objDb->numRows < 1) {
+                $sets[] = [
                     'pid' => $eventMember->id,
                     'uuid' => $eventMember->uuid,
                     'executionDate' => $dateSendReminder->getTimestamp(),
@@ -164,12 +164,18 @@ class EventFeedbackHelper
                     'tstamp' => time(),
                     'feedbackExpirationDate' => $dateExpiration->getTimestamp(),
                 ];
-
-                $objReminder = new EventFeedbackReminderModel();
-                $objReminder->mergeRow($set);
-                $objReminder->save();
             }
         }
+
+        Database::getInstance()->beginTransaction();
+        foreach ($sets as $set) {
+            Database::getInstance()
+                ->prepare('INSERT INTO tl_event_feedback_reminder %s')
+                ->set($set)
+                ->execute()
+            ;
+        }
+        Database::getInstance()->commitTransaction();
     }
 
     public function sendReminder(): void

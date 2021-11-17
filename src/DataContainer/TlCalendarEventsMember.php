@@ -23,11 +23,9 @@ use Markocupic\SacEventFeedback\EventFeedbackHelper;
 
 class TlCalendarEventsMember
 {
-
     private ContaoFramework $framework;
     private EventFeedbackHelper $eventFeedbackHelper;
     private array $onlineFeedbackConfigs;
-
 
     public function __construct(ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper, array $onlineFeedbackConfigs)
     {
