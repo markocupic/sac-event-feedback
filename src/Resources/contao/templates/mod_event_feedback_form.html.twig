@@ -2,29 +2,37 @@
 
 {% block content %}
     {% if mode=='has_error' %}
-    <p>{{ errorMsg }}</p>
+        <h2>Leider ist ein Fehler aufgetreten</h2>
+        <div class="alert alert-warning mt-5 mb-5" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>{{ errorMsg }}</div>
+        </div>
     {% elseif mode=='show_form' %}
-        <h4>Event-Auswertungsformular zu</h4>
-        <h2>"{{ event.title }}"</h2>
+        <h4>Auswertungsformular</h4>
+        <h2 class="sac-ev-fb-event-title">zum Event <span class="fw-bold">"{{ event.title }}"</span></h2>
         <p class="mt-3"><strong>Teilnehmerin/Teilnehmer: </strong>{{ member.firstname }} {{ member.lastname}} [{{ member.sacMemberId }}]</p>
-        <div class="event-feedback-form mt-4 pt-4">
+        <div class="sac-ev-fb-form mt-4 pt-4">
             {{ form|raw }}
+            <script>
+              // Convert integer opion values to its corresponding labels
+              let oFormLabels = {{ formLabels|raw }};
+                Object.keys(oFormLabels).forEach(function(ffName) {
+                  let element = document.querySelector('.sac-ev-fb-summary .value[data-ff-name="' + ffName + '"]');
+                  if (element) {
+                    let i = parseInt(element.innerHTML);
+                    if (!isNaN(i)) {
+                      element.innerHTML = oFormLabels[ffName][i];
+                    }
+                  }
+                });
+            </script>
         </div>
     {% elseif mode=='checkout' %}
-        <p>
-        {% if member.gender=='female' %}
-            Liebe {{ member.firstname }}<br>
-        {% else %}
-            Lieber {{ member.firstname }}<br>
-        {% endif %}
-            <br>
-            Vielen Dank für dein Feedback. Deine Rückmeldung hilft uns die Angebote stetig zu verbessern und diese den Bedürfnissen der Teilnehmer anzupasen.
-            <br>
-            <br>
-            Hoffentlich bis bald
-            <br>
-            SAC Touren- und Kursadministration
-        </p>
+        <h2>Du hast es geschafft</h2>
+        <div class="alert alert-success mt-5 mb-5" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <div>{{ checkoutMsg }}</div>
+        </div>
     {% endif %}
 
     {{ parent() }}

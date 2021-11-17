@@ -23,26 +23,17 @@ use Markocupic\SacEventFeedback\EventFeedbackHelper;
 
 class TlCalendarEventsMember
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
 
-    /**
-     * @var array
-     */
-    private $onlineFeedbackConfigs;
+    private ContaoFramework $framework;
+    private EventFeedbackHelper $eventFeedbackHelper;
+    private array $onlineFeedbackConfigs;
 
-    /**
-     * @var EventFeedbackHelper
-     */
-    private $eventFeedbackHelper;
 
-    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs, EventFeedbackHelper $eventFeedbackHelper)
+    public function __construct(ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper, array $onlineFeedbackConfigs)
     {
         $this->framework = $framework;
-        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
+        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
     /**
@@ -58,8 +49,7 @@ class TlCalendarEventsMember
         }
 
         // Do nothing if member did already a feedback
-        if(null !== $this->eventFeedbackHelper->getEventFeedbackFromUuid($calendarEventsMemberModel->uuid))
-        {
+        if (null !== $this->eventFeedbackHelper->getEventFeedbackFromUuid($calendarEventsMemberModel->uuid)) {
             return $value;
         }
 

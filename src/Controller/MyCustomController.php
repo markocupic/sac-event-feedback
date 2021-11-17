@@ -14,6 +14,10 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\Controller;
 
+use Contao\CoreBundle\Exception\AccessDeniedException;
+use Contao\CoreBundle\Exception\DuplicateAliasException;
+use Contao\CoreBundle\Exception\InvalidResourceException;
+use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

@@ -29,10 +29,7 @@ use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper
 {
-    /**
-     * @var array
-     */
-    private $onlineFeedbackConfigs;
+    private array $onlineFeedbackConfigs;
 
     public function __construct(array $onlineFeedbackConfigs)
     {
@@ -200,15 +197,15 @@ class EventFeedbackHelper
 
                 if (null !== $event) {
                     if (!$this->eventHasValidFeedbackConfiguration($event)) {
-                        throw new \Exception($GLOBALS['TL_LANG']['ERR']['invalidEventFeedbackConfiguration']);
+                        throw new \Exception($GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration']);
                     }
                     $notification = $this->getNotification($event);
                     $arrTokens = $this->setNotificationTokens($member);
 
                     $arrResult = $notification->send($arrTokens, $objPage->language);
-                    if(is_array($arrResult) && !empty($arrResult))
-                    {
-                        $member->countOnlineEventFeedbackNotifications += 1;
+
+                    if (!empty($arrResult) && \is_array($arrResult)) {
+                        ++$member->countOnlineEventFeedbackNotifications;
                         $member->save();
                     }
                 }
@@ -281,11 +278,11 @@ class EventFeedbackHelper
     public function setNotificationTokens(CalendarEventsMemberModel $member): array
     {
         if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
-            throw new \Exception('Could not find the event the member belongs to');
+            throw new \Exception('Could not find the event the member belongs to.');
         }
 
         if (!$this->eventHasValidFeedbackConfiguration($event)) {
-            throw new \Exception($GLOBALS['TL_LANG']['ERR']['invalidEventFeedbackConfiguration']);
+            throw new \Exception($GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration']);
         }
 
         $page = $this->getPage($event);
@@ -300,7 +297,7 @@ class EventFeedbackHelper
         $arrTokens['participant_email'] = $member->email;
         $arrTokens['participant_uuid'] = $member->uuid;
         $arrTokens['event_name'] = $event->title;
-        $arrTokens['feedback_url'] = sprintf('%s?action=sendEventFeedback&event-reg-uuid=%s', $page->getAbsoluteUrl(), $member->uuid);
+        $arrTokens['feedback_url'] = sprintf('%s?event-reg-uuid=%s', $page->getAbsoluteUrl(), $member->uuid);
 
         return $arrTokens;
     }

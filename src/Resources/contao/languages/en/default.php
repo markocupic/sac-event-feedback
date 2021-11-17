@@ -12,13 +12,17 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-/**
- * Miscelaneous
- */
-//$GLOBALS['TL_LANG']['MSC'][''] = '';
+// Errors
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration'] = 'Invalid configuration detected. Please check for a valid form, page, notification and configuration in the events parent calendar.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidUuidForLoggedInUser'] = 'Die mit der url übermittelte UUID konnte nicht deinem Benutzerkonto zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['eventMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Event zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['calendarMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Kalender zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formAllreadyFilledOut'] = 'Zu diesem Event wurde das Auswertungsformular von dir bereits einmal ausgefüllt. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 
-/**
- * Errors
- */
-$GLOBALS['TL_LANG']['ERR']['invalidEventFeedbackConfiguration'] = 'Invalid configuration detected. Please check for a valid form, page, notification and configuration in the events parent calendar.';
-
+// Miscelaneous
+$GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationMale'] = 'Lieber';
+$GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationFemale'] = 'Liebe';
+$GLOBALS['TL_LANG']['MSC']['sacEvFb']['checkoutMsg'] = '%s %s{{br}}Besten Dank für dein Feedback. Deine Rückmeldung hilft uns, unsere Angebote stetig zu verbessern und diese den Bedürfnissen der Teilnehmer anzupassen.{{br}}{{br}}Weiterhin unvergessliche und unfallfreie Touren und hoffentlich bis bald{{br}}{{br}}SAC Touren- und Kursadministration';

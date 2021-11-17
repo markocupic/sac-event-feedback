@@ -24,15 +24,9 @@ use NotificationCenter\Model\Notification;
 
 class TlCalendarEvents
 {
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
 
-    /**
-     * @var array
-     */
-    private $onlineFeedbackConfigs;
+    private ContaoFramework $framework;
+    private array $onlineFeedbackConfigs;
 
     public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs)
     {
