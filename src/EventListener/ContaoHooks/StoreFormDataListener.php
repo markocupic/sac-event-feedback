@@ -75,6 +75,7 @@ class StoreFormDataListener
         $event = $this->eventFeedbackHelper->getEventFromUuid($uuid);
 
         // Augment $arrData
+        $arrData['form'] = $form->id;
         $arrData['uuid'] = $uuid;
         $arrData['pid'] = $event->id;
         $arrData['dateAdded'] = time();

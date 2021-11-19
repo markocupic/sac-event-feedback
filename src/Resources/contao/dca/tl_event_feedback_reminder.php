@@ -28,6 +28,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = array(
 			'keys' => array(
 				'id' => 'primary',
 				'uuid' => 'index',
+                'uuid,executionDate' => 'unique',
 			)
 		),
 	),

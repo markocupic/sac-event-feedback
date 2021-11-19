@@ -8,3 +8,6 @@ services:
     Markocupic\SacEventFeedback\:
         resource: ../../
         exclude: ../../{DependencyInjection,Resources,Model}
+
+    Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController:
+        public: true

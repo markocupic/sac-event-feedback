@@ -17,7 +17,6 @@ use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormContr
 /**
  * Backend modules
  */
-$GLOBALS['TL_LANG']['MOD']['event_feedback'] = 'Event Feedback';
 $GLOBALS['TL_LANG']['MOD']['event_feedback'] = ['Event Feedback', 'Event Feedback'];
 $GLOBALS['TL_LANG']['MOD']['event_feedback_reminder'] = ['Event Feedback Reminder', 'Event Feedback Reminder'];
 

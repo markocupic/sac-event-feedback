@@ -75,7 +75,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 	// Palettes
 	'palettes' => array(
 		'__selector__' => array('addSubpalette'),
-		'default'      => '{first_legend},pid,uuid,dateAdded;{survey_legend},learningEffectIndex,learningGoalsAchievedIndex,theoryAndPracticeBalanceIndex,recommendationIndex,safetyFeelingIndex,durationIndex,improvementOpportunity,highlights,comments,wildcard'
+		'default'      => '{first_legend},pid,form,uuid,dateAdded;{survey_legend},learningEffectIndex,learningGoalsAchievedIndex,theoryAndPracticeBalanceIndex,recommendationIndex,safetyFeelingIndex,durationIndex,improvementOpportunity,highlights,comments,wildcard'
 	),
 	// Fields
 	'fields'   => array(
@@ -100,7 +100,15 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = array(
 			'eval'      => array('rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'),
 			'sql'       => "varchar(10) NOT NULL default ''",
 		),
-		'uuid'                          => array(
+        'form' => array(
+            'inputType'  => 'select',
+            'foreignKey' => 'tl_form.title',
+            'options' => \Contao\FormModel::findAll()->fetchEach('id'),
+            'relation'   => array('type' => 'belongsTo', 'load' => 'lazy'),
+            'eval'       => array('rgxp' => 'natural', 'tl_class' => 'w50 wizard'),
+            'sql'        => "int(10) unsigned NOT NULL default 0",
+        ),
+		'uuid' => array(
 			'inputType' => 'text',
 			'exclude'   => true,
 			'search'    => true,

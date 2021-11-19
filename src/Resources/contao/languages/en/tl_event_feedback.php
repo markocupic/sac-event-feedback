@@ -28,6 +28,7 @@ $GLOBALS['TL_LANG']['tl_event_feedback']['show'] = array("Datensatz mit ID: %s a
 /**
  * Fields
  */
+$GLOBALS['TL_LANG']['tl_event_feedback']['form'] = array("Formular", 'Wählen Sie das Formular aus.');
 $GLOBALS['TL_LANG']['tl_event_feedback']['uuid'] = array("UUID");
 $GLOBALS['TL_LANG']['tl_event_feedback']['dateAdded'] = array("Erstellt am");
 $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndex'] = array("Ich habe etwas gelernt.");

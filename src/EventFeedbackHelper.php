@@ -144,38 +144,33 @@ class EventFeedbackHelper
         }
 
         $dateExpiration = $dateStartReminding->modify('+'.$arrConfig['feedback_expiration_time'].' day');
-        $sets = [];
 
         foreach ($arrConfig['send_reminder_after_days'] as $intDays) {
             $dateSendReminder = $dateStartReminding->modify('+'.$intDays.' day');
 
-            $objDb = Database::getInstance()
-                ->prepare('SELECT id FROM tl_event_feedback_reminder WHERE uuid=? AND executionDate=?')
-                ->execute($eventMember->uuid, $dateStartReminding->getTimestamp())
-            ;
+
+            $set = [
+                'pid' => $eventMember->id,
+                'uuid' => $eventMember->uuid,
+                'executionDate' => $dateSendReminder->getTimestamp(),
+                'dateAdded' => time(),
+                'tstamp' => time(),
+                'feedbackExpirationDate' => $dateExpiration->getTimestamp(),
+            ];
 
             // Prevent inserting duplicate records
-            if ($objDb->numRows < 1) {
-                $sets[] = [
-                    'pid' => $eventMember->id,
-                    'uuid' => $eventMember->uuid,
-                    'executionDate' => $dateSendReminder->getTimestamp(),
-                    'dateAdded' => time(),
-                    'tstamp' => time(),
-                    'feedbackExpirationDate' => $dateExpiration->getTimestamp(),
-                ];
-            }
-        }
-
-        Database::getInstance()->beginTransaction();
-        foreach ($sets as $set) {
+            // See $GLOBALS['TL_DCA']['tl_event_feedback_reminder']['config']['sql']['keys']['uuid,executionDate'] = 'unique'
             Database::getInstance()
-                ->prepare('INSERT INTO tl_event_feedback_reminder %s')
+                ->prepare(
+                    'INSERT INTO tl_event_feedback_reminder %s '.
+                    'ON DUPLICATE KEY UPDATE '.
+                    'dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)'
+                )
                 ->set($set)
                 ->execute()
             ;
+
         }
-        Database::getInstance()->commitTransaction();
     }
 
     public function sendReminder(): void
