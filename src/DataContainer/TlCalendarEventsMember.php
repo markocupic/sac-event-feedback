@@ -20,21 +20,29 @@ use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
+use Markocupic\SacEventFeedback\FeedbackReminder\CreateFeedbackReminderTask;
+use Markocupic\SacEventFeedback\FeedbackReminder\FeedbackReminder;
 
 class TlCalendarEventsMember
 {
     private ContaoFramework $framework;
     private EventFeedbackHelper $eventFeedbackHelper;
+    private FeedbackReminder $feedbackReminder;
+    private CreateFeedbackReminderTask $createFeedbackReminderTask;
     private array $onlineFeedbackConfigs;
 
-    public function __construct(ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper, array $onlineFeedbackConfigs)
+    public function __construct(ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, CreateFeedbackReminderTask $createFeedbackReminderTask, array $onlineFeedbackConfigs)
     {
         $this->framework = $framework;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
+        $this->feedbackReminder = $feedbackReminder;
+        $this->createFeedbackReminderTask = $createFeedbackReminderTask;
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
     /**
+     * tl_calendar_events_member.hasParticipated save callback.
+     *
      * @Callback(table="tl_calendar_events_member", target="fields.hasParticipated.save")
      */
     public function onCompletedEvent(string $value, DataContainer $dc): string
@@ -53,12 +61,12 @@ class TlCalendarEventsMember
 
         // If $value === ''
         if (!$value && !$calendarEventsMemberModel->countOnlineEventFeedbackNotifications) {
-            $this->eventFeedbackHelper->deleteFeedbackReminder($calendarEventsMemberModel);
+            $this->feedbackReminder->deleteFeedbackReminderByEventMember($calendarEventsMemberModel);
         }
 
         // If $value === '1'
         if ($value && !$calendarEventsMemberModel->countOnlineEventFeedbackNotifications) {
-            $this->eventFeedbackHelper->addFeedbackReminder($calendarEventsMemberModel);
+            $this->createFeedbackReminderTask->create($calendarEventsMemberModel);
         }
 
         // Return the processed value

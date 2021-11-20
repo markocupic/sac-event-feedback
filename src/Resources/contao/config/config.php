@@ -27,11 +27,6 @@ $GLOBALS['BE_MOD']['event_feedback'] = array(
 );
 
 $GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['getEventFeedbacks'] = array(EventFeedbackController::class,'getEventFeedbackAction');
-//die(print_r($GLOBALS['BE_MOD']['sac_be_modules'],true));
-// contao/config/config.php
-$GLOBALS['BE_MOD']['content']['themes'] = [
-    'exportTheme' => ['Contao\Theme', 'exportTheme'],
-];
 
 /**
  * Models

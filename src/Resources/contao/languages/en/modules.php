@@ -24,5 +24,5 @@ $GLOBALS['TL_LANG']['MOD']['event_feedback_reminder'] = ['Event Feedback Reminde
  * Frontend modules
  */
 $GLOBALS['TL_LANG']['FMD']['event_feedback'] = 'Event Feedback';
-$GLOBALS['TL_LANG']['FMD'][EventFeedbackFormController::TYPE] = ['Event Feedback Form', 'Event Feedback'];
+$GLOBALS['TL_LANG']['FMD'][EventFeedbackFormController::TYPE] = ['Event Feedback Formular', 'Event Feedback Formular'];
 
