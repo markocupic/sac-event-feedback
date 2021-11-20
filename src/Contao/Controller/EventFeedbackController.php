@@ -132,6 +132,7 @@ class EventFeedbackController
                 return false;
             }
 
+            // Apply same permission rules like "teilnehmerliste"
             $hasPermissionsWatchingFeedbacks = true;
 
             if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {

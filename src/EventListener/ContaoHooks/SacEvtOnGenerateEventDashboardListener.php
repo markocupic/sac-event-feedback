@@ -54,6 +54,7 @@ class SacEvtOnGenerateEventDashboardListener
             return;
         }
 
+        // Apply same permission rules like "teilnehmerliste"
         if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
             return;
         }
