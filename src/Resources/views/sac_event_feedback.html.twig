@@ -1,24 +1,33 @@
-<div class="widget">
-    <h2>Event Auswertung für {{ event.title }}</h2>
+<div class="sefb-container content">
+    <div class="widget">
+        <h2 class="sefb-title-main">Event Auswertung für "{{ event.title }}"</h2>
 
-    <div class="sefb-feedback-count">Anzahl Rückmeldungen: {{ feedback_count }}</div>
+        {% if has_feedbacks == false %}
+            <div class="sefb-block sefb-feedback-text">
+                <p>Zu folgendem Event sind noch keine Rückmeldungen vorhanden.</p>
+            </div>
+        {% else %}
+            <div class="sefb-block sefb-feedback-count">
+                <p>Anzahl Rückmeldungen: {{ feedback_count }}</p>
+            </div>
 
-    {% for feedback in feedbacks.optionFields %}
-        <h2 class="sefb-eval-question">{{ feedback.label }}</h2>
-        <ul>
-        {% for option in feedback.values %}
-            <li>{{ option.count }}x {{ option.label }}</li>
-        {% endfor %}
-        </ul>
-    {% endfor %}
-
-    {% for feedback in feedbacks.textareaFields %}
-        <h2 class="sefb-eval-question">{{ feedback.label }}</h2>
-        <ul>
-            {% for value in feedback.values %}
-                <p>{{ value }}</p>
+            {% for feedback in feedbacks.optionFields %}
+                <h2 class="sefb-block sefb-eval-question">{{ feedback.label }}</h2>
+                <ul class="sefb-block sefb-text-italic">
+                {% for option in feedback.values %}
+                    <li class="sefb-block">{{ option.count }}x {{ option.label }}</li>
+                {% endfor %}
+                </ul>
             {% endfor %}
-        </ul>
-    {% endfor %}
 
+            {% for feedback in feedbacks.textareaFields %}
+                <h2 class="sefb-block sefb-eval-question">{{ feedback.label }}</h2>
+                <ul>
+                    {% for value in feedback.values %}
+                        <p class="sefb-block sefb-text-italic">{{ value }}</p>
+                    {% endfor %}
+                </ul>
+            {% endfor %}
+        {% endif  %}
+    </div>
 </div>

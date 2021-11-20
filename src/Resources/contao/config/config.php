@@ -10,9 +10,9 @@
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
+use Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
-use Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController;
 
 /**
  * Backend modules
@@ -26,7 +26,7 @@ $GLOBALS['BE_MOD']['event_feedback'] = array(
 	),
 );
 
-$GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['getEventFeedbacks'] = array(EventFeedbackController::class,'getEventFeedbackAction');
+$GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedbacks'] = array(EventFeedbackController::class, 'getEventFeedbackAction');
 
 /**
  * Models
@@ -47,3 +47,7 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['sac_event_tool']['event_fe
 	'email_text'           => array('event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'),
 	'email_html'           => array('event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'),
 );
+
+if(TL_MODE === 'BE'){
+    $GLOBALS['TL_CSS'][] = 'bundles/markocupicsaceventfeedback/css/styles.css';
+}

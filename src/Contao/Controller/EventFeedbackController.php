@@ -21,6 +21,7 @@ use Contao\CoreBundle\Exception\InvalidResourceException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
+use Contao\EventReleaseLevelPolicyModel;
 use Contao\FormFieldModel;
 use Contao\FormModel;
 use Contao\Input;
@@ -46,15 +47,15 @@ class EventFeedbackController
 
     public function getEventFeedbackAction(DataContainer $dc): Response
     {
-        if (!$this->isAllowed()) {
-            throw new AccessDeniedException('User is not allowed to access the backend module "sac_calendar_events_tool".');
-        }
-
         $id = Input::get('id');
         $event = CalendarEventsModel::findByPk($id);
 
         if (null === $event) {
             throw new InvalidResourceException(sprintf('Event with id %s not found.', $id));
+        }
+
+        if (!$this->isAllowed($event)) {
+            throw new AccessDeniedException('User is not allowed to access the backend module "sac_calendar_events_tool".');
         }
 
         $this->arrFeedback['optionFields'] = [];
@@ -72,11 +73,10 @@ class EventFeedbackController
                 continue;
             }
 
-            $intFbCount++;
+            ++$intFbCount;
 
             while ($formFields->next()) {
-                if($formFields->invisible)
-                {
+                if ($formFields->invisible) {
                     continue;
                 }
 
@@ -95,20 +95,15 @@ class EventFeedbackController
             // Add values to the data array
             $arrFeedback = $feedback->row();
 
-            foreach ($arrFeedback as $key => $value)
-            {
-                if(!in_array($key, $arrFormFields))
-                {
+            foreach ($arrFeedback as $key => $value) {
+                if (!\in_array($key, $arrFormFields, true)) {
                     continue;
                 }
 
-                if(trim((string) $value) !== '')
-                {
-                    if(is_numeric($value) && isset($this->arrFeedback['optionFields'][$key]['values'][$value]))
-                    {
-                        $this->arrFeedback['optionFields'][$key]['values'][$value]['count']++;
-                    }
-                    elseif(isset($this->arrFeedback['textareaFields'][$key])){
+                if ('' !== trim((string) $value)) {
+                    if (is_numeric($value) && isset($this->arrFeedback['optionFields'][$key]['values'][$value])) {
+                        ++$this->arrFeedback['optionFields'][$key]['values'][$value]['count'];
+                    } elseif (isset($this->arrFeedback['textareaFields'][$key])) {
                         $this->arrFeedback['textareaFields'][$key]['values'][] = $value;
                     }
                 }
@@ -119,23 +114,36 @@ class EventFeedbackController
             '@MarkocupicSacEventFeedback/sac_event_feedback.html.twig',
             [
                 'event' => $event->row(),
+                'has_feedbacks' => $intFbCount > 0 ? true : false,
                 'feedbacks' => $this->arrFeedback,
                 'feedback_count' => $intFbCount,
             ]
         ));
     }
 
-    private function isAllowed(): bool
+    private function isAllowed(CalendarEventsModel $event): bool
     {
         $user = $this->security->getUser();
 
         if ($user instanceof BackendUser) {
-            if (
-                $this->security->isGranted(
+            $user = $this->security->getUser();
+
+            if (!$user instanceof BackendUser) {
+                return false;
+            }
+
+            $hasPermissionsWatchingFeedbacks = true;
+
+            if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {
+                $hasPermissionsWatchingFeedbacks = false;
+            }
+
+            $canAccessModule = $this->security->isGranted(
                 ContaoCorePermissions::USER_CAN_ACCESS_MODULE,
                 'sac_calendar_events_tool'
-            )
-            ) {
+            );
+
+            if ($canAccessModule && $hasPermissionsWatchingFeedbacks) {
                 return true;
             }
         }

@@ -1,1 +1,26 @@
 /** Still empty stylesheet **/
+.sefb-container p, .sefb-container li {
+    line-height: 1.5;
+}
+
+.sefb-block {
+    display: block;
+}
+
+.sefb-title-main {
+    margin: 20px 0;
+    font-size: 22px !important;
+    font-weight: bold;
+}
+
+.sefb-feedback-text, .sefb-eval-question {
+    margin: 24px 0 10px 0 !important;
+}
+
+.sefb-eval-question {
+    font-weight: bold;
+}
+
+.sefb-text-italic {
+    font-style: italic;
+}

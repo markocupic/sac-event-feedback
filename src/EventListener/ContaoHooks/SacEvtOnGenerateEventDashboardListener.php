@@ -18,10 +18,12 @@ use Contao\BackendUser;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\EventReleaseLevelPolicyModel;
 use Contao\Input;
 use Contao\System;
 use Knp\Menu\MenuItem;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Symfony\Component\Security\Core\Security;
 
 /**
  * @Hook(SacEvtOnGenerateEventDashboardListener::TYPE, priority=50)
@@ -29,35 +31,39 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 class SacEvtOnGenerateEventDashboardListener
 {
     public const TYPE = 'sacEvtOnGenerateEventDashboard';
-    /**
-     * @var ContaoFramework
-     */
-    private $framework;
 
-    /**
-     * SacEvtOnGenerateEventDashboardListener constructor.
-     */
-    public function __construct(ContaoFramework $framework)
+    private ContaoFramework $framework;
+    private Security $security;
+
+    public function __construct(ContaoFramework $framework, Security $security)
     {
         $this->framework = $framework;
+        $this->security = $security;
     }
 
     public function __invoke(MenuItem $menu, CalendarEventsModel $objEvent): void
     {
-        $feedbacks = EventFeedbackModel::findByPid($objEvent->id);
-
-        if (null === $feedbacks) {
+        if(null === ($feedbacks = EventFeedbackModel::findByPid($objEvent->id)))
+        {
             return;
         }
-        
+
+        $user = $this->security->getUser();
+
+        if (!$user instanceof BackendUser) {
+            return;
+        }
+
+        if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
+            return;
+        }
+
         $container = System::getContainer();
         $requestToken = $container
             ->get('contao.csrf.token_manager')
             ->getToken($container->getParameter('contao.csrf_token_name'))
             ->getValue()
         ;
-
-        $objCalendar = $objEvent->getRelated('pid');
 
         // Get the refererId
         $refererId = System::getContainer()
@@ -70,7 +76,7 @@ class SacEvtOnGenerateEventDashboardListener
         $module = Input::get('do');
 
         // "Download event feedbacks" button
-        $eventListHref = sprintf('contao/main.php?do=%s&table=tl_calendar_events&key=getEventFeedbacks&id=%s&rt=%s&ref=%s', $module, $objEvent->id, $requestToken, $refererId);
+        $eventListHref = sprintf('contao/main.php?do=%s&key=showEventFeedbacks&id=%s&rt=%s&ref=%s', $module, $objEvent->id, $requestToken, $refererId);
         $menu->addChild('Event Auswertungen', ['uri' => $eventListHref])
             ->setLinkAttribute('role', 'button')
             ->setLinkAttribute('class', 'tl_submit')
