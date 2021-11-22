@@ -32,7 +32,7 @@ class ExecuteEventReminderTasks
 
     public function __invoke(): void
     {
-        $tstampToday = strtotime(Date::parse('Y-m-d'));
+        $tstampToday = time();
 
         $this->sendFeedbackReminder->sendRemindersByExecutionDate($tstampToday, 20);
     }

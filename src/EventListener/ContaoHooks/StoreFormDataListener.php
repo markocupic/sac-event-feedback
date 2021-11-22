@@ -14,12 +14,15 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
+use Contao\CalendarEventsMemberModel;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
+use Contao\System;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
@@ -34,12 +37,14 @@ class StoreFormDataListener
     private Security $security;
     private EventFeedbackHelper $eventFeedbackHelper;
     private RequestStack $requestStack;
+    private string $secret;
 
-    public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack)
+    public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack, string $secret)
     {
         $this->security = $security;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->requestStack = $requestStack;
+        $this->secret = $secret;
     }
 
     /**
@@ -57,26 +62,37 @@ class StoreFormDataListener
             return $arrData;
         }
 
-        if (!$request->query->has('event-reg-uuid') || !$user instanceof FrontendUser) {
+        if (!$request->query->has('token') || !$user instanceof FrontendUser) {
             throw new \Exception('The form is only accessible to logged in contao frontend users.');
         }
 
-        if (null !== EventFeedbackModel::findOneByUuid($request->query->has('event-reg-uuid'))) {
+        $token = $request->query->get('token');
+
+        if (!Token::validate($token, $this->secret)) {
+            throw new \Exception('Invalid token.');
+        }
+
+        $arrPayload = Token::getPayload($token, $this->secret);
+
+        if (null === ($objRegistration = CalendarEventsMemberModel::findByPk($arrPayload['user_id']))) {
+            throw new \Exception('Could not find a registration that matches to the token.');
+        }
+
+        if (null !== EventFeedbackModel::findOneByUuid($objRegistration->uuid)) {
             throw new \Exception('The record with tl_event_feedback.uuid allready exists.');
         }
 
-        $member = $this->eventFeedbackHelper->getFrontendUserFromUuid($request->query->get('event-reg-uuid'));
+        $member = $this->eventFeedbackHelper->getFrontendUserFromUuid($objRegistration->uuid);
 
         if (null === $member || (int) $member->id !== (int) $user->id) {
             return $arrData;
         }
 
-        $uuid = $request->query->get('event-reg-uuid');
-        $event = $this->eventFeedbackHelper->getEventFromUuid($uuid);
+        $event = $this->eventFeedbackHelper->getEventFromUuid($objRegistration->uuid);
 
         // Augment $arrData
         $arrData['form'] = $form->id;
-        $arrData['uuid'] = $uuid;
+        $arrData['uuid'] = $objRegistration->uuid;
         $arrData['pid'] = $event->id;
         $arrData['dateAdded'] = time();
         $arrData['tstamp'] = time();
@@ -84,7 +100,7 @@ class StoreFormDataListener
         // Delete no more used reminders
         Database::getInstance()
             ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid=?')
-            ->execute($uuid)
+            ->execute($objRegistration->uuid)
         ;
 
         // Store new uuid in the session flash bag
@@ -92,7 +108,7 @@ class StoreFormDataListener
 
         if ($session->isStarted()) {
             $flashBag = $session->getFlashBag();
-            $flashBag->set('insert_sac_event_feedback', $uuid);
+            $flashBag->set('insert_sac_event_feedback', $objRegistration->uuid);
         }
 
         return $arrData;

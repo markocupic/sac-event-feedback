@@ -24,7 +24,6 @@ use NotificationCenter\Model\Notification;
 
 class TlCalendarEvents
 {
-
     private ContaoFramework $framework;
     private array $onlineFeedbackConfigs;
 

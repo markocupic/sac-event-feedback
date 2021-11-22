@@ -4,6 +4,7 @@ services:
         autoconfigure: true
         bind:
             $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
+            $secret: '%markocupic_sac_event_feedback.secret%'
 
     Markocupic\SacEventFeedback\:
         resource: ../../

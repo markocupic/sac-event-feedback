@@ -21,7 +21,6 @@ use Contao\DataContainer;
 
 class TlCalendar
 {
-
     private ContaoFramework $framework;
     private array $onlineFeedbackConfigs;
 

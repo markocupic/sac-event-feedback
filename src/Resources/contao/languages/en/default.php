@@ -21,6 +21,8 @@ $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formAllreadyFilledOut'] = 'Zu diesem Event wurde das Auswertungsformular von dir bereits einmal ausgefüllt. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['tokenExpired'] = 'Das Sicherheitstoken ist abgelaufen. Für diesen Event kann kein Feedback mehr abgegeben werden.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidToken'] = 'Ungültiges Sicherheitstoken.';
 
 // Miscelaneous
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationMale'] = 'Lieber';

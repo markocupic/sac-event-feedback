@@ -33,7 +33,7 @@ Der Tourenleiter kann die gesammelten Auswertungen anonymisiert im Backend (bei 
 
 # Installation
 - `composer require markocupic/sac-event-feedback`
-- Abhängigkeiten: contao/contao-core-bundle, terminal42/notification_center, markocupic/sac-event-tool-bundle
+- Abhängigkeiten: contao/contao-core-bundle, rbdwllr/reallysimplejwt, markocupic/sac-event-tool-bundle
 
 # Inbetriebnahme
 - Erstellung eines Formulars im Contao Backend. 
@@ -55,6 +55,7 @@ Mit dem Bundle wird folgende Default-Konfiguration mitgeliefert:
 
 ```
 markocupic_sac_event_feedback:
+  secret: ''
   configs:
     # Default configuration
     default:
@@ -67,5 +68,16 @@ markocupic_sac_event_feedback:
       send_reminder_after_days: [1,14,28] #days
 ```
 
-In config/config.yml kann diese angepasst oder es können weitere Konfigurationen erstellt werden, 
+In config/config.yml muss ein secret abgelegt werden, welches aus mindestens 
+ 12 Zeichen, Gross- und Kleinbuchstaben, Zahlen und einem Sonderzeichen bestehen muss.
+
+```
+markocupic_sac_event_feedback:
+    # The secret should contain a number, a upper and a lowercase letter,
+    # and a special character *&!@%^#$. It should be at least 12 characters in
+    secret: '&fsdrefsR24ssfUTedsd%'
+```
+
+Die Konfiguration (config key) kann zudem angepasst werden 
+ oder es können weitere Konfigurationen erstellt werden, 
  welche dann im Event Container ausgewählt werden können.

@@ -24,7 +24,7 @@ PaletteManipulator::create()
 	->addField(
 		'countOnlineEventFeedbackNotifications',
 		'onlineFeedback_legend',
-        PaletteManipulator::POSITION_APPEND
+		PaletteManipulator::POSITION_APPEND
 	)
 	->applyToPalette(
 		'default',

@@ -29,6 +29,7 @@ use Contao\StringUtil;
 use Contao\Template;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
@@ -47,16 +48,18 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     private Security $security;
     private TranslatorInterface $translator;
     private EventFeedbackHelper $eventFeedbackHelper;
+    private string $secret;
     private ?PageModel $page = null;
     private ?FrontendUser $user = null;
     private ?CalendarEventsMemberModel $objEventRegistration = null;
     private string $mode;
 
-    public function __construct(Security $security, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper)
+    public function __construct(Security $security, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
     {
         $this->security = $security;
         $this->translator = $translator;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
+        $this->secret = $secret;
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
@@ -80,15 +83,31 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         $this->mode = self::MODE_FORM;
         $this->template->mode = $this->mode;
 
-        $uuid = $request->query->get('event-reg-uuid');
-        $member = CalendarEventsMemberModel::findOneByUuid($uuid);
+        $token = $request->query->get('token', '');
+
+        if (!$token || !Token::validate($token, $this->secret)) {
+            if (!Token::validateExpiration($token, $this->secret)) {
+                return $this->returnWithError($this->translator->trans('ERR.sacEvFb.tokenExpired', [], 'contao_default'));
+            }
+
+            return $this->returnWithError($this->translator->trans('ERR.sacEvFb.invalidToken', [], 'contao_default'));
+        }
+
+        // Get the user id (tl_calendar_events_member.id) from jwt
+        $arrPayload = Token::getPayload($token, $this->secret);
+        $member = CalendarEventsMemberModel::findByPk($arrPayload['user_id']);
+
+        if (null === $member) {
+            return $this->returnWithError($this->translator->trans('ERR.sacEvFb.eventRegistrationNotFound', [], 'contao_default'));
+        }
+
         $session = $request->getSession();
 
         if ($session->isStarted()) {
             $flashBag = $session->getFlashBag();
 
             if ($flashBag->has('insert_sac_event_feedback')) {
-                if ($uuid === $flashBag->get('insert_sac_event_feedback')[0]) {
+                if ($member->uuid === $flashBag->get('insert_sac_event_feedback')[0]) {
                     $this->mode = self::MODE_CHECKOUT;
                     $salutation = $this->translator->trans('MSC.sacEvFb.salutation'.ucfirst($member->gender), [], 'contao_default');
                     $this->template->salutation = $salutation;
@@ -97,25 +116,32 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
             }
         }
 
+        /* Check for valid member */
         if (null === $member || $member->sacMemberId !== $this->user->sacMemberId) {
             return $this->returnWithError($this->translator->trans('ERR.sacEvFb.invalidUuidForLoggedInUser', [], 'contao_default'));
         }
 
+        /* Check if event exists */
         if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
             return $this->returnWithError($this->translator->trans('ERR.sacEvFb.eventMatchingUuidNotFound', [], 'contao_default'));
         }
 
+        /* Check if calendar exists */
         if (null === CalendarModel::findByPk($event->pid)) {
             return $this->returnWithError($this->translator->trans('ERR.sacEvFb.calendarMatchingUuidNotFound', [], 'contao_default'));
         }
 
+        /* Check if form exists */
         if (null === ($form = $this->eventFeedbackHelper->getForm($event))) {
             return $this->returnWithError($this->translator->trans('ERR.sacEvFb.formMatchingUuidNotFound', [], 'contao_default'));
         }
 
-        if (self::MODE_CHECKOUT !== $this->mode && null !== EventFeedbackModel::findOneByUuid($uuid)) {
+        /* Return if form has been already filled out */
+        if (self::MODE_CHECKOUT !== $this->mode && null !== EventFeedbackModel::findOneByUuid($member->uuid)) {
             return $this->returnWithError($this->translator->trans('ERR.sacEvFb.formAllreadyFilledOut', [], 'contao_default'));
         }
+
+        //hash_hmac(‘sha256′, base64_encode($header).’.’.base64_encode($payload), $this->secret);
 
         if (self::MODE_FORM === $this->mode) {
             $this->template->form = Controller::getForm($form->id);

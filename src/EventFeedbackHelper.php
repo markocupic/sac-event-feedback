@@ -21,7 +21,6 @@ use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\PageModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
-use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper
@@ -157,5 +156,4 @@ class EventFeedbackHelper
 
         return $this->onlineFeedbackConfigs[$calendar->onlineFeedbackConfiguration];
     }
-
 }

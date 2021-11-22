@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
                 ->children()
+                ->scalarNode('secret')->cannotBeEmpty()->end()
                 ->arrayNode('configs')
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()
@@ -36,6 +37,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('send_reminder_after_days')
                                 ->integerPrototype()->end()
                             ->end()
+                            ->integerNode('send_reminder_execution_delay')->end()
                         ->end()
                     ->end()
                 ->end()
@@ -45,3 +47,5 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 }
+
+

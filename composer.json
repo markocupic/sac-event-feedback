@@ -21,7 +21,10 @@
         "source": "https://github.com/markocupic/sac-event-feedback"
     },
     "require": {
-        "contao/core-bundle": "^4.12"
+        "contao/core-bundle": "^4.12",
+        "contao/sac-event-tool-bundle": "*",
+        "rbdwllr/reallysimplejwt": "^4.0"
+
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3",

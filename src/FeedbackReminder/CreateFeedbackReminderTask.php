@@ -48,27 +48,27 @@ class CreateFeedbackReminderTask
             throw new \Exception('Key "feedback_expiration_time" should not be empty!');
         }
 
-        $dateToday = new \DateTimeImmutable(Date::parse('Y-m-d'));
+        $datimToday = new \DateTimeImmutable(Date::parse('Y-m-d H:i:s', time()));
         $dateEventEnd = new \DateTimeImmutable(Date::parse('Y-m-d', $event->endDate));
 
-        $dateStartReminding = $dateToday;
+        $datimStartReminding = $datimToday;
         // Prevent sending reminders before the event end date is reached
-        if ($dateToday->getTimestamp() <= $dateEventEnd->getTimestamp()) {
-            $dateStartReminding = $dateEventEnd;
+        if ($datimToday->getTimestamp() <= $dateEventEnd->getTimestamp()) {
+            $datimStartReminding = $dateEventEnd;
         }
 
-        $dateExpiration = $dateStartReminding->modify('+'.$arrConfig['feedback_expiration_time'].' day');
+        $datimExpiration = $datimStartReminding->modify('+'.$arrConfig['feedback_expiration_time'].' day');
 
         foreach ($arrConfig['send_reminder_after_days'] as $intDays) {
-            $dateSendReminder = $dateStartReminding->modify('+'.$intDays.' day');
+            $datimSendReminder = $datimStartReminding->modify('+'.$intDays.' day');
 
             $set = [
                 'pid' => $eventMember->id,
                 'uuid' => $eventMember->uuid,
-                'executionDate' => $dateSendReminder->getTimestamp(),
+                'executionDate' => $datimSendReminder->getTimestamp(),
                 'dateAdded' => time(),
                 'tstamp' => time(),
-                'feedbackExpirationDate' => $dateExpiration->getTimestamp(),
+                'expiration' => $datimExpiration->getTimestamp(),
             ];
 
             // Prevent inserting duplicate records

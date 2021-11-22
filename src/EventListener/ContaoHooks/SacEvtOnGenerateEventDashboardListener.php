@@ -43,8 +43,7 @@ class SacEvtOnGenerateEventDashboardListener
 
     public function __invoke(MenuItem $menu, CalendarEventsModel $objEvent): void
     {
-        if(null === ($feedbacks = EventFeedbackModel::findByPid($objEvent->id)))
-        {
+        if (null === EventFeedbackModel::findByPid($objEvent->id)) {
             return;
         }
 
