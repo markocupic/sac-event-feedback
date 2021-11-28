@@ -54,10 +54,9 @@ class PluginTest extends ContaoTestCase
         /** @var array $bundles */
         $bundles = $plugin->getBundles(new DelegatingParser());
 
-        $this->assertCount(2, $bundles);
+        $this->assertCount(1, $bundles);
         $this->assertInstanceOf(BundleConfig::class, $bundles[0]);
         $this->assertSame(MarkocupicSacEventFeedback::class, $bundles[0]->getName());
-        $this->assertSame([ContaoCoreBundle::class], $bundles[0]->getLoadAfter());
-        $this->assertSame([MarkocupicSacEventToolBundle::class], $bundles[1]->getLoadAfter());
+        $this->assertSame([ContaoCoreBundle::class,MarkocupicSacEventToolBundle::class], $bundles[0]->getLoadAfter());
     }
 }
