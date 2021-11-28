@@ -50,6 +50,8 @@ class MarkocupicSacEventFeedbackExtension extends Extension
         $loader->load('services.yml');
 
         $rootKey = $this->getAlias();
+
+        $container->setParameter($rootKey.'.delete_feedbacks_after', $config['secret']);
         $container->setParameter($rootKey.'.secret', $config['secret']);
         $container->setParameter($rootKey.'.configs', $config['configs']);
     }

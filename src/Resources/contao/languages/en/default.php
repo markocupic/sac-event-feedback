@@ -14,17 +14,17 @@ declare(strict_types=1);
 
 // Errors
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration'] = 'Invalid configuration detected. Please check for a valid form, page, notification and configuration in the events parent calendar.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidUuidForLoggedInUser'] = 'Die mit der url übermittelte UUID konnte nicht deinem Benutzerkonto zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['eventMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Event zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['calendarMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Kalender zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formAllreadyFilledOut'] = 'Zu diesem Event wurde das Auswertungsformular von dir bereits einmal ausgefüllt. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Die mit der url übermittelte UUID konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidUuidForLoggedInUser'] = 'Das mit der url übermittelte Sicherheitstoken konnte nicht deinem Mitgliederkonto zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['eventMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Event zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['calendarMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Kalender zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['tokenExpired'] = 'Das Sicherheitstoken ist abgelaufen. Für diesen Event kann kein Feedback mehr abgegeben werden.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidToken'] = 'Ungültiges Sicherheitstoken.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidToken'] = 'Die Validierung deines Sicherheitstokens hat fehlgeschlagen.';
 
 // Miscelaneous
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationMale'] = 'Lieber';
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationFemale'] = 'Liebe';
+$GLOBALS['TL_LANG']['MSC']['sacEvFb']['formAlreadyFilledOutMsg'] = '%s %s{{br}}Wir haben von dir bereits eine Bewertung zum Event "%s" erhalten. Vielen Dank für dein Feedback. {{br}}{{br}}Wir wünschen dir weiterhin unvergessliche und unfallfreie Touren und hoffentlich bis bald{{br}}{{br}}SAC Touren- und Kursadministration';
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['checkoutMsg'] = '%s %s{{br}}Besten Dank für dein Feedback. Deine Rückmeldung hilft uns, unsere Angebote stetig zu verbessern und diese den Bedürfnissen der Teilnehmer anzupassen.{{br}}{{br}}Weiterhin unvergessliche und unfallfreie Touren und hoffentlich bis bald{{br}}{{br}}SAC Touren- und Kursadministration';

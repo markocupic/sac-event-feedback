@@ -1,17 +1,21 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    {% if mode=='has_error' %}
+    {% if mode=='has_warning' %}
         <h2>Leider ist ein Fehler aufgetreten</h2>
         <div class="alert alert-warning mt-5 mb-5" role="alert">
             <i class="fas fa-exclamation-circle"></i>
-            <div>{{ errorMsg }}</div>
+            <div>{{ warningMsg }}</div>
+        </div>
+    {% elseif mode=='form_already_filled_out' %}
+        {{ details|raw }}
+        <div class="alert alert-warning mt-5 mb-5" role="alert">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>{{ formAlreadyFilledOutMsg }}</div>
         </div>
     {% elseif mode=='show_form' %}
-        <h4>Auswertungsformular</h4>
-        <h2 class="sac-ev-fb-event-title">zum Event <span class="fw-bold">"{{ event.title }}"</span></h2>
-        <p class="mt-3"><strong>Teilnehmerin/Teilnehmer: </strong>{{ member.firstname }} {{ member.lastname}} [{{ member.sacMemberId }}]</p>
-        <div class="sac-ev-fb-form mt-4 pt-4">
+        {{ details|raw }}
+        <div class="sac-ev-fb-form mt-5 mb-5">
             {{ form|raw }}
             <script>
               // Convert integer opion values to its corresponding labels
@@ -28,8 +32,8 @@
             </script>
         </div>
     {% elseif mode=='checkout' %}
-        <h2>Du hast es geschafft</h2>
-        <div class="alert alert-success mt-5 mb-5" role="alert">
+        {{ details|raw }}
+        <div class="alert alert-success mt-4 mb-5" role="alert">
             <i class="fas fa-check-circle"></i>
             <div>{{ checkoutMsg }}</div>
         </div>

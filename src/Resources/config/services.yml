@@ -4,11 +4,20 @@ services:
         autoconfigure: true
         bind:
             $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
+            $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
             $secret: '%markocupic_sac_event_feedback.secret%'
 
     Markocupic\SacEventFeedback\:
         resource: ../../
         exclude: ../../{DependencyInjection,Resources,Model}
 
+    # Controller
     Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController:
         public: true
+
+    # Add a session bag
+    Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag:
+        arguments:
+            - '_markocupic_sac_event_feedback_attributes'
+        calls:
+            - [ setName, [ 'markocupic_sac_event_feedback' ] ]

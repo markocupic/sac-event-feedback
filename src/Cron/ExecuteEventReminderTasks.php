@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Cron;
 
 use Contao\CoreBundle\ServiceAnnotation\CronJob;
-use Contao\Date;
 use Markocupic\SacEventFeedback\FeedbackReminder\SendFeedbackReminder;
 
 /**

@@ -19,7 +19,7 @@ use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
-use Contao\System;
+use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use ReallySimpleJWT\Token;
@@ -103,12 +103,12 @@ class StoreFormDataListener
             ->execute($objRegistration->uuid)
         ;
 
-        // Store new uuid in the session flash bag
+        // Store new uuid in the session
         $session = $request->getSession();
 
         if ($session->isStarted()) {
-            $flashBag = $session->getFlashBag();
-            $flashBag->set('insert_sac_event_feedback', $objRegistration->uuid);
+            $bag = $session->getBag(EventFeedbackFormController::SESSION_BAG_NAME);
+            $bag->set('sac_event_feedback_last_insert', $objRegistration->uuid);
         }
 
         return $arrData;

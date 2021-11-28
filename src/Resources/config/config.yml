@@ -3,6 +3,8 @@ markocupic_sac_event_feedback:
   # The secret should contain a number, a upper and a lowercase letter,
   # and a special character *&!@%^#$. It should be at least 12 characters in
   secret: ''
+  # Delete feedbacks after 720 days
+  delete_feedbacks_after: 720
   configs:
     # Default configuration
     default:

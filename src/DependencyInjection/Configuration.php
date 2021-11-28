@@ -27,6 +27,7 @@ class Configuration implements ConfigurationInterface
 
         $treeBuilder->getRootNode()
                 ->children()
+                ->scalarNode('delete_feedbacks_after')->cannotBeEmpty()->end()
                 ->scalarNode('secret')->cannotBeEmpty()->end()
                 ->arrayNode('configs')
                     ->useAttributeAsKey('name')
@@ -47,5 +48,3 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 }
-
-

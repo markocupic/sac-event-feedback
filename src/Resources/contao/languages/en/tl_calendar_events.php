@@ -14,4 +14,4 @@
 $GLOBALS['TL_LANG']['tl_calendar_events']['sac_event_feedback_legend'] = 'SAC Event-Auswertungs-Formular-Einstellungen';
 
 // Fields
-$GLOBALS['TL_LANG']['tl_calendar_events']['enableOnlineEventFeedback'] = array('Online Auswertung aktivieren', 'Lassen Sie die Teilnehmer den Event via Onlineformular auswerten.');
+$GLOBALS['TL_LANG']['tl_calendar_events']['enableOnlineEventFeedback'] = array('Online Auswertung aktivieren', 'Teilnehmer erhalten eine E-Mail mit Link zum Auswertungsformular nachdem ihre Teilnahme am Event bestätigt wurde.');
