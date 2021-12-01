@@ -57,7 +57,7 @@ class Feedback
         return $arrData['textareaFields'];
     }
 
-    public function getOptions(bool $blnUncached = true): array
+    public function getDropdowns(bool $blnUncached = true): array
     {
         $arrData = $this->get($blnUncached);
 

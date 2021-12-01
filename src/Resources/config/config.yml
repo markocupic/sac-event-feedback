@@ -5,6 +5,9 @@ markocupic_sac_event_feedback:
   secret: ''
   # Delete feedbacks after 720 days
   delete_feedbacks_after: 720
+  # Path to docx template
+  docx_template: 'vendor/markocupic/sac-event-feedback/src/Resources/docx/event_feedback.docx'
+  cloudconvert_api_key: ''
   configs:
     # Default configuration
     default:

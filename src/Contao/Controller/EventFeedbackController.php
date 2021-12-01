@@ -21,9 +21,13 @@ use Contao\CoreBundle\Exception\InvalidResourceException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
+use Contao\Date;
 use Contao\EventReleaseLevelPolicyModel;
 use Contao\Input;
+use Haste\Util\Url;
+use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
+use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment as TwigEnvironment;
@@ -33,13 +37,17 @@ class EventFeedbackController
     private ContaoFramework $framework;
     private Security $security;
     private TwigEnvironment $twig;
+    private string $docxTemplate;
+    private string $cloudconvertApiKey;
     private array $arrFeedback = [];
 
-    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig)
+    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, string $docxTemplate, string $cloudconvertApiKey)
     {
         $this->framework = $framework;
         $this->security = $security;
         $this->twig = $twig;
+        $this->docxTemplate = $docxTemplate;
+        $this->cloudconvertApiKey = $cloudconvertApiKey;
     }
 
     public function getEventFeedbackAction(DataContainer $dc): Response
@@ -64,8 +72,72 @@ class EventFeedbackController
                 'has_feedbacks' => $objFeedback->countFeedbacks(false) > 0 ? true : false,
                 'feedbacks' => $objFeedback->getDataAll(false),
                 'feedback_count' => $objFeedback->countFeedbacks(false),
+                'pdf_link' => '/'.Url::addQueryString('key=showEventFeedbacksAsPdf'),
             ]
         ));
+    }
+
+    public function getEventFeedbackAsPdfAction(DataContainer $dc): Response
+    {
+        $id = Input::get('id');
+        $event = CalendarEventsModel::findByPk($id);
+
+        if (null === $event) {
+            throw new InvalidResourceException(sprintf('Event with id %s not found.', $id));
+        }
+
+        if (!$this->isAllowed($event)) {
+            throw new AccessDeniedException('User is not allowed to access the backend module "sac_calendar_events_tool".');
+        }
+
+        $objFeedback = new Feedback($event);
+
+        // Create phpword instance
+        $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
+
+        $objPhpWord = new MsWordTemplateProcessor($this->docxTemplate, $targetSrc);
+        $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode((string) $event->title)));
+        $objPhpWord->replace('event_type', $event->eventType);
+        $objPhpWord->replace('event_id', $event->id);
+        $objPhpWord->replace('event_instructor', CalendarEventsHelper::getMainInstructorName($event));
+        $arrEventDates = array_map(static fn ($tstamp) => Date::parse('d.m.Y', $tstamp), CalendarEventsHelper::getEventTimestamps($event));
+        $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
+        $objPhpWord->replace('date', Date::parse('d.m.Y'));
+
+        // Dropdowns
+        foreach ($objFeedback->getDropdowns() as $arrDropdown) {
+            $objPhpWord->createClone('dropdown_label');
+            $label = htmlspecialchars(html_entity_decode((string) $arrDropdown['label']));
+            $objPhpWord->addToClone('dropdown_label', 'dropdown_label', $label, ['multiline' => true]);
+
+            $dropdownText = '';
+
+            foreach ($arrDropdown['values'] as $value) {
+                $dropdownText .= sprintf('%sx %s'."\r\n", $value['count'], $value['label']);
+            }
+
+            $dropdownText = htmlspecialchars(html_entity_decode((string) $dropdownText));
+            $objPhpWord->addToClone('dropdown_label', 'dropdown_feedback', $dropdownText, ['multiline' => true]);
+        }
+
+        // Textareas
+        foreach ($objFeedback->getTextareas() as $arrFeedback) {
+            $objPhpWord->createClone('text_label');
+            $label = htmlspecialchars(html_entity_decode((string) $arrFeedback['label']));
+
+            $objPhpWord->addToClone('text_label', 'text_label', $label, ['multiline' => true]);
+            $text = implode("\r\n\r\n", $arrFeedback['values']);
+            $text = htmlspecialchars(html_entity_decode((string) $text));
+
+            $objPhpWord->addToClone('text_label', 'text_feedback', $text, ['multiline' => true]);
+        }
+
+        $objPhpWord->sendToBrowser(false)
+            ->generateUncached(true)
+            ->generate()
+        ;
+
+        throw new ResponseException((new DocxToPdfConversion($targetSrc, $this->cloudconvertApiKey))->createUncached(true)->sendToBrowser(true)->convert());
     }
 
     private function isAllowed(CalendarEventsModel $event): bool

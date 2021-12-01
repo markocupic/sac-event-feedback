@@ -27,6 +27,7 @@ $GLOBALS['BE_MOD']['event_feedback'] = array(
 );
 
 $GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedbacks'] = array(EventFeedbackController::class, 'getEventFeedbackAction');
+$GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedbacksAsPdf'] = array(EventFeedbackController::class, 'getEventFeedbackAsPdfAction');
 
 /**
  * Models

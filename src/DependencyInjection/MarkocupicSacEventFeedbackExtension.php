@@ -51,8 +51,10 @@ class MarkocupicSacEventFeedbackExtension extends Extension
 
         $rootKey = $this->getAlias();
 
-        $container->setParameter($rootKey.'.delete_feedbacks_after', $config['secret']);
+        $container->setParameter($rootKey.'.delete_feedbacks_after', $config['delete_feedbacks_after']);
         $container->setParameter($rootKey.'.secret', $config['secret']);
+        $container->setParameter($rootKey.'.docx_template', $config['docx_template']);
+        $container->setParameter($rootKey.'.cloudconvert_api_key', $config['cloudconvert_api_key']);
         $container->setParameter($rootKey.'.configs', $config['configs']);
     }
 }

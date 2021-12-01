@@ -1,23 +1,25 @@
 services:
-    _defaults:
-        autowire: true
-        autoconfigure: true
-        bind:
-            $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
-            $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
-            $secret: '%markocupic_sac_event_feedback.secret%'
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    bind:
+      $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
+      $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
+      $docxTemplate: '%markocupic_sac_event_feedback.docx_template%'
+      $cloudconvertApiKey: '%markocupic_sac_event_feedback.cloudconvert_api_key%'
+      $secret: '%markocupic_sac_event_feedback.secret%'
 
-    Markocupic\SacEventFeedback\:
-        resource: ../../
-        exclude: ../../{DependencyInjection,Resources,Model}
+  Markocupic\SacEventFeedback\:
+    resource: ../../
+    exclude: ../../{DependencyInjection,Resources,Model}
 
-    # Controller
-    Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController:
-        public: true
+  # Controller
+  Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController:
+    public: true
 
-    # Add a session bag
-    Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag:
-        arguments:
-            - '_markocupic_sac_event_feedback_attributes'
-        calls:
-            - [ setName, [ 'markocupic_sac_event_feedback' ] ]
+  # Add a session bag
+  Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag:
+    arguments:
+      - '_markocupic_sac_event_feedback_attributes'
+    calls:
+      - [ setName, [ 'markocupic_sac_event_feedback' ] ]

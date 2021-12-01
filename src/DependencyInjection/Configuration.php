@@ -29,6 +29,8 @@ class Configuration implements ConfigurationInterface
                 ->children()
                 ->scalarNode('delete_feedbacks_after')->cannotBeEmpty()->end()
                 ->scalarNode('secret')->cannotBeEmpty()->end()
+                ->scalarNode('docx_template')->cannotBeEmpty()->end()
+                ->scalarNode('cloudconvert_api_key')->cannotBeEmpty()->end()
                 ->arrayNode('configs')
                     ->useAttributeAsKey('name')
                     ->arrayPrototype()
