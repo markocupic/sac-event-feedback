@@ -11,9 +11,9 @@
                 <p>Anzahl Rückmeldungen: {{ feedback_count }}</p>
             </div>
 
-            <div><a href="{{ pdf_link }}">Rückmeldungen drucken</a></div>
+            <div><a href="{{ pdf_link }}" class="tl_submit">Rückmeldungen drucken</a></div>
 
-            {% for feedback in feedbacks.optionFields %}
+            {% for feedback in feedbacks.dropdownFields %}
                 <h2 class="sefb-block sefb-eval-question">{{ feedback.label }}</h2>
                 <ul class="sefb-block sefb-text-italic">
                 {% for option in feedback.values %}

@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Contao\Controller;
 
 use Contao\BackendUser;
+use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InvalidResourceException;
@@ -96,6 +97,7 @@ class EventFeedbackController
 
         // Create phpword instance
         $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
+        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated=?','eventId=?'], ['1',$event->id]);
 
         $objPhpWord = new MsWordTemplateProcessor($this->docxTemplate, $targetSrc);
         $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode((string) $event->title)));
@@ -105,6 +107,8 @@ class EventFeedbackController
         $arrEventDates = array_map(static fn ($tstamp) => Date::parse('d.m.Y', $tstamp), CalendarEventsHelper::getEventTimestamps($event));
         $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
         $objPhpWord->replace('date', Date::parse('d.m.Y'));
+        $objPhpWord->replace('count_fb', $objFeedback->countFeedbacks());
+        $objPhpWord->replace('count_reg', (string) $countReg);
 
         // Dropdowns
         foreach ($objFeedback->getDropdowns() as $arrDropdown) {

@@ -33,7 +33,7 @@ class Feedback
         $this->arrData = [
             'event' => $event,
             'count' => 0,
-            'optionFields' => [],
+            'dropdownFields' => [],
             'textareaFields' => [],
         ];
     }
@@ -61,7 +61,7 @@ class Feedback
     {
         $arrData = $this->get($blnUncached);
 
-        return $arrData['optionFields'];
+        return $arrData['dropdownFields'];
     }
 
     public function countFeedbacks(bool $blnUncached = true): int
@@ -101,7 +101,7 @@ class Feedback
                 }
 
                 if (\in_array($formFields->type, ['select', 'checkbox', 'radio'], true)) {
-                    $strBelongsTo = 'optionFields';
+                    $strBelongsTo = 'dropdownFields';
                 } elseif ('textarea' === $formFields->type) {
                     $strBelongsTo = 'textareaFields';
                 }
@@ -121,8 +121,8 @@ class Feedback
                 }
 
                 if ('' !== trim((string) $value)) {
-                    if (is_numeric($value) && isset($this->arrData['optionFields'][$key]['values'][$value])) {
-                        ++$this->arrData['optionFields'][$key]['values'][$value]['count'];
+                    if (is_numeric($value) && isset($this->arrData['dropdownFields'][$key]['values'][$value])) {
+                        ++$this->arrData['dropdownFields'][$key]['values'][$value]['count'];
                     } elseif (isset($this->arrData['textareaFields'][$key])) {
                         $this->arrData['textareaFields'][$key]['values'][] = htmlspecialchars_decode((string) $value);
                     }
@@ -137,13 +137,13 @@ class Feedback
         return $this->arrData;
     }
 
-    private function addFormFieldToDataArray(FormFieldModel $formField, $strBelongsTo = 'optionFields'): void
+    private function addFormFieldToDataArray(FormFieldModel $formField, $strBelongsTo = 'dropdownFields'): void
     {
         if ($formField->invisible || '' === $formField->name || isset($this->arrData[$strBelongsTo][$formField->name])) {
             return;
         }
 
-        if ('optionFields' === $strBelongsTo) {
+        if ('dropdownFields' === $strBelongsTo) {
             $arrSub = [];
             $arrSub['values'] = [];
             $arrSub['label'] = $formField->label;
