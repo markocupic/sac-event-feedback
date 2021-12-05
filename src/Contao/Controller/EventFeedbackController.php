@@ -97,7 +97,7 @@ class EventFeedbackController
 
         // Create phpword instance
         $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
-        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated=?','eventId=?'], ['1',$event->id]);
+        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated=?', 'eventId=?'], ['1', $event->id]);
 
         $objPhpWord = new MsWordTemplateProcessor($this->docxTemplate, $targetSrc);
         $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode((string) $event->title)));
