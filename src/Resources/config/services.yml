@@ -6,7 +6,6 @@ services:
       $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
       $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
       $docxTemplate: '%markocupic_sac_event_feedback.docx_template%'
-      $cloudconvertApiKey: '%markocupic_sac_event_feedback.cloudconvert_api_key%'
       $secret: '%markocupic_sac_event_feedback.secret%'
 
   Markocupic\SacEventFeedback\:

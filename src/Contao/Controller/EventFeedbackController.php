@@ -25,9 +25,10 @@ use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\EventReleaseLevelPolicyModel;
+use Contao\File;
 use Contao\Input;
 use Haste\Util\Url;
-use Markocupic\CloudconvertBundle\Services\DocxToPdfConversion;
+use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
@@ -40,17 +41,17 @@ class EventFeedbackController
     private ContaoFramework $framework;
     private Security $security;
     private TwigEnvironment $twig;
+    private ConvertFile $convertFile;
     private string $docxTemplate;
-    private string $cloudconvertApiKey;
     private array $arrFeedback = [];
 
-    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, string $docxTemplate, string $cloudconvertApiKey)
+    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate)
     {
         $this->framework = $framework;
         $this->security = $security;
         $this->twig = $twig;
+        $this->convertFile = $convertFile;
         $this->docxTemplate = $docxTemplate;
-        $this->cloudconvertApiKey = $cloudconvertApiKey;
     }
 
     public function getEventFeedbackAction(DataContainer $dc): Response
@@ -143,7 +144,7 @@ class EventFeedbackController
             ->generate()
         ;
 
-        throw new ResponseException((new DocxToPdfConversion($targetSrc, $this->cloudconvertApiKey))->createUncached(true)->sendToBrowser(true)->convert());
+        throw new ResponseException($this->convertFile->file(new File($targetSrc))->sendToBrowser(true)->uncached(true)->convertTo('pdf'));
     }
 
     private function isAllowed(CalendarEventsModel $event): bool
