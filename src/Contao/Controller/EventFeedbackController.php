@@ -3,10 +3,10 @@
 declare(strict_types=1);
 
 /*
- * This file is part of SAC Event Feedback Bundle.
+ * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
- * @license MIT
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
@@ -25,7 +25,6 @@ use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
 use Contao\Date;
 use Contao\EventReleaseLevelPolicyModel;
-use Contao\File;
 use Contao\Input;
 use Haste\Util\Url;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
@@ -43,14 +42,15 @@ class EventFeedbackController
     private TwigEnvironment $twig;
     private ConvertFile $convertFile;
     private string $docxTemplate;
-    private array $arrFeedback = [];
+    private string $projectDir;
 
-    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate)
+    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
     {
         $this->framework = $framework;
         $this->security = $security;
         $this->twig = $twig;
         $this->convertFile = $convertFile;
+        $this->projectDir = $projectDir;
         $this->docxTemplate = $docxTemplate;
     }
 
@@ -144,7 +144,7 @@ class EventFeedbackController
             ->generate()
         ;
 
-        throw new ResponseException($this->convertFile->file(new File($targetSrc))->sendToBrowser(true)->uncached(true)->convertTo('pdf'));
+        throw new ResponseException($this->convertFile->file($this->projectDir.'/'.$targetSrc)->sendToBrowser(true)->uncached(true)->convertTo('pdf'));
     }
 
     private function isAllowed(CalendarEventsModel $event): bool

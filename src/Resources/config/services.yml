@@ -3,6 +3,7 @@ services:
     autowire: true
     autoconfigure: true
     bind:
+      $projectDir: '%kernel.project_dir%'
       $onlineFeedbackConfigs: '%markocupic_sac_event_feedback.configs%'
       $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
       $docxTemplate: '%markocupic_sac_event_feedback.docx_template%'
