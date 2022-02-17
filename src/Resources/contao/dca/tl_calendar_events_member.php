@@ -40,7 +40,6 @@ $GLOBALS['TL_DCA']['tl_calendar_events_member']['ctable'][] = 'tl_event_reminder
 // Fields
 $GLOBALS['TL_DCA']['tl_calendar_events_member']['fields']['countOnlineEventFeedbackNotifications'] = [
     'exclude'   => true,
-    'search'    => true,
     'inputType' => 'text',
     'eval'      => ['rgxp'     => 'natural',
                     'tl_class' => 'w50',
