@@ -99,14 +99,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
         ],
         'pid'                           => [
             'foreignKey' => 'tl_calendar_events.title',
-            'relation'   => [
-                'type' => 'belongsTo',
-                'load' => 'lazy',
-            ],
-            'eval'       => [
-                'rgxp'     => 'natural',
-                'tl_class' => 'w50 wizard',
-            ],
+            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
+            'eval'       => ['rgxp' => 'natural', 'tl_class' => 'w50 wizard'],
             'sql'        => 'int(10) unsigned NOT NULL default 0',
         ],
         'tstamp'                        => [
@@ -114,32 +108,18 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
         ],
         'dateAdded'                     => [
             'inputType' => 'text',
-            'default'   => time(
-            ),
+            'default'   => time(),
             'sorting'   => true,
             'flag'      => 6,
-            'eval'      => [
-                'rgxp'       => 'datim',
-                'datepicker' => true,
-                'tl_class'   => 'w50 wizard',
-            ],
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'form'                          => [
             'inputType'  => 'select',
             'foreignKey' => 'tl_form.title',
-            'options'    => FormModel::findAll(
-            )->fetchEach(
-                'id'
-            ),
-            'relation'   => [
-                'type' => 'belongsTo',
-                'load' => 'lazy',
-            ],
-            'eval'       => [
-                'rgxp'     => 'natural',
-                'tl_class' => 'w50 wizard',
-            ],
+            'options'    => FormModel::findAll()->fetchEach('id'),
+            'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
+            'eval'       => ['rgxp' => 'natural', 'tl_class' => 'w50 wizard'],
             'sql'        => 'int(10) unsigned NOT NULL default 0',
         ],
         'uuid'                          => [
@@ -148,12 +128,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'search'    => true,
             'filter'    => true,
             'sorting'   => true,
-            'eval'      => [
-                'mandatory' => true,
-                'unique'    => true,
-                'readonly'  => true,
-                'tl_class'  => 'w50',
-            ],
+            'eval'      => ['mandatory' => true, 'unique' => true, 'readonly' => true, 'tl_class' => 'w50'],
             'sql'       => 'varchar(64) BINARY NULL',
         ],
         'learningEffectIndex'           => [
@@ -163,18 +138,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'learningGoalsAchievedIndex'    => [
@@ -184,18 +149,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'theoryAndPracticeBalanceIndex' => [
@@ -205,18 +160,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'recommendationIndex'           => [
@@ -226,18 +171,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'safetyFeelingIndex'            => [
@@ -247,18 +182,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['learningEffectIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'durationIndex'                 => [
@@ -268,19 +193,8 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'filter'    => true,
             'sorting'   => true,
             'reference' => $GLOBALS['TL_LANG']['tl_event_feedback']['durationIndexReference'],
-            'options'   => [
-                '1',
-                '2',
-                '3',
-                '4',
-                '5',
-            ],
-            'eval'      => [
-                'mandatory'          => true,
-                'readonly'           => true,
-                'includeBlankOption' => true,
-                'tl_class'           => 'w50',
-            ],
+            'options'   => ['1', '2', '3', '4', '5'],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'includeBlankOption' => true, 'tl_class' => 'w50'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
         'improvementOpportunity'        => [
@@ -288,11 +202,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'exclude'   => true,
             'search'    => true,
             'filter'    => true,
-            'eval'      => [
-                'readonly' => true,
-                'rte'      => 'tinyMCE',
-                'tl_class' => 'clr',
-            ],
+            'eval'      => ['readonly' => true, 'rte' => 'tinyMCE', 'tl_class' => 'clr'],
             'sql'       => 'text NULL',
         ],
         'highlights'                    => [
@@ -300,11 +210,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'exclude'   => true,
             'search'    => true,
             'filter'    => true,
-            'eval'      => [
-                'readonly' => true,
-                'rte'      => 'tinyMCE',
-                'tl_class' => 'clr',
-            ],
+            'eval'      => ['readonly' => true, 'rte' => 'tinyMCE', 'tl_class' => 'clr'],
             'sql'       => 'text NULL',
         ],
         'wildcard'                      => [
@@ -312,10 +218,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'exclude'   => true,
             'search'    => true,
             'filter'    => true,
-            'eval'      => [
-                'rte'      => 'tinyMCE',
-                'tl_class' => 'clr',
-            ],
+            'eval'      => ['rte' => 'tinyMCE', 'tl_class' => 'clr'],
             'sql'       => 'text NULL',
         ],
         'comments'                      => [
@@ -323,11 +226,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'exclude'   => true,
             'search'    => true,
             'filter'    => true,
-            'eval'      => [
-                'readonly' => true,
-                'rte'      => 'tinyMCE',
-                'tl_class' => 'clr',
-            ],
+            'eval'      => ['readonly' => true, 'rte' => 'tinyMCE', 'tl_class' => 'clr'],
             'sql'       => 'text NULL',
         ],
     ],

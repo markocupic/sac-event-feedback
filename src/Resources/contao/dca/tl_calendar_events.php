@@ -14,8 +14,7 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-PaletteManipulator::create(
-)
+PaletteManipulator::create()
     ->addLegend(
         'sac_event_feedback_legend',
         'gallery_legend',
@@ -48,9 +47,9 @@ PaletteManipulator::create(
     );
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEventFeedback'] = [
-    'exclude' => true,
-    'search' => true,
+    'exclude'   => true,
+    'search'    => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
-    'sql' => "char(1) NOT NULL default ''",
+    'eval'      => ['tl_class' => 'w50'],
+    'sql'       => "char(1) NOT NULL default ''",
 ];

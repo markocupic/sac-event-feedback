@@ -14,27 +14,15 @@ declare(strict_types=1);
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 
-PaletteManipulator::create(
-)
-    ->addLegend(
-        'sac_event_feedback_legend',
-        'title_legend',
-        PaletteManipulator::POSITION_AFTER
-    )
-    ->addField(
-        'isSacEventFeedbackForm',
-        'sac_event_feedback_legend',
-        PaletteManipulator::POSITION_APPEND
-    )
-    ->applyToPalette(
-        'default',
-        'tl_form'
-    );
+PaletteManipulator::create()
+    ->addLegend('sac_event_feedback_legend', 'title_legend', PaletteManipulator::POSITION_AFTER)
+    ->addField('isSacEventFeedbackForm', 'sac_event_feedback_legend', PaletteManipulator::POSITION_APPEND)
+    ->applyToPalette('default', 'tl_form');
 
 $GLOBALS['TL_DCA']['tl_form']['fields']['isSacEventFeedbackForm'] = [
-    'exclude' => true,
-    'search' => true,
+    'exclude'   => true,
+    'search'    => true,
     'inputType' => 'checkbox',
-    'eval' => ['tl_class' => 'w50'],
-    'sql' => "char(1) NOT NULL default ''",
+    'eval'      => ['tl_class' => 'w50'],
+    'sql'       => "char(1) NOT NULL default ''",
 ];

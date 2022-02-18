@@ -35,18 +35,12 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
     'list'     => [
         'sorting'           => [
             'mode'        => 2,
-            'fields'      => [
-                'uuid',
-                'dateAdded',
-            ],
+            'fields'      => ['uuid', 'dateAdded'],
             'flag'        => 1,
             'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
-            'fields' => [
-                'uuid',
-                'pid',
-            ],
+            'fields' => ['uuid', 'pid'],
             'format' => '%s, %s',
         ],
         'global_operations' => [
@@ -101,15 +95,10 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
         ],
         'dateAdded'     => [
             'inputType' => 'text',
-            'default'   => time(
-            ),
+            'default'   => time(),
             'sorting'   => true,
             'flag'      => 6,
-            'eval'      => [
-                'rgxp'       => 'datim',
-                'datepicker' => true,
-                'tl_class'   => 'w50 wizard',
-            ],
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'uuid'          => [
@@ -118,31 +107,21 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             'search'    => true,
             'filter'    => true,
             'sorting'   => true,
-            'eval'      => [
-                'mandatory' => true,
-                'readonly'  => true,
-                'tl_class'  => 'w50',
-            ],
+            'eval'      => ['mandatory' => true, 'readonly' => true, 'tl_class' => 'w50'],
             'sql'       => "char(36) NOT NULL default ''",
         ],
         'executionDate' => [
             'inputType' => 'text',
             'sorting'   => true,
             'flag'      => 6,
-            'eval'      => ['rgxp'       => 'datim',
-                            'datepicker' => true,
-                            'tl_class'   => 'w50 wizard',
-            ],
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'expiration'    => [
             'inputType' => 'text',
             'sorting'   => true,
             'flag'      => 6,
-            'eval'      => ['rgxp'       => 'datim',
-                            'datepicker' => true,
-                            'tl_class'   => 'w50 wizard',
-            ],
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
     ],
