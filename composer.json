@@ -21,9 +21,9 @@
         "source": "https://github.com/markocupic/sac-event-feedback"
     },
     "require": {
-        "contao/core-bundle": "^4.12",
+        "contao/core-bundle": "^4.13",
         "markocupic/sac-event-tool-bundle": "*",
-        "markocupic/cloudconvert-bundle": "^2.0",
+        "markocupic/cloudconvert-bundle": "^2.1",
         "rbdwllr/reallysimplejwt": "^4.0"
     },
     "require-dev": {
