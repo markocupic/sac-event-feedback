@@ -24,7 +24,8 @@
         "contao/core-bundle": "^4.13",
         "markocupic/sac-event-tool-bundle": "*",
         "markocupic/cloudconvert-bundle": "^2.1",
-        "rbdwllr/reallysimplejwt": "^4.0"
+        "rbdwllr/reallysimplejwt": "^4.0",
+        "terminal42/contao-mp_forms": "^4.3"
     },
     "require-dev": {
         "contao/easy-coding-standard": "^4.0",
