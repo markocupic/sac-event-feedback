@@ -53,9 +53,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     private TranslatorInterface $translator;
     private EventFeedbackHelper $eventFeedbackHelper;
     private string $secret;
-    private ?PageModel $page = null;
     private ?FrontendUser $user = null;
-    private ?CalendarEventsMemberModel $objEventRegistration = null;
     private string $mode;
 
     public function __construct(Security $security, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
@@ -68,9 +66,6 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Get the page model
-        $this->page = $page;
-
         // Get logged in user
         $this->user = $this->security->getUser();
 
@@ -118,8 +113,8 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
             }
         }
 
-        /* Check if member exists member */
-        if (null === $registration || $registration->sacMemberId !== $this->user->sacMemberId) {
+        /* Check if member exists */
+        if (trim((string) $registration->sacMemberId) !== trim((string) $this->user->sacMemberId)) {
             return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.invalidUuidForLoggedInUser', [], 'contao_default'));
         }
 
