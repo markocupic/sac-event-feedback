@@ -20,17 +20,16 @@ use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InvalidResourceException;
 use Contao\CoreBundle\Exception\ResponseException;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
 use Contao\Date;
-use Contao\EventReleaseLevelPolicyModel;
 use Contao\Input;
 use Haste\Util\Url;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment as TwigEnvironment;
@@ -159,7 +158,7 @@ class EventFeedbackController
             // Apply same permission rules like "teilnehmerliste"
             $hasPermissionsWatchingFeedbacks = true;
 
-            if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {
+            if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {
                 $hasPermissionsWatchingFeedbacks = false;
             }
 
