@@ -156,10 +156,10 @@ class EventFeedbackController
             }
 
             // Apply same permission rules like "teilnehmerliste"
-            $hasPermissionsWatchingFeedbacks = true;
+            $canReadFeadbacks = true;
 
             if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {
-                $hasPermissionsWatchingFeedbacks = false;
+                $canReadFeadbacks = false;
             }
 
             $canAccessModule = $this->security->isGranted(
@@ -167,7 +167,7 @@ class EventFeedbackController
                 'sac_calendar_events_tool'
             );
 
-            if ($canAccessModule && $hasPermissionsWatchingFeedbacks) {
+            if ($canAccessModule && $canReadFeadbacks) {
                 return true;
             }
         }
