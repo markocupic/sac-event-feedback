@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of SAC Event Feedback.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
@@ -23,21 +23,17 @@ use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\FeedbackReminder\CreateFeedbackReminderTask;
 use Markocupic\SacEventFeedback\FeedbackReminder\FeedbackReminder;
 
-class TlCalendarEventsMember
+class CalendarEventsMember
 {
-    private ContaoFramework $framework;
     private EventFeedbackHelper $eventFeedbackHelper;
     private FeedbackReminder $feedbackReminder;
     private CreateFeedbackReminderTask $createFeedbackReminderTask;
-    private array $onlineFeedbackConfigs;
 
-    public function __construct(ContaoFramework $framework, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, CreateFeedbackReminderTask $createFeedbackReminderTask, array $onlineFeedbackConfigs)
+    public function __construct(EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, CreateFeedbackReminderTask $createFeedbackReminderTask)
     {
-        $this->framework = $framework;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->feedbackReminder = $feedbackReminder;
         $this->createFeedbackReminderTask = $createFeedbackReminderTask;
-        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
     /**
