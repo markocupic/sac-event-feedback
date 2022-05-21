@@ -10,5 +10,7 @@ return static function (ContainerConfigurator $containerConfigurator): void {
 
     // Custom
     $containerConfigurator->import(__DIR__.'/set/header_comment_fixer.php');
+
+    // Custom
     $containerConfigurator->import(__DIR__.'/set/skip_configuration.php');
 };

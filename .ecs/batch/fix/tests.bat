@@ -6,5 +6,5 @@ cd..
 cd..
 cd..
 cd..
-vendor\bin\ecs check vendor/markocupic/sac-event-feedback/tests --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/default.php
+vendor\bin\ecs check vendor/markocupic/calendar-event_booking-bundle/tests --fix --config vendor/markocupic/sac-event-feedback/.ecs/config/default.php
 cd vendor/markocupic/sac-event-feedback/.ecs./batch/fix

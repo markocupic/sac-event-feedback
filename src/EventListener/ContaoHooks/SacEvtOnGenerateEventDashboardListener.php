@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of SAC Event Feedback.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
@@ -18,11 +18,11 @@ use Contao\BackendUser;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
-use Contao\EventReleaseLevelPolicyModel;
 use Contao\Input;
 use Contao\System;
 use Knp\Menu\MenuItem;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Component\Security\Core\Security;
 
 /**
@@ -32,12 +32,10 @@ class SacEvtOnGenerateEventDashboardListener
 {
     public const TYPE = 'sacEvtOnGenerateEventDashboard';
 
-    private ContaoFramework $framework;
     private Security $security;
 
-    public function __construct(ContaoFramework $framework, Security $security)
+    public function __construct(Security $security)
     {
-        $this->framework = $framework;
         $this->security = $security;
     }
 
@@ -54,7 +52,7 @@ class SacEvtOnGenerateEventDashboardListener
         }
 
         // Apply same permission rules like "teilnehmerliste"
-        if (!EventReleaseLevelPolicyModel::hasWritePermission($user->id, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
+        if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
             return;
         }
 

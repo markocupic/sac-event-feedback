@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of SAC Event Feedback.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
@@ -74,11 +74,7 @@ class CreateFeedbackReminderTask
             // Prevent inserting duplicate records
             // See $GLOBALS['TL_DCA']['tl_event_feedback_reminder']['config']['sql']['keys']['uuid,executionDate'] = 'unique'
             Database::getInstance()
-                ->prepare(
-                    'INSERT INTO tl_event_feedback_reminder %s '.
-                    'ON DUPLICATE KEY UPDATE '.
-                    'dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)'
-                )
+                ->prepare('INSERT INTO tl_event_feedback_reminder %s ON DUPLICATE KEY UPDATE dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)')
                 ->set($set)
                 ->execute()
             ;

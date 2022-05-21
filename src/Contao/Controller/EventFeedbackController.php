@@ -6,7 +6,7 @@ declare(strict_types=1);
  * This file is part of SAC Event Feedback.
  *
  * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license GPL-3.0-or-later
+ * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
@@ -37,16 +37,14 @@ use Twig\Environment as TwigEnvironment;
 
 class EventFeedbackController
 {
-    private ContaoFramework $framework;
     private Security $security;
     private TwigEnvironment $twig;
     private ConvertFile $convertFile;
     private string $docxTemplate;
     private string $projectDir;
 
-    public function __construct(ContaoFramework $framework, Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
+    public function __construct(Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
     {
-        $this->framework = $framework;
         $this->security = $security;
         $this->twig = $twig;
         $this->convertFile = $convertFile;
