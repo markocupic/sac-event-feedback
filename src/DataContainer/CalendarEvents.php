@@ -16,7 +16,6 @@ namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Contao\FormModel;

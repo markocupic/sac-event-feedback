@@ -32,9 +32,6 @@ use Symfony\Component\Routing\RouteCollection;
  */
 class Plugin implements ConfigPluginInterface, BundlePluginInterface, RoutingPluginInterface
 {
-    /**
-     * @return array
-     */
     public function getBundles(ParserInterface $parser): array
     {
         return [
@@ -59,7 +56,7 @@ class Plugin implements ConfigPluginInterface, BundlePluginInterface, RoutingPlu
      *
      * @return RouteCollection|null
      */
-    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel):RouteCollection
+    public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): RouteCollection
     {
         return $resolver
             ->resolve(__DIR__.'/../Resources/config/routes.yml')

@@ -16,7 +16,6 @@ namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;

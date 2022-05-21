@@ -16,7 +16,6 @@ namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
 use Contao\BackendUser;
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\ServiceAnnotation\Hook;
 use Contao\Input;
 use Contao\System;
