@@ -50,7 +50,3 @@ $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['sac_event_tool']['event_fe
     'email_text' => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
     'email_html' => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
 ];
-
-if (TL_MODE === 'BE') {
-    $GLOBALS['TL_CSS'][] = 'bundles/markocupicsaceventfeedback/css/styles.css';
-}

@@ -53,7 +53,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     private TranslatorInterface $translator;
     private EventFeedbackHelper $eventFeedbackHelper;
     private string $secret;
-    private ?FrontendUser $user = null;
+    private FrontendUser|null $user = null;
     private string $mode;
 
     public function __construct(Security $security, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
@@ -76,7 +76,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         return parent::__invoke($request, $model, $section, $classes);
     }
 
-    protected function getResponse(Template $template, ModuleModel $model, Request $request): ?Response
+    protected function getResponse(Template $template, ModuleModel $model, Request $request): Response|null
     {
         $this->template = $template;
         $this->mode = self::MODE_SHOW_FORM;

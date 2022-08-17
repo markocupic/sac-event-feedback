@@ -70,12 +70,12 @@ class EventFeedbackHelper
         return true;
     }
 
-    public function getEventFeedbackFromUuid(string $uuid): ?EventFeedbackModel
+    public function getEventFeedbackFromUuid(string $uuid): EventFeedbackModel|null
     {
         return EventFeedbackModel::findOneByUuid($uuid);
     }
 
-    public function getEventFromUuid(string $uuid): ?CalendarEventsModel
+    public function getEventFromUuid(string $uuid): CalendarEventsModel|null
     {
         $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
@@ -88,7 +88,7 @@ class EventFeedbackHelper
         return null;
     }
 
-    public function getFrontendUserFromUuid(string $uuid): ?MemberModel
+    public function getFrontendUserFromUuid(string $uuid): MemberModel|null
     {
         $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
@@ -101,7 +101,7 @@ class EventFeedbackHelper
         return null;
     }
 
-    public function getForm(CalendarEventsModel $event): ?FormModel
+    public function getForm(CalendarEventsModel $event): FormModel|null
     {
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
             return null;
@@ -114,7 +114,7 @@ class EventFeedbackHelper
         return FormModel::findByPk($calendar->onlineFeedbackForm);
     }
 
-    public function getNotification(CalendarEventsModel $event): ?Notification
+    public function getNotification(CalendarEventsModel $event): Notification|null
     {
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
             return null;
@@ -127,7 +127,7 @@ class EventFeedbackHelper
         return Notification::findByPk($calendar->onlineFeedbackNotification);
     }
 
-    public function getPage(CalendarEventsModel $event): ?PageModel
+    public function getPage(CalendarEventsModel $event): PageModel|null
     {
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
             return null;
@@ -140,7 +140,7 @@ class EventFeedbackHelper
         return PageModel::findByPk($calendar->onlineFeedbackPage);
     }
 
-    public function getOnlineFeedbackConfiguration(CalendarEventsModel $event): ?array
+    public function getOnlineFeedbackConfiguration(CalendarEventsModel $event): array|null
     {
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
             return null;
