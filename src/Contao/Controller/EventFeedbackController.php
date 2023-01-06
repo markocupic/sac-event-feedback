@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Contao\Controller;
 
 use Contao\BackendUser;
-use Contao\CalendarEventsMemberModel;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InvalidResourceException;

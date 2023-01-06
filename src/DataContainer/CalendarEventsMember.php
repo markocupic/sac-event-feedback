@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\DataContainer;
 
-use Contao\CalendarEventsMemberModel;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\DataContainer;
