@@ -24,10 +24,10 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Component\Security\Core\Security;
 
-#[AsHook(SacEvtOnGenerateEventDashboardListener::TYPE, priority: SacEvtOnGenerateEventDashboardListener::PRIORITY)]
+#[AsHook('generateEventDashboard', priority: 100)]
 class SacEvtOnGenerateEventDashboardListener
 {
-    public const TYPE = 'sacEvtOnGenerateEventDashboard';
+    public const TYPE = 'generateEventDashboard';
     public const PRIORITY = 50;
 
     private Security $security;
