@@ -14,11 +14,11 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\Controller\FrontendModule;
 
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FormFieldModel;
 use Contao\FormModel;
@@ -30,6 +30,7 @@ use Contao\StringUtil;
 use Contao\Template;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -50,15 +51,17 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     public const SESSION_BAG_NAME = 'markocupic_sac_event_feedback';
 
     private Security $security;
+    private ScopeMatcher $scopeMatcher;
     private TranslatorInterface $translator;
     private EventFeedbackHelper $eventFeedbackHelper;
     private string $secret;
     private FrontendUser|null $user = null;
     private string $mode;
 
-    public function __construct(Security $security, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
+    public function __construct(Security $security, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
     {
         $this->security = $security;
+        $this->scopeMatcher = $scopeMatcher;
         $this->translator = $translator;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->secret = $secret;
@@ -66,11 +69,13 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response
     {
-        // Get logged in user
-        $this->user = $this->security->getUser();
+        if ($this->scopeMatcher->isFrontendRequest($request)) {
+            // Get logged in user
+            $this->user = $this->security->getUser();
 
-        if (!$this->user instanceof FrontendUser) {
-            return new Response('', Response::HTTP_NO_CONTENT);
+            if (!$this->user instanceof FrontendUser) {
+                return new Response('', Response::HTTP_NO_CONTENT);
+            }
         }
 
         return parent::__invoke($request, $model, $section, $classes);
