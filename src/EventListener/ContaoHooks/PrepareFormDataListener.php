@@ -17,11 +17,10 @@ namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Form;
 
-#[AsHook(PrepareFormDataListener::TYPE, priority: PrepareFormDataListener::PRIORITY)]
+#[AsHook(PrepareFormDataListener::HOOK, priority: 100)]
 class PrepareFormDataListener
 {
-    public const TYPE = 'prepareFormData';
-    public const PRIORITY = 100;
+    public const HOOK = 'prepareFormData';
 
     public function __invoke($arrSubmitted, $arrLabels, $arrFields, Form $form): void
     {

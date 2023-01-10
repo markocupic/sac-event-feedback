@@ -26,11 +26,10 @@ use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
-#[AsHook(StoreFormDataListener::TYPE, priority: StoreFormDataListener::PRIORITY)]
+#[AsHook(StoreFormDataListener::HOOK, priority: 100)]
 class StoreFormDataListener
 {
-    public const TYPE = 'storeFormData';
-    public const PRIORITY = 100;
+    public const HOOK = 'storeFormData';
 
     private Security $security;
     private EventFeedbackHelper $eventFeedbackHelper;

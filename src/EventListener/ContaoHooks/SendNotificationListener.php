@@ -17,11 +17,10 @@ namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use NotificationCenter\Model\Message;
 
-#[AsHook(SendNotificationListener::TYPE, priority: SendNotificationListener::PRIORITY)]
+#[AsHook(SendNotificationListener::HOOK, priority: 100)]
 class SendNotificationListener
 {
-    public const TYPE = 'sendNotification';
-    public const PRIORITY = 100;
+    public const HOOK = 'sendNotification';
 
     public function __invoke(Message $objMessage, array &$arrTokens, string $language, $objGatewayModel): bool
     {
