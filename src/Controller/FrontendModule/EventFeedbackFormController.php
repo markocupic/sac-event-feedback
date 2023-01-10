@@ -2,24 +2,14 @@
 
 declare(strict_types=1);
 
-/*
- * This file is part of SAC Event Feedback.
- *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
- * @license MIT
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-feedback
- */
-
 namespace Markocupic\SacEventFeedback\Controller\FrontendModule;
 
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\Controller;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\CoreBundle\ServiceAnnotation\FrontendModule;
 use Contao\FormFieldModel;
 use Contao\FormModel;
 use Contao\FrontendTemplate;
@@ -37,9 +27,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-/**
- * @FrontendModule(EventFeedbackFormController::TYPE, category="event_feedback", template="mod_event_feedback_form")
- */
+#[AsFrontendModule(EventFeedbackFormController::TYPE, category:'event_feedback', template:'mod_event_feedback_form')]
 class EventFeedbackFormController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_feedback_form';
