@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -13,24 +13,12 @@ declare(strict_types=1);
  */
 
 use Contao\FormModel;
+use Contao\DC_Table;
+use Contao\DataContainer;
 
-/*
- * This file is part of SAC Event Feedback Bundle.
- *
- * (c) Marko Cupic 2021 <m.cupic@gmx.ch>
- * @license MIT
- * For the full copyright and license information,
- * please view the LICENSE file that was distributed with this source code.
- * @link https://github.com/markocupic/sac-event-feedback
- */
-
-/*
- * Table tl_event_feedback
- */
 $GLOBALS['TL_DCA']['tl_event_feedback'] = [
-    // Config
     'config'   => [
-        'dataContainer'    => 'Table',
+        'dataContainer'    => DC_Table::class,
         'enableVersioning' => true,
         'sql'              => [
             'keys' => [
@@ -42,9 +30,9 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
     ],
     'list'     => [
         'sorting'           => [
-            'mode'        => 2,
+            'mode'        => DataContainer::MODE_SORTABLE,
             'fields'      => ['dateAdded'],
-            'flag'        => 1,
+            'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
@@ -87,12 +75,10 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             ],
         ],
     ],
-    // Palettes
     'palettes' => [
         '__selector__' => ['addSubpalette'],
         'default'      => '{first_legend},pid,form,uuid,dateAdded;{survey_legend},learningEffectIndex,learningGoalsAchievedIndex,theoryAndPracticeBalanceIndex,recommendationIndex,safetyFeelingIndex,durationIndex,improvementOpportunity,highlights,comments,wildcard',
     ],
-    // Fields
     'fields'   => [
         'id'                            => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',

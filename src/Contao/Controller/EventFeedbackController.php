@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Contao\Controller;
 
 use Contao\BackendUser;
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InvalidResourceException;
@@ -29,6 +28,7 @@ use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;

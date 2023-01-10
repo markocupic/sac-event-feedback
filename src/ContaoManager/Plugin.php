@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -48,7 +48,7 @@ class Plugin implements ConfigPluginInterface, BundlePluginInterface, RoutingPlu
      */
     public function registerContainerConfiguration(LoaderInterface $loader, array $config): void
     {
-        $loader->load('@MarkocupicSacEventFeedback/Resources/config/config.yml');
+        $loader->load('@MarkocupicSacEventFeedback/config/config.yml');
     }
 
     /**
@@ -59,8 +59,8 @@ class Plugin implements ConfigPluginInterface, BundlePluginInterface, RoutingPlu
     public function getRouteCollection(LoaderResolverInterface $resolver, KernelInterface $kernel): RouteCollection
     {
         return $resolver
-            ->resolve(__DIR__.'/../Resources/config/routes.yml')
-            ->load(__DIR__.'/../Resources/config/routes.yml')
+            ->resolve(__DIR__.'/../../config/routes.yml')
+            ->load(__DIR__.'/../../config/routes.yml')
         ;
     }
 }

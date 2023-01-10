@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -20,7 +20,7 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
  * Backend modules
  */
 $GLOBALS['BE_MOD']['event_feedback'] = [
-    'event_feedback' => [
+    'event_feedback'          => [
         'tables' => ['tl_event_feedback'],
     ],
     'event_feedback_reminder' => [
@@ -42,11 +42,11 @@ $GLOBALS['TL_MODELS']['tl_event_feedback_reminder'] = EventFeedbackReminderModel
  */
 $GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['sac_event_tool']['event_feedback_reminder'] = [
     // Field in tl_nc_language
-    'email_sender_name' => ['instructor_name', 'instructor_email', 'admin_email'],
+    'email_sender_name'    => ['instructor_name', 'instructor_email', 'admin_email'],
     'email_sender_address' => ['instructor_email', 'instructor_email', 'admin_email'],
-    'recipients' => ['participant_email', 'instructor_email', 'admin_email'],
-    'email_replyTo' => ['instructor_email'],
-    'email_subject' => ['event_name'],
-    'email_text' => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
-    'email_html' => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
+    'recipients'           => ['participant_email', 'instructor_email', 'admin_email'],
+    'email_replyTo'        => ['instructor_email'],
+    'email_subject'        => ['event_name'],
+    'email_text'           => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
+    'email_html'           => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
 ];

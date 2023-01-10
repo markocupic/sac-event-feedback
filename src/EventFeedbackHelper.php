@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback;
 
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
 use Contao\CalendarModel;
 use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\PageModel;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper

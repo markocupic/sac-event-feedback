@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,13 +14,15 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
+use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\Database;
 use Contao\PageModel;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
+use Psr\Log\LoggerInterface;
 use ReallySimpleJWT\Token;
 
 class SendFeedbackReminder
@@ -29,13 +31,15 @@ class SendFeedbackReminder
     private FeedbackReminder $feedbackReminder;
     private array $onlineFeedbackConfigs;
     private string $secret;
+    private LoggerInterface|null $contaoGeneralLogger;
 
-    public function __construct(EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $onlineFeedbackConfigs, string $secret)
+    public function __construct(EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $onlineFeedbackConfigs, string $secret, LoggerInterface $contaoGeneralLogger = null)
     {
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->feedbackReminder = $feedbackReminder;
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
         $this->secret = $secret;
+        $this->contaoGeneralLogger = $contaoGeneralLogger;
     }
 
     public function sendReminder(EventFeedbackReminderModel $objReminder): void
@@ -58,6 +62,22 @@ class SendFeedbackReminder
                 if (!empty($arrResult) && \is_array($arrResult)) {
                     ++$objMember->countOnlineEventFeedbackNotifications;
                     $objMember->save();
+
+                    if (null !== $this->contaoGeneralLogger) {
+                        $message = sprintf(
+                            'An event feedback reminder for event "%s" ID %d has been sent to frontend user "%s %s" (event registration ID %d).',
+                            $event->title,
+                            $event->id,
+                            $objMember->firstname,
+                            $objMember->lastname,
+                            $objMember->id,
+                        );
+
+                        $this->contaoGeneralLogger->info(
+                            $message,
+                            ['contao' => new ContaoContext(__METHOD__, 'SEND_EVENT_FEEDBACK_REMINDER')],
+                        );
+                    }
                 }
             }
         }

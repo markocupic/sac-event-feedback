@@ -5,20 +5,19 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-/*
- * Table tl_event_feedback_reminder
- */
+use Contao\DC_Table;
+use Contao\DataContainer;
+
 $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
-    // Config
     'config'   => [
-        'dataContainer' => 'Table',
+        'dataContainer' => DC_Table::class,
         'ptable'        => 'tl_calendar_events_member',
         //'closed' => true,
         //'notDeletable' => true,
@@ -34,9 +33,9 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
     ],
     'list'     => [
         'sorting'           => [
-            'mode'        => 2,
+            'mode'        => DataContainer::MODE_SORTABLE,
             'fields'      => ['uuid', 'dateAdded'],
-            'flag'        => 1,
+            'flag'        => DataContainer::SORT_INITIAL_LETTER_ASC,
             'panelLayout' => 'filter;sort,search,limit',
         ],
         'label'             => [
@@ -73,11 +72,9 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             ],
         ],
     ],
-    // Palettes
     'palettes' => [
         'default' => '{title_legend},uuid,dateAdded,executionDate',
     ],
-    // Fields
     'fields'   => [
         'id'            => [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
@@ -97,7 +94,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             'inputType' => 'text',
             'default'   => time(),
             'sorting'   => true,
-            'flag'      => 6,
+            'flag'      => DataContainer::SORT_DAY_DESC,
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => 'int(10) unsigned NOT NULL default 0',
         ],
@@ -113,14 +110,14 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
         'executionDate' => [
             'inputType' => 'text',
             'sorting'   => true,
-            'flag'      => 6,
+            'flag'      => DataContainer::SORT_DAY_DESC,
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
         'expiration'    => [
             'inputType' => 'text',
             'sorting'   => true,
-            'flag'      => 6,
+            'flag'      => DataContainer::SORT_DAY_DESC,
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],
