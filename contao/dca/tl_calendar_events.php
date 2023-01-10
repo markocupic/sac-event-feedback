@@ -48,7 +48,7 @@ PaletteManipulator::create()
 
 $GLOBALS['TL_DCA']['tl_calendar_events']['fields']['enableOnlineEventFeedback'] = [
     'exclude'   => true,
-    'search'    => true,
+    'filter'    => true,
     'inputType' => 'checkbox',
     'eval'      => ['tl_class' => 'w50'],
     'sql'       => "char(1) NOT NULL default ''",
