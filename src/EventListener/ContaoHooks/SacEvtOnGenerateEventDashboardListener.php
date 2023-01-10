@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -16,7 +16,7 @@ namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
 use Contao\BackendUser;
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Input;
 use Contao\System;
 use Knp\Menu\MenuItem;
@@ -24,12 +24,11 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Component\Security\Core\Security;
 
-/**
- * @Hook(SacEvtOnGenerateEventDashboardListener::TYPE, priority=50)
- */
+#[AsHook(SacEvtOnGenerateEventDashboardListener::TYPE, priority: SacEvtOnGenerateEventDashboardListener::PRIORITY)]
 class SacEvtOnGenerateEventDashboardListener
 {
     public const TYPE = 'sacEvtOnGenerateEventDashboard';
+    public const PRIORITY = 50;
 
     private Security $security;
 

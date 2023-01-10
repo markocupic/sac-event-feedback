@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,21 +14,19 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
-use Contao\CoreBundle\ServiceAnnotation\Hook;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
 use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Security;
 
-/**
- * @Hook(StoreFormDataListener::TYPE, priority=StoreFormDataListener::PRIORITY)
- */
+#[AsHook(StoreFormDataListener::TYPE, priority: StoreFormDataListener::PRIORITY)]
 class StoreFormDataListener
 {
     public const TYPE = 'storeFormData';
