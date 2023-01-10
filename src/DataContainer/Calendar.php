@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\DataContainer;
 
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
 use Contao\Database;
 use Contao\DataContainer;
 
@@ -30,17 +30,13 @@ class Calendar
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
-    /**
-     * @Callback(table="tl_calendar", target="fields.onlineFeedbackConfiguration.options")
-     */
+    #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackConfiguration.options')]
     public function getOnlineFeedbackConfigurations(DataContainer $dc): array
     {
         return array_keys($this->onlineFeedbackConfigs);
     }
 
-    /**
-     * @Callback(table="tl_calendar", target="fields.onlineFeedbackNotification.options")
-     */
+    #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackNotification.options')]
     public function getNotifications(DataContainer $dc): array
     {
         $arrOptions = [];
@@ -59,9 +55,7 @@ class Calendar
         return $arrOptions;
     }
 
-    /**
-     * @Callback(table="tl_calendar", target="fields.onlineFeedbackForm.options")
-     */
+    #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackForm.options')]
     public function getOnlineFeedbackForm(DataContainer $dc): array
     {
         $arrOptions = [];

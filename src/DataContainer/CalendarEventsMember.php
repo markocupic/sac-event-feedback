@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,13 +14,13 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\DataContainer;
 
-use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Contao\CalendarEventsModel;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\FeedbackReminder\CreateFeedbackReminderTask;
 use Markocupic\SacEventFeedback\FeedbackReminder\FeedbackReminder;
+use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class CalendarEventsMember
 {
@@ -35,11 +35,7 @@ class CalendarEventsMember
         $this->createFeedbackReminderTask = $createFeedbackReminderTask;
     }
 
-    /**
-     * tl_calendar_events_member.hasParticipated save callback.
-     *
-     * @Callback(table="tl_calendar_events_member", target="fields.hasParticipated.save")
-     */
+    #[AsCallback(table: 'tl_calendar_events_member', target: 'fields.hasParticipated.save')]
     public function onCompletedEvent(string $value, DataContainer $dc): string
     {
         $calendarEventsMemberModel = CalendarEventsMemberModel::findByPk($dc->id);

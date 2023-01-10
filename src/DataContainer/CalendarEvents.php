@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -16,7 +16,7 @@ namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
-use Contao\CoreBundle\ServiceAnnotation\Callback;
+use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\FormModel;
 use NotificationCenter\Model\Notification;
@@ -30,9 +30,7 @@ class CalendarEvents
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
-    /**
-     * @Callback(table="tl_calendar_events", target="config.onload")
-     */
+    #[AsCallback(table: 'tl_calendar_events', target: 'config.onload')]
     public function getOnlineFeedbackConfigurations(DataContainer $dc): void
     {
         $blnRemoveField = true;
