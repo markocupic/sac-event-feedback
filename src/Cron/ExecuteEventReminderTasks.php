@@ -16,6 +16,7 @@ namespace Markocupic\SacEventFeedback\Cron;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
+use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\FeedbackReminder\SendFeedbackReminder;
 
 #[AsCronJob('minutely')]
@@ -30,13 +31,15 @@ class ExecuteEventReminderTasks
         $this->sendFeedbackReminder = $sendFeedbackReminder;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(): void
     {
         // Initialize the Contao framework
         $this->framework->initialize(true);
 
-        $tstampToday = time();
-
-        $this->sendFeedbackReminder->sendRemindersByExecutionDate($tstampToday, 20);
+        $now = time();
+        $this->sendFeedbackReminder->sendRemindersByExecutionDate($now, 20);
     }
 }
