@@ -20,6 +20,7 @@ use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * Run "bin/contao-console sac-event-feedback:send-reminder" on the console.
@@ -45,13 +46,12 @@ class SendReminderCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $output->writeln([
-            '',
+        $io = new SymfonyStyle($input, $output);
+
+        $io->success([
             'SAC Event Feedback/Evaluation',
             '=============================',
-            '',
             'A maximum of 20 reminders have just been sent.',
-            '',
         ]);
 
         $this->sendFeedbackReminder->sendRemindersByExecutionDate(time(), 20);
