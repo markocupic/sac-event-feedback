@@ -73,7 +73,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
         ],
     ],
     'palettes' => [
-        'default' => '{title_legend},uuid,dateAdded,executionDate',
+        'default' => '{title_legend},uuid,dateAdded,executionDate,dispatched,dispatchTime',
     ],
     'fields'   => [
         'id'            => [
@@ -107,10 +107,24 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             'eval'      => ['mandatory' => true, 'readonly' => true, 'tl_class' => 'w50'],
             'sql'       => "char(36) NOT NULL default ''",
         ],
+        'dispatched'    => [
+            'inputType' => 'checkbox',
+            'filter'    => true,
+            'sorting'   => true,
+            'eval'      => ['isBoolean' => true, 'tl_class' => 'clr'],
+            'sql'       => "varchar(1) NOT NULL default ''",
+        ],
+        'dispatchTime'  => [
+            'inputType' => 'text',
+            'sorting'   => true,
+            'flag'      => DataContainer::SORT_DAY_ASC,
+            'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
+            'sql'       => "varchar(10) NOT NULL default ''",
+        ],
         'executionDate' => [
             'inputType' => 'text',
             'sorting'   => true,
-            'flag'      => DataContainer::SORT_DAY_DESC,
+            'flag'      => DataContainer::SORT_DAY_ASC,
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
             'sql'       => "varchar(10) NOT NULL default ''",
         ],

@@ -22,4 +22,6 @@ $GLOBALS['TL_LANG']['tl_event_feedback_reminder']['title_legend'] = 'Details';
  */
 $GLOBALS['TL_LANG']['tl_event_feedback_reminder']['uuid'] = ['UUID'];
 $GLOBALS['TL_LANG']['tl_event_feedback_reminder']['dateAdded'] = ['Erstellt am'];
-$GLOBALS['TL_LANG']['tl_event_feedback_reminder']['executionDate'] = ['Dieser Reminder wird versendet am', 'Geben Sie das Versanddatum des Reminders an.'];
+$GLOBALS['TL_LANG']['tl_event_feedback_reminder']['executionDate'] = ['Dieser Reminder wird frühestens versendet ab', 'Geben Sie den Zeitpunkt an ab dem der Reminder versendet werden soll.'];
+$GLOBALS['TL_LANG']['tl_event_feedback_reminder']['dispatched'] = ['Versandt', 'Gibt an, ob die Benachrichtigung versandt wurde oder nicht.'];
+$GLOBALS['TL_LANG']['tl_event_feedback_reminder']['dispatchTime'] = ['Versand-Zeitpunkt', 'Geben Sie den Zeitpunkt des Versandes ein.'];
