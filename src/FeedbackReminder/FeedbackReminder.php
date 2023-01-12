@@ -26,7 +26,7 @@ class FeedbackReminder
     public function deleteFeedbackReminderByEventMember(CalendarEventsMemberModel $eventMember): void
     {
         Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid=?')
+            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid = ?')
             ->execute($eventMember->uuid)
         ;
     }

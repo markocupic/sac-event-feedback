@@ -16,8 +16,9 @@ namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\Database;
 use Contao\PageModel;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
@@ -27,14 +28,16 @@ use ReallySimpleJWT\Token;
 
 class SendFeedbackReminder
 {
+    private Connection $connection;
     private EventFeedbackHelper $eventFeedbackHelper;
     private FeedbackReminder $feedbackReminder;
     private array $onlineFeedbackConfigs;
     private string $secret;
     private LoggerInterface|null $contaoGeneralLogger;
 
-    public function __construct(EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $onlineFeedbackConfigs, string $secret, LoggerInterface $contaoGeneralLogger = null)
+    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $onlineFeedbackConfigs, string $secret, LoggerInterface $contaoGeneralLogger = null)
     {
+        $this->connection = $connection;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->feedbackReminder = $feedbackReminder;
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
@@ -47,30 +50,30 @@ class SendFeedbackReminder
         /** @var PageModel $objPage */
         global $objPage;
 
-        if (null !== ($objMember = CalendarEventsMemberModel::findOneByUuid($objReminder->uuid))) {
-            $event = CalendarEventsModel::findByPk($objMember->eventId);
+        if (null !== ($objRegistration = CalendarEventsMemberModel::findOneByUuid($objReminder->uuid))) {
+            $event = CalendarEventsModel::findByPk($objRegistration->eventId);
 
             if (null !== $event) {
                 if (!$this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($event)) {
                     throw new \Exception($GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration']);
                 }
                 $notification = $this->eventFeedbackHelper->getNotification($event);
-                $arrTokens = $this->getNotificationTokens($objMember, $objReminder);
+                $arrTokens = $this->getNotificationTokens($objRegistration, $objReminder);
 
                 $arrResult = $notification->send($arrTokens, $objPage->language);
 
                 if (!empty($arrResult) && \is_array($arrResult)) {
-                    ++$objMember->countOnlineEventFeedbackNotifications;
-                    $objMember->save();
+                    ++$objRegistration->countOnlineEventFeedbackNotifications;
+                    $objRegistration->save();
 
-                    if (null !== $this->contaoGeneralLogger) {
+                    if ($this->contaoGeneralLogger) {
                         $message = sprintf(
                             'An event feedback reminder for event "%s" ID %d has been sent to frontend user "%s %s" (event registration ID %d).',
                             $event->title,
                             $event->id,
-                            $objMember->firstname,
-                            $objMember->lastname,
-                            $objMember->id,
+                            $objRegistration->firstname,
+                            $objRegistration->lastname,
+                            $objRegistration->id,
                         );
 
                         $this->contaoGeneralLogger->info(
@@ -86,26 +89,63 @@ class SendFeedbackReminder
         $this->feedbackReminder->deleteReminder($objReminder);
     }
 
-    public function sendRemindersByExecutionDate($tstamp, $number = 20): void
+    /**
+     * @throws Exception
+     */
+    public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20): void
     {
-        // Delete no more used records
-        Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE expiration < ?')
-            ->execute($tstamp)
-        ;
+        try {
+            $this->connection->beginTransaction();
 
-        $objReminder = Database::getInstance()
-            ->prepare('SELECT * FROM tl_event_feedback_reminder WHERE executionDate < ?')
-            ->limit($number)
-            ->execute($tstamp - $this->onlineFeedbackConfigs['send_reminder_execution_delay'])
-        ;
+            // Delete already dispatched or expired records.
+            $this->connection->executeStatement(
+                'DELETE FROM tl_event_feedback_reminder WHERE expiration < ? OR (dispatchTime > ? AND dispatchTime < ?)',
+                [
+                    $tstamp,
+                    0,
+                    time() - 60,
+                ],
+            );
 
-        while ($objReminder->next()) {
-            $reminderModel = EventFeedbackReminderModel::findByPk($objReminder->id);
-            $this->sendReminder($reminderModel);
+            // Queue competing queries/requests on table "tl_event_feedback_reminder" with "FOR UPDATE" until the transaction is completed.
+            // This should prevent competing queries and double emailing
+            $result = $this->connection->executeQuery(
+                sprintf('SELECT id FROM tl_event_feedback_reminder WHERE executionDate < ? AND dispatched = ? LIMIT 0,%d FOR UPDATE', $limit),
+                [
+                    $tstamp - $this->onlineFeedbackConfigs['send_reminder_execution_delay'],
+                    '',
+                ]
+            );
+
+            $arrIds = $result->fetchFirstColumn();
+
+            if (!empty($arrIds)) {
+                foreach ($arrIds as $id) {
+                    $reminderModel = EventFeedbackReminderModel::findByPk($id);
+
+                    if (null !== $reminderModel) {
+                        $set = [
+                            'dispatched' => '1',
+                            'dispatchTime' => time(),
+                        ];
+
+                        $this->connection->update('tl_event_feedback_reminder', $set, ['id' => $id]);
+
+                        // Send notification
+                        $this->sendReminder($reminderModel);
+                    }
+                }
+            }
+
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     private function getNotificationTokens(CalendarEventsMemberModel $member, EventFeedbackReminderModel $reminder): array
     {
         if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
@@ -134,7 +174,7 @@ class SendFeedbackReminder
         return $arrTokens;
     }
 
-    private function generateJwt(CalendarEventsMemberModel $member, EventFeedbackReminderModel $reminder)
+    private function generateJwt(CalendarEventsMemberModel $member, EventFeedbackReminderModel $reminder): string
     {
         $userId = (int) $member->id;
         $expiration = (int) $reminder->expiration;
