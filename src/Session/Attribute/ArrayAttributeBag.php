@@ -21,6 +21,8 @@ use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
  */
 class ArrayAttributeBag extends AttributeBag implements \ArrayAccess
 {
+    public const SESSION_BAG_NAME = 'markocupic_sac_event_feedback';
+
     public function offsetExists($offset): bool
     {
         return $this->has($offset);
