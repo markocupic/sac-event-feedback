@@ -26,7 +26,8 @@
         "markocupic/sac-event-tool-bundle": "*",
         "markocupic/cloudconvert-bundle": "^2.1",
         "rbdwllr/reallysimplejwt": "^4.0",
-        "terminal42/contao-mp_forms": "^4.3"
+        "terminal42/contao-mp_forms": "^4.3",
+        "juststeveking/uri-builder": "^3.0"
     },
     "require-dev": {
         "contao/easy-coding-standard": "^5.0",

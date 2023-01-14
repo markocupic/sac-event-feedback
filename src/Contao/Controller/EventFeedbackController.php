@@ -21,15 +21,14 @@ use Contao\CoreBundle\Exception\InvalidResourceException;
 use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
-use Contao\Date;
-use Contao\Input;
-use Haste\Util\Url;
+use JustSteveKing\UriBuilder\Uri;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Twig\Environment as TwigEnvironment;
@@ -37,14 +36,16 @@ use Twig\Environment as TwigEnvironment;
 class EventFeedbackController
 {
     private Security $security;
+    private RequestStack $requestStack;
     private TwigEnvironment $twig;
     private ConvertFile $convertFile;
     private string $docxTemplate;
     private string $projectDir;
 
-    public function __construct(Security $security, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
+    public function __construct(Security $security, RequestStack $requestStack, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
     {
         $this->security = $security;
+        $this->requestStack = $requestStack;
         $this->twig = $twig;
         $this->convertFile = $convertFile;
         $this->projectDir = $projectDir;
@@ -53,7 +54,9 @@ class EventFeedbackController
 
     public function getEventFeedbackAction(DataContainer $dc): Response
     {
-        $id = Input::get('id');
+        $request = $this->requestStack->getCurrentRequest();
+
+        $id = $request->query->get('id');
         $event = CalendarEventsModel::findByPk($id);
 
         if (null === $event) {
@@ -66,21 +69,27 @@ class EventFeedbackController
 
         $objFeedback = new Feedback($event);
 
+        $url = Uri::fromString($request->getUri());
+        $url->addQueryParam('key', 'showEventFeedbacksAsPdf');
+        $pdfLink = $url->toString();
+
         return new Response($this->twig->render(
             '@MarkocupicSacEventFeedback/sac_event_feedback.html.twig',
             [
                 'event' => $objFeedback->getEvent(false)->row(),
-                'has_feedbacks' => $objFeedback->countFeedbacks(false) > 0 ? true : false,
+                'has_feedbacks' => $objFeedback->countFeedbacks(false) > 0,
                 'feedbacks' => $objFeedback->getDataAll(false),
                 'feedback_count' => $objFeedback->countFeedbacks(false),
-                'pdf_link' => '/'.Url::addQueryString('key=showEventFeedbacksAsPdf'),
+                'pdf_link' => '/'.$pdfLink,
             ]
         ));
     }
 
     public function getEventFeedbackAsPdfAction(DataContainer $dc): Response
     {
-        $id = Input::get('id');
+        $request = $this->requestStack->getCurrentRequest();
+
+        $id = $request->query->get('id');
         $event = CalendarEventsModel::findByPk($id);
 
         if (null === $event) {
@@ -95,16 +104,16 @@ class EventFeedbackController
 
         // Create phpword instance
         $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
-        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated=?', 'eventId=?'], ['1', $event->id]);
+        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated = ?', 'eventId = ?'], ['1', $event->id]);
 
         $objPhpWord = new MsWordTemplateProcessor($this->docxTemplate, $targetSrc);
-        $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode((string) $event->title)));
+        $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode($event->title)));
         $objPhpWord->replace('event_type', $event->eventType);
         $objPhpWord->replace('event_id', $event->id);
         $objPhpWord->replace('event_instructor', CalendarEventsHelper::getMainInstructorName($event));
-        $arrEventDates = array_map(static fn ($tstamp) => Date::parse('d.m.Y', $tstamp), CalendarEventsHelper::getEventTimestamps($event));
+        $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), CalendarEventsHelper::getEventTimestamps($event));
         $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
-        $objPhpWord->replace('date', Date::parse('d.m.Y'));
+        $objPhpWord->replace('date', date('d.m.Y'));
         $objPhpWord->replace('count_fb', $objFeedback->countFeedbacks());
         $objPhpWord->replace('count_reg', (string) $countReg);
 
@@ -149,17 +158,15 @@ class EventFeedbackController
         $user = $this->security->getUser();
 
         if ($user instanceof BackendUser) {
-            $user = $this->security->getUser();
-
-            if (!$user instanceof BackendUser) {
-                return false;
+            if ($this->security->isGranted('ROLE_ADMIN')) {
+                return true;
             }
 
-            // Apply same permission rules like "teilnehmerliste"
-            $canReadFeadbacks = true;
+            // Apply same permissions as "teilnehmerliste"
+            $canReadFeedbacks = true;
 
             if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $event->id) && (int) $event->registrationGoesTo !== (int) $user->id) {
-                $canReadFeadbacks = false;
+                $canReadFeedbacks = false;
             }
 
             $canAccessModule = $this->security->isGranted(
@@ -167,7 +174,7 @@ class EventFeedbackController
                 'sac_calendar_events_tool'
             );
 
-            if ($canAccessModule && $canReadFeadbacks) {
+            if ($canAccessModule && $canReadFeedbacks) {
                 return true;
             }
         }
