@@ -15,40 +15,33 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Cron;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Database;
-use Contao\Date;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 #[AsCronJob('weekly')]
 class DeleteOldFeedbacks
 {
-    private ContaoFramework $framework;
+    private Connection $connection;
     private string $deleteFeedbacksAfter;
 
-    public function __construct(ContaoFramework $framework, string $deleteFeedbacksAfter)
+    public function __construct(Connection $connection, string $deleteFeedbacksAfter)
     {
-        $this->framework = $framework;
+        $this->connection = $connection;
         $this->deleteFeedbacksAfter = $deleteFeedbacksAfter;
     }
 
+    /**
+     * @throws Exception
+     */
     public function __invoke(): void
     {
-        // Initialize the Contao framework
-        $this->framework->initialize(true);
-
-        $datimToday = new \DateTimeImmutable(Date::parse('Y-m-d'));
+        $datimToday = new \DateTimeImmutable(date('Y-m-d'));
         $datimExpired = $datimToday->modify('-'.$this->deleteFeedbacksAfter.' day');
 
         // Delete old feedbacks
-        Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback WHERE dateAdded < ?')
-            ->execute($datimExpired->getTimestamp())
-        ;
+        $this->connection->executeStatement('DELETE FROM tl_event_feedback WHERE dateAdded < ?', [$datimExpired->getTimestamp()]);
 
         // Delete old reminders
-        Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE dateAdded < ?')
-            ->execute($datimExpired->getTimestamp())
-        ;
+        $this->connection->executeStatement('DELETE FROM tl_event_feedback_reminder WHERE dateAdded < ?', [$datimExpired->getTimestamp()]);
     }
 }

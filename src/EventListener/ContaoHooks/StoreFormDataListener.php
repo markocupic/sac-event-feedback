@@ -15,12 +15,12 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Contao\Database;
 use Contao\Form;
 use Contao\FrontendUser;
-use Markocupic\SacEventFeedback\Controller\FrontendModule\EventFeedbackFormController;
+use Doctrine\DBAL\Connection;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -32,13 +32,15 @@ class StoreFormDataListener
     public const HOOK = 'storeFormData';
 
     private Security $security;
+    private Connection $connection;
     private EventFeedbackHelper $eventFeedbackHelper;
     private RequestStack $requestStack;
     private string $secret;
 
-    public function __construct(Security $security, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack, string $secret)
+    public function __construct(Security $security, Connection $connection, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack, string $secret)
     {
         $this->security = $security;
+        $this->connection = $connection;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->requestStack = $requestStack;
         $this->secret = $secret;
@@ -95,16 +97,13 @@ class StoreFormDataListener
         $arrData['tstamp'] = time();
 
         // Delete no more used reminders
-        Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid=?')
-            ->execute($objRegistration->uuid)
-        ;
+        $this->connection->delete('tl_event_feedback_reminder', ['uuid' => $objRegistration->uuid]);
 
         // Store new uuid in the session
         $session = $request->getSession();
 
         if ($session->isStarted()) {
-            $bag = $session->getBag(EventFeedbackFormController::SESSION_BAG_NAME);
+            $bag = $session->getBag(ArrayAttributeBag::SESSION_BAG_NAME);
             $bag->set('sac_event_feedback_last_insert', $objRegistration->uuid);
         }
 

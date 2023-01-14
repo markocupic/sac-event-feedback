@@ -14,21 +14,25 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
-use Contao\Database;
+use Doctrine\DBAL\Connection;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class FeedbackReminder
 {
+    private Connection $connection;
+
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
+
     /**
      * @throws \Exception
      */
     public function deleteFeedbackReminderByEventMember(CalendarEventsMemberModel $eventMember): void
     {
-        Database::getInstance()
-            ->prepare('DELETE FROM tl_event_feedback_reminder WHERE uuid = ?')
-            ->execute($eventMember->uuid)
-        ;
+        $this->connection->delete('tl_event_feedback_reminder', ['uuid' => $eventMember->uuid]);
     }
 
     public function deleteReminder(EventFeedbackReminderModel $objReminder): void

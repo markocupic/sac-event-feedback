@@ -15,21 +15,24 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
 use Contao\CalendarEventsModel;
-use Contao\Database;
-use Contao\Date;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class CreateFeedbackReminderTask
 {
+    private Connection $connection;
     private EventFeedbackHelper $eventFeedbackHelper;
 
-    public function __construct(EventFeedbackHelper $eventFeedbackHelper)
+    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper)
     {
+        $this->connection = $connection;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
     }
 
     /**
+     * @throws Exception
      * @throws \Exception
      */
     public function create(CalendarEventsMemberModel $eventMember): void
@@ -41,17 +44,18 @@ class CreateFeedbackReminderTask
         $arrConfig = $this->eventFeedbackHelper->getOnlineFeedbackConfiguration($event);
 
         if (empty($arrConfig['send_reminder_after_days'])) {
-            throw new \Exception('Array "feedback_expiration_time" should not be empty!');
+            throw new \Exception('Array "send_reminder_after_days" should not be empty!');
         }
 
         if (!isset($arrConfig['feedback_expiration_time'])) {
             throw new \Exception('Key "feedback_expiration_time" should not be empty!');
         }
 
-        $datimToday = new \DateTimeImmutable(Date::parse('Y-m-d H:i:s', time()));
-        $dateEventEnd = new \DateTimeImmutable(Date::parse('Y-m-d', $event->endDate));
+        $datimToday = new \DateTimeImmutable(date('Y-m-d H:i:s'));
+        $dateEventEnd = new \DateTimeImmutable(date('Y-m-d', (int) $event->endDate));
 
         $datimStartReminding = $datimToday;
+
         // Prevent sending reminders before the event end date is reached
         if ($datimToday->getTimestamp() <= $dateEventEnd->getTimestamp()) {
             $datimStartReminding = $dateEventEnd;
@@ -73,11 +77,14 @@ class CreateFeedbackReminderTask
 
             // Prevent inserting duplicate records
             // See $GLOBALS['TL_DCA']['tl_event_feedback_reminder']['config']['sql']['keys']['uuid,executionDate'] = 'unique'
-            Database::getInstance()
-                ->prepare('INSERT INTO tl_event_feedback_reminder %s ON DUPLICATE KEY UPDATE dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)')
-                ->set($set)
-                ->execute()
-            ;
+            $sql = 'INSERT INTO tl_event_feedback_reminder (%s) VALUES (%s) ON DUPLICATE KEY UPDATE dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)';
+            $stmt = sprintf(
+                $sql,
+                implode(',', array_keys($set)),
+                implode(',', array_fill(0, 6, '?')),
+            );
+
+            $this->connection->executeStatement($stmt, array_values($set));
         }
     }
 }

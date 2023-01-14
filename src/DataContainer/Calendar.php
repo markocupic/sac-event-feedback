@@ -15,18 +15,18 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\DataContainer;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
-use Contao\CoreBundle\Framework\ContaoFramework;
-use Contao\Database;
 use Contao\DataContainer;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 
 class Calendar
 {
-    private ContaoFramework $framework;
     private array $onlineFeedbackConfigs;
+    private Connection $connection;
 
-    public function __construct(ContaoFramework $framework, array $onlineFeedbackConfigs)
+    public function __construct(Connection $connection, array $onlineFeedbackConfigs)
     {
-        $this->framework = $framework;
+        $this->connection = $connection;
         $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
     }
 
@@ -36,42 +36,23 @@ class Calendar
         return array_keys($this->onlineFeedbackConfigs);
     }
 
+    /**
+     * @throws Exception
+     */
     #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackNotification.options')]
     public function getNotifications(DataContainer $dc): array
     {
-        $arrOptions = [];
-
-        $databaseAdapter = $this->framework->getAdapter(Database::class);
-
-        $objDb = $databaseAdapter
-            ->getInstance()
-            ->execute('SELECT * FROM tl_nc_notification')
-        ;
-
-        while ($objDb->next()) {
-            $arrOptions[$objDb->id] = $objDb->title;
-        }
-
-        return $arrOptions;
+        return $this->connection->fetchAllKeyValue('SELECT id, title FROM tl_nc_notification');
     }
 
+    /**
+     * @throws Exception
+     */
     #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackForm.options')]
     public function getOnlineFeedbackForm(DataContainer $dc): array
     {
-        $arrOptions = [];
+        $result = $this->connection->executeQuery('SELECT id, title FROM tl_form WHERE isSacEventFeedbackForm = ?', ['1']);
 
-        $databaseAdapter = $this->framework->getAdapter(Database::class);
-
-        $objDb = $databaseAdapter
-            ->getInstance()
-            ->prepare('SELECT * FROM tl_form WHERE isSacEventFeedbackForm=?')
-            ->execute('1')
-        ;
-
-        while ($objDb->next()) {
-            $arrOptions[$objDb->id] = $objDb->title;
-        }
-
-        return $arrOptions;
+        return $result->fetchAllKeyValue();
     }
 }

@@ -20,6 +20,7 @@ use Contao\StringUtil;
 use Contao\Template;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,8 +36,6 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     public const MODE_SHOW_FORM = 'show_form';
     public const MODE_CHECKOUT = 'checkout';
     public const MODE_SHOW_FORM_ALREADY_FILLED_OUT = 'form_already_filled_out';
-
-    public const SESSION_BAG_NAME = 'markocupic_sac_event_feedback';
 
     private Security $security;
     private ScopeMatcher $scopeMatcher;
@@ -94,7 +93,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         }
 
         $session = $request->getSession();
-        $bag = $session->getBag(self::SESSION_BAG_NAME);
+        $bag = $session->getBag(ArrayAttributeBag::SESSION_BAG_NAME);
 
         if ($session->isStarted()) {
             if ($bag->has('sac_event_feedback_last_insert')) {
