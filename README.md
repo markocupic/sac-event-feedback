@@ -61,7 +61,7 @@ Der Tourenleiter kann die gesammelten Auswertungen anonymisiert im Backend (bei 
 # Funktion
 Sobald der Leiter die Teilnahme eines Gastes bestätigt, wird ein Set von "Feedback Remindern" in der Datenbank abgelegt.
 Wie viele Reminder und in welchem Abstand diese versendet werden sollen, kann via Konfiguration festgelegt werden.
-Die Reminder werden dann stündlich via Cronjob versendet.
+Die Reminder werden dann minütlich (einstellbar) via Cronjob versendet.
 
 
 # Konfiguration
