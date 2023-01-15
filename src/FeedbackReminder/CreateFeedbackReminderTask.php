@@ -75,7 +75,7 @@ class CreateFeedbackReminderTask
             $stmt = sprintf(
                 $sql,
                 implode(',', array_keys($set)),
-                implode(',', array_fill(0, 6, '?')),
+                implode(',', array_fill(0, count($set), '?')),
             );
 
             $this->connection->executeStatement($stmt, array_values($set));
