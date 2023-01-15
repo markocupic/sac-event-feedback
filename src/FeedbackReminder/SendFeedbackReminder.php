@@ -31,16 +31,16 @@ class SendFeedbackReminder
     private Connection $connection;
     private EventFeedbackHelper $eventFeedbackHelper;
     private FeedbackReminder $feedbackReminder;
-    private array $onlineFeedbackConfigs;
+    private array $bundleConfig;
     private string $secret;
     private LoggerInterface|null $contaoGeneralLogger;
 
-    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $onlineFeedbackConfigs, string $secret, LoggerInterface $contaoGeneralLogger = null)
+    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $bundleConfig, string $secret, LoggerInterface $contaoGeneralLogger = null)
     {
         $this->connection = $connection;
         $this->eventFeedbackHelper = $eventFeedbackHelper;
         $this->feedbackReminder = $feedbackReminder;
-        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
+        $this->bundleConfig = $bundleConfig;
         $this->secret = $secret;
         $this->contaoGeneralLogger = $contaoGeneralLogger;
     }
@@ -112,7 +112,7 @@ class SendFeedbackReminder
             $result = $this->connection->executeQuery(
                 sprintf('SELECT id FROM tl_event_feedback_reminder WHERE executionDate < ? AND dispatched = ? LIMIT 0,%d FOR UPDATE', $limit),
                 [
-                    $tstamp - $this->onlineFeedbackConfigs['send_reminder_execution_delay'],
+                    $tstamp - $this->bundleConfig['send_reminder_execution_delay'],
                     '',
                 ]
             );

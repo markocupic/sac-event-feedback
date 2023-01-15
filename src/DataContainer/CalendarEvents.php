@@ -23,11 +23,11 @@ use NotificationCenter\Model\Notification;
 
 class CalendarEvents
 {
-    private array $onlineFeedbackConfigs;
+    private array $bundleConfig;
 
-    public function __construct(array $onlineFeedbackConfigs)
+    public function __construct(array $bundleConfig)
     {
-        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
+        $this->bundleConfig = $bundleConfig;
     }
 
     #[AsCallback(table: 'tl_calendar_events', target: 'config.onload')]
@@ -41,7 +41,7 @@ class CalendarEvents
                     if ($calendarModel->enableOnlineEventFeedback) {
                         $formModel = FormModel::findByPk($calendarModel->onlineFeedbackForm);
                         $notificationModel = Notification::findByPk($calendarModel->onlineFeedbackNotification);
-                        $hasConfig = $calendarModel->onlineFeedbackConfiguration && ($this->onlineFeedbackConfigs[$calendarModel->onlineFeedbackConfiguration] ?? null);
+                        $hasConfig = $calendarModel->onlineFeedbackConfiguration && ($this->bundleConfig[$calendarModel->onlineFeedbackConfiguration] ?? null);
 
                         if (null !== $formModel && null !== $notificationModel && $hasConfig) {
                             $blnRemoveField = false;

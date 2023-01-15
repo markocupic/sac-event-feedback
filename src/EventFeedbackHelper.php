@@ -25,11 +25,11 @@ use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper
 {
-    private array $onlineFeedbackConfigs;
+    private array $bundleConfig;
 
-    public function __construct(array $onlineFeedbackConfigs)
+    public function __construct(array $bundleConfig)
     {
-        $this->onlineFeedbackConfigs = $onlineFeedbackConfigs;
+        $this->bundleConfig = $bundleConfig;
     }
 
     public function eventHasValidFeedbackConfiguration(CalendarEventsModel $event): bool
@@ -150,10 +150,10 @@ class EventFeedbackHelper
             return null;
         }
 
-        if (!$calendar->onlineFeedbackConfiguration || !isset($this->onlineFeedbackConfigs[$calendar->onlineFeedbackConfiguration])) {
+        if (!$calendar->onlineFeedbackConfiguration || !isset($this->bundleConfig[$calendar->onlineFeedbackConfiguration])) {
             return null;
         }
 
-        return $this->onlineFeedbackConfigs[$calendar->onlineFeedbackConfiguration];
+        return $this->bundleConfig[$calendar->onlineFeedbackConfiguration];
     }
 }
