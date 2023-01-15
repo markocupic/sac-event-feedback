@@ -21,19 +21,19 @@ use Doctrine\DBAL\Exception;
 
 class Calendar
 {
-    private array $bundleConfig;
+    private array $feedbackConfig;
     private Connection $connection;
 
-    public function __construct(Connection $connection, array $bundleConfig)
+    public function __construct(Connection $connection, array $feedbackConfig)
     {
         $this->connection = $connection;
-        $this->bundleConfig = $bundleConfig;
+        $this->feedbackConfig = $feedbackConfig;
     }
 
     #[AsCallback(table: 'tl_calendar', target: 'fields.onlineFeedbackConfiguration.options')]
     public function getOnlineFeedbackConfigurations(DataContainer $dc): array
     {
-        return array_keys($this->bundleConfig);
+        return array_keys($this->feedbackConfig);
     }
 
     /**

@@ -4,7 +4,7 @@ services:
         autoconfigure: true
         bind:
             $projectDir: '%kernel.project_dir%'
-            $bundleConfig: '%markocupic_sac_event_feedback.configs%'
+            $feedbackConfig: '%markocupic_sac_event_feedback.configs%'
             $deleteFeedbacksAfter: '%markocupic_sac_event_feedback.delete_feedbacks_after%'
             $docxTemplate: '%markocupic_sac_event_feedback.docx_template%'
             $secret: '%markocupic_sac_event_feedback.secret%'
