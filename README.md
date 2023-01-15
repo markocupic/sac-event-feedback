@@ -77,10 +77,10 @@ markocupic_sac_event_feedback:
       name: 'default'
       # Allow feedbacks up to 10 days after the event end date
       feedback_expiration_time: 60 #days
-      # Send reminders: 1 day after event end
+      # Send reminders: 0 day after event end
       # Send reminders: 14 days after event end
       # Send reminders: 28 days after event end
-      send_reminder_after_days: [1,14,28] #days
+      send_reminder_after_days: [0,14,28] #days
 ```
 
 In config/config.yml muss ein secret abgelegt werden, welches aus mindestens
@@ -89,7 +89,7 @@ In config/config.yml muss ein secret abgelegt werden, welches aus mindestens
 ```
 markocupic_sac_event_feedback:
     # The secret should contain a number, an upper and a lowercase letter,
-    # and a special character *&!@%^#$. It should be at least 12 characters in
+    # and a special character *&!@%^#$. It should be at least 12 characters long.
     secret: '&fsdrefsR24ssfUTedsd%'
 ```
 

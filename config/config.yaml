@@ -1,7 +1,7 @@
 markocupic_sac_event_feedback:
   # Use this secret for JWT creation and validation
-  # The secret should contain a number, a upper and a lowercase letter,
-  # and a special character *&!@%^#$. It should be at least 12 characters in
+  # The secret should contain a number, an upper and a lowercase letter,
+  # and a special character *&!@%^#$. It should be at least 12 characters long.
   secret: ''
   # Delete feedbacks after 720 days
   delete_feedbacks_after: 720
@@ -14,7 +14,7 @@ markocupic_sac_event_feedback:
       name: 'default'
       # Allow Allow feedbacks up to 10 days after event end date
       feedback_expiration_time: 60 #days
-      # Send reminders: 0 day (immediatly),14 days, 28 days
+      # Send reminders: 0 day (immediatly), 14 days, 28 days
       # after "tl_calendar_events.member.hasParticipated" has been set to "true"
       send_reminder_after_days: [0,14,28] #days
       # Send first reminder x seconds after
