@@ -110,8 +110,9 @@ class SendFeedbackReminder
             // Queue competing queries/requests on table "tl_event_feedback_reminder" with "FOR UPDATE" until the transaction is completed.
             // This should prevent competing queries and double emailing
             $result = $this->connection->executeQuery(
-                sprintf('SELECT id FROM tl_event_feedback_reminder WHERE executionDate < ? AND dispatched = ? LIMIT 0,%d FOR UPDATE', $limit),
+                sprintf('SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND executionDate < ? AND dispatched = ? LIMIT 0,%d FOR UPDATE', $limit),
                 [
+                    time(),
                     $tstamp - $this->feedbackConfig['send_reminder_execution_delay'],
                     '',
                 ]
