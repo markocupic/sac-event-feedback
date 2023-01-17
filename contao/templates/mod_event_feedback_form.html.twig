@@ -1,43 +1,56 @@
 {% extends '@Contao/block_unsearchable' %}
 
 {% block content %}
-    {% if mode=='has_warning' %}
-        <h2>Leider ist ein Fehler aufgetreten</h2>
-        <div class="alert alert-warning mt-5 mb-5" role="alert">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>{{ warningMsg }}</div>
-        </div>
-    {% elseif mode=='form_already_filled_out' %}
+    {% if mode == 'show_form' %}
         {{ details|raw }}
-        <div class="alert alert-warning mt-5 mb-5" role="alert">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>{{ formAlreadyFilledOutMsg }}</div>
-        </div>
-    {% elseif mode=='show_form' %}
-        {{ details|raw }}
-        <div class="sac-ev-fb-form mt-5 mb-5">
-            {{ form|raw }}
-            <script>
-              // Convert integer opion values to its corresponding labels
-              let oFormLabels = {{ formLabels|raw }};
-                Object.keys(oFormLabels).forEach(function(ffName) {
-                  let element = document.querySelector('.sac-ev-fb-summary .value[data-ff-name="' + ffName + '"]');
-                  if (element) {
-                    let i = parseInt(element.innerHTML);
-                    if (!isNaN(i)) {
-                      element.innerHTML = oFormLabels[ffName][i];
-                    }
-                  }
-                });
-            </script>
-        </div>
-    {% elseif mode=='checkout' %}
-        {{ details|raw }}
-        <div class="alert alert-success mt-4 mb-5" role="alert">
-            <i class="fas fa-check-circle"></i>
-            <div>{{ checkoutMsg }}</div>
-        </div>
     {% endif %}
 
+    <div class="row">
+        <div class="col-lg-6 p-4 bg-white">
+            {% if mode == 'has_warning' %}
+                <h2>Leider ist ein Fehler aufgetreten</h2>
+                <div class="alert alert-warning mt-5 mb-5" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>{{ warningMsg }}</div>
+                </div>
+            {% elseif mode == 'form_already_filled_out' %}
+                {{ details|raw }}
+                <div class="alert alert-warning mt-5 mb-5" role="alert">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>{{ formAlreadyFilledOutMsg }}</div>
+                </div>
+            {% elseif mode == 'show_form' %}
+                <div class="sac-ev-fb-form p-0 p-xl-4">
+
+                    {# Step indicator #}
+                    <div>Schritt <span class="mp-form-steps-current"><strong>{{ formManager.getCurrentStep() + 1 }}</strong></span> von <span class="mp-form-steps-total">{{ formManager.getNumberOfSteps() + 1 }}</span></div>
+                    {{ form|raw }}
+
+                    <script>
+                        // Convert integer option values to its corresponding labels
+                        let oFormLabels = {{ formLabels|raw }};
+                        Object.keys(oFormLabels).forEach(function (ffName) {
+                            let element = document.querySelector('.sac-ev-fb-summary .value[data-ff-name="' + ffName + '"]');
+                            if (element) {
+                                let i = parseInt(element.innerHTML);
+                                if (!isNaN(i)) {
+                                    element.innerHTML = oFormLabels[ffName][i];
+                                }
+                            }
+                        });
+                    </script>
+                </div>
+            {% elseif mode == 'checkout' %}
+                {{ details|raw }}
+                <div class="alert alert-success mt-4 mb-5" role="alert">
+                    <i class="fas fa-check-circle"></i>
+                    <div>{{ checkoutMsg }}</div>
+                </div>
+            {% endif %}
+        </div>
+        <div class="col-lg-6 d-none d-lg-block" style="background: url('bundles/markocupicsaceventfeedback/images/background_{{ random(1,6) }}.jpg') no-repeat center center; background-size: cover" )>
+            {# Empty, display image only #}
+        </div>
+    </div>
     {{ parent() }}
 {% endblock %}

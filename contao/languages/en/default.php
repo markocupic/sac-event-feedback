@@ -20,10 +20,9 @@ $GLOBALS['TL_LANG']['ERR']['sacEvFb']['calendarMatchingUuidNotFound'] = 'Das mit
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
 $GLOBALS['TL_LANG']['ERR']['sacEvFb']['formMatchingUuidNotFound'] = 'Das mit der url übermittelte Sicherheitstoken konnte keinem Auswertungsformular zugeordnet werden. Bitte nimm mit dem Administrator Kontakt auf, sollte der Fehler länger bestehen.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['tokenExpired'] = 'Das Sicherheitstoken ist abgelaufen. Für diesen Event kann kein Feedback mehr abgegeben werden.';
-$GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidToken'] = 'Die Validierung deines Sicherheitstokens hat fehlgeschlagen.';
+$GLOBALS['TL_LANG']['ERR']['sacEvFb']['tokenExpiredOrInvalid'] = 'Das Sicherheitstoken ist abgelaufen oder ungültig. Für diesen Event kann kein Feedback mehr abgegeben werden.';
 
-// Miscelaneous
+// Miscellaneous
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationMale'] = 'Lieber';
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['salutationFemale'] = 'Liebe';
 $GLOBALS['TL_LANG']['MSC']['sacEvFb']['formAlreadyFilledOutMsg'] = '%s %s{{br}}Wir haben von dir bereits eine Bewertung zum Event "%s" erhalten. Vielen Dank für dein Feedback. {{br}}{{br}}Wir wünschen dir weiterhin unvergessliche und unfallfreie Touren und hoffentlich bis bald{{br}}{{br}}SAC Touren- und Kursadministration';

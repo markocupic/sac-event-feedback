@@ -78,10 +78,10 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
         if (!$token || !Token::validate($token, $this->secret)) {
             if (!Token::validateExpiration($token, $this->secret)) {
-                return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.tokenExpired', [], 'contao_default'));
+                return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.tokenExpiredOrInvalid', [], 'contao_default'));
             }
 
-            return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.invalidToken', [], 'contao_default'));
+            return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.tokenExpiredOrInvalid', [], 'contao_default'));
         }
 
         // Get the user id (tl_calendar_events_member.id) from JWT
@@ -134,7 +134,11 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
         /* Show the form */
         if (self::MODE_SHOW_FORM === $this->mode) {
+            $formManager = new \MPFormsFormManager($form->id);
+            $template->formManager = $formManager;
+
             $this->template->form = Controller::getForm($form->id);
+            $this->template->formModel = $form;
             $this->template->formLabels = json_encode($this->getFormLabels($form));
         }
 
