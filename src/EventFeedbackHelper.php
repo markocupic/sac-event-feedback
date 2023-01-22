@@ -25,11 +25,9 @@ use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper
 {
-    private array $feedbackConfig;
-
-    public function __construct(array $feedbackConfig)
-    {
-        $this->feedbackConfig = $feedbackConfig;
+    public function __construct(
+        private readonly array $feedbackConfig,
+    ) {
     }
 
     public function eventHasValidFeedbackConfiguration(CalendarEventsModel $event): bool

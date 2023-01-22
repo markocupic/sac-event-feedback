@@ -22,13 +22,10 @@ use Markocupic\SacEventFeedback\FeedbackReminder\SendFeedbackReminder;
 #[AsCronJob('minutely')]
 class ExecuteEventReminderTasks
 {
-    private ContaoFramework $framework;
-    private SendFeedbackReminder $sendFeedbackReminder;
-
-    public function __construct(ContaoFramework $framework, SendFeedbackReminder $sendFeedbackReminder)
-    {
-        $this->framework = $framework;
-        $this->sendFeedbackReminder = $sendFeedbackReminder;
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly SendFeedbackReminder $sendFeedbackReminder,
+    ) {
     }
 
     /**

@@ -28,21 +28,14 @@ use ReallySimpleJWT\Token;
 
 class SendFeedbackReminder
 {
-    private Connection $connection;
-    private EventFeedbackHelper $eventFeedbackHelper;
-    private FeedbackReminder $feedbackReminder;
-    private array $feedbackConfig;
-    private string $secret;
-    private LoggerInterface|null $contaoGeneralLogger;
-
-    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, array $feedbackConfig, string $secret, LoggerInterface $contaoGeneralLogger = null)
-    {
-        $this->connection = $connection;
-        $this->eventFeedbackHelper = $eventFeedbackHelper;
-        $this->feedbackReminder = $feedbackReminder;
-        $this->feedbackConfig = $feedbackConfig;
-        $this->secret = $secret;
-        $this->contaoGeneralLogger = $contaoGeneralLogger;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly EventFeedbackHelper $eventFeedbackHelper,
+        private readonly FeedbackReminder $feedbackReminder,
+        private readonly array $feedbackConfig,
+        private readonly string $secret,
+        private readonly LoggerInterface|null $contaoGeneralLogger = null,
+    ) {
     }
 
     public function sendReminder(EventFeedbackReminderModel $objReminder): void

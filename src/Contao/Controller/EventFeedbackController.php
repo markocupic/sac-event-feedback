@@ -35,21 +35,14 @@ use Twig\Environment as TwigEnvironment;
 
 class EventFeedbackController
 {
-    private Security $security;
-    private RequestStack $requestStack;
-    private TwigEnvironment $twig;
-    private ConvertFile $convertFile;
-    private string $docxTemplate;
-    private string $projectDir;
-
-    public function __construct(Security $security, RequestStack $requestStack, TwigEnvironment $twig, ConvertFile $convertFile, string $docxTemplate, string $projectDir)
-    {
-        $this->security = $security;
-        $this->requestStack = $requestStack;
-        $this->twig = $twig;
-        $this->convertFile = $convertFile;
-        $this->projectDir = $projectDir;
-        $this->docxTemplate = $docxTemplate;
+    public function __construct(
+        private readonly Security $security,
+        private readonly RequestStack $requestStack,
+        private readonly TwigEnvironment $twig,
+        private readonly ConvertFile $convertFile,
+        private readonly string $docxTemplate,
+        private readonly string $projectDir,
+    ) {
     }
 
     public function getEventFeedbackAction(DataContainer $dc): Response

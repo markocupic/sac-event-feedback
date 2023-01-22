@@ -21,13 +21,10 @@ use Doctrine\DBAL\Exception;
 #[AsCronJob('weekly')]
 class DeleteOldFeedbacks
 {
-    private Connection $connection;
-    private string $deleteFeedbacksAfter;
-
-    public function __construct(Connection $connection, string $deleteFeedbacksAfter)
-    {
-        $this->connection = $connection;
-        $this->deleteFeedbacksAfter = $deleteFeedbacksAfter;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly string $deleteFeedbacksAfter,
+    ) {
     }
 
     /**

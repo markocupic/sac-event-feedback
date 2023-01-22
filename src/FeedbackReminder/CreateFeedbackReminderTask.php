@@ -22,13 +22,10 @@ use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class CreateFeedbackReminderTask
 {
-    private Connection $connection;
-    private EventFeedbackHelper $eventFeedbackHelper;
-
-    public function __construct(Connection $connection, EventFeedbackHelper $eventFeedbackHelper)
-    {
-        $this->connection = $connection;
-        $this->eventFeedbackHelper = $eventFeedbackHelper;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly EventFeedbackHelper $eventFeedbackHelper,
+    ) {
     }
 
     /**

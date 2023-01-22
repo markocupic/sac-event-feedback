@@ -24,15 +24,11 @@ use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class CalendarEventsMember
 {
-    private EventFeedbackHelper $eventFeedbackHelper;
-    private FeedbackReminder $feedbackReminder;
-    private CreateFeedbackReminderTask $createFeedbackReminderTask;
-
-    public function __construct(EventFeedbackHelper $eventFeedbackHelper, FeedbackReminder $feedbackReminder, CreateFeedbackReminderTask $createFeedbackReminderTask)
-    {
-        $this->eventFeedbackHelper = $eventFeedbackHelper;
-        $this->feedbackReminder = $feedbackReminder;
-        $this->createFeedbackReminderTask = $createFeedbackReminderTask;
+    public function __construct(
+        private readonly EventFeedbackHelper $eventFeedbackHelper,
+        private readonly FeedbackReminder $feedbackReminder,
+        private readonly CreateFeedbackReminderTask $createFeedbackReminderTask,
+    ) {
     }
 
     #[AsCallback(table: 'tl_calendar_events_member', target: 'fields.hasParticipated.save')]

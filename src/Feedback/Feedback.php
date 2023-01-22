@@ -22,14 +22,12 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 
 class Feedback
 {
-    private CalendarEventsModel $event;
     private array $arrData = [];
     private bool $hasCache = false;
 
-    public function __construct(CalendarEventsModel $event)
-    {
-        $this->event = $event;
-
+    public function __construct(
+        private readonly CalendarEventsModel $event,
+    ) {
         $this->arrData = [
             'event' => $event,
             'count' => 0,

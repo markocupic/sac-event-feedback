@@ -31,15 +31,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'sac-event-feedback:send-reminder')]
 class SendReminderCommand extends Command
 {
-    private ContaoFramework $framework;
-    private SendFeedbackReminder $sendFeedbackReminder;
-
-    public function __construct(ContaoFramework $framework, SendFeedbackReminder $sendFeedbackReminder)
-    {
+    public function __construct(
+        private readonly ContaoFramework $framework,
+        private readonly SendFeedbackReminder $sendFeedbackReminder,
+    ) {
         parent::__construct();
-
-        $this->framework = $framework;
-        $this->sendFeedbackReminder = $sendFeedbackReminder;
 
         $this->framework->initialize(true);
     }

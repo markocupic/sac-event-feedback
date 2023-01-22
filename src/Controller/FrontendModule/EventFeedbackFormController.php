@@ -37,21 +37,16 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
     public const MODE_CHECKOUT = 'checkout';
     public const MODE_SHOW_FORM_ALREADY_FILLED_OUT = 'form_already_filled_out';
 
-    private Security $security;
-    private ScopeMatcher $scopeMatcher;
-    private TranslatorInterface $translator;
-    private EventFeedbackHelper $eventFeedbackHelper;
-    private string $secret;
     private FrontendUser|null $user = null;
     private string $mode;
 
-    public function __construct(Security $security, ScopeMatcher $scopeMatcher, TranslatorInterface $translator, EventFeedbackHelper $eventFeedbackHelper, string $secret)
-    {
-        $this->security = $security;
-        $this->scopeMatcher = $scopeMatcher;
-        $this->translator = $translator;
-        $this->eventFeedbackHelper = $eventFeedbackHelper;
-        $this->secret = $secret;
+    public function __construct(
+        private readonly Security $security,
+        private readonly ScopeMatcher $scopeMatcher,
+        private readonly TranslatorInterface $translator,
+        private readonly EventFeedbackHelper $eventFeedbackHelper,
+        private readonly string $secret,
+    ) {
     }
 
     public function __invoke(Request $request, ModuleModel $model, string $section, array $classes = null, PageModel $page = null): Response

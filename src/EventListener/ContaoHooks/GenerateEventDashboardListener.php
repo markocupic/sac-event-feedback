@@ -29,11 +29,9 @@ class GenerateEventDashboardListener
 {
     public const HOOK = 'generateEventDashboard';
 
-    private Security $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
+    public function __construct(
+        private readonly Security $security,
+    ) {
     }
 
     public function __invoke(MenuItem $menu, CalendarEventsModel $objEvent): void

@@ -23,11 +23,9 @@ use NotificationCenter\Model\Notification;
 
 class CalendarEvents
 {
-    private array $feedbackConfig;
-
-    public function __construct(array $feedbackConfig)
-    {
-        $this->feedbackConfig = $feedbackConfig;
+    public function __construct(
+        private readonly array $feedbackConfig,
+    ) {
     }
 
     #[AsCallback(table: 'tl_calendar_events', target: 'config.onload')]

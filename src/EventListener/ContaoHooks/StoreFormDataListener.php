@@ -31,19 +31,13 @@ class StoreFormDataListener
 {
     public const HOOK = 'storeFormData';
 
-    private Security $security;
-    private Connection $connection;
-    private EventFeedbackHelper $eventFeedbackHelper;
-    private RequestStack $requestStack;
-    private string $secret;
-
-    public function __construct(Security $security, Connection $connection, EventFeedbackHelper $eventFeedbackHelper, RequestStack $requestStack, string $secret)
-    {
-        $this->security = $security;
-        $this->connection = $connection;
-        $this->eventFeedbackHelper = $eventFeedbackHelper;
-        $this->requestStack = $requestStack;
-        $this->secret = $secret;
+    public function __construct(
+        private readonly Security $security,
+        private readonly Connection $connection,
+        private readonly EventFeedbackHelper $eventFeedbackHelper,
+        private readonly RequestStack $requestStack,
+        private readonly string $secret,
+    ) {
     }
 
     /**
