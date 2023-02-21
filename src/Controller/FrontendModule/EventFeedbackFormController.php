@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Contracts\Translation\TranslatorInterface;
+use Terminal42\MultipageFormsBundle\FormManagerFactory;
 
 #[AsFrontendModule(EventFeedbackFormController::TYPE, category:'event_feedback', template:'mod_event_feedback_form')]
 class EventFeedbackFormController extends AbstractFrontendModuleController
@@ -45,6 +46,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         private readonly ScopeMatcher $scopeMatcher,
         private readonly TranslatorInterface $translator,
         private readonly EventFeedbackHelper $eventFeedbackHelper,
+        private readonly FormManagerFactory $formManagerFactory,
         private readonly string $secret,
     ) {
     }
@@ -129,9 +131,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
         /* Show the form */
         if (self::MODE_SHOW_FORM === $this->mode) {
-            $formManager = new \MPFormsFormManager($form->id);
-            $template->formManager = $formManager;
-
+            $this->template->formManager = $this->formManagerFactory->forFormId($form->id);
             $this->template->form = Controller::getForm($form->id);
             $this->template->formModel = $form;
             $this->template->formLabels = json_encode($this->getFormLabels($form));
