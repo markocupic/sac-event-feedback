@@ -13,6 +13,7 @@ declare(strict_types=1);
  */
 
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
+use Markocupic\SacEventToolBundle\Config\EventType;
 
 PaletteManipulator::create()
     ->addLegend(
@@ -30,19 +31,19 @@ PaletteManipulator::create()
         'tl_calendar_events'
     )
     ->applyToPalette(
-        'tour',
+        EventType::TOUR,
         'tl_calendar_events'
     )
     ->applyToPalette(
-        'lastMinuteTour',
+        EventType::LAST_MINUTE_TOUR,
         'tl_calendar_events'
     )
     ->applyToPalette(
-        'course',
+        EventType::COURSE,
         'tl_calendar_events'
     )
     ->applyToPalette(
-        'generalEvent',
+        EventType::GENERAL_EVENT,
         'tl_calendar_events'
     );
 

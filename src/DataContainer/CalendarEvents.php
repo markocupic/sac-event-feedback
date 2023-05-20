@@ -19,6 +19,7 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\FormModel;
+use Markocupic\SacEventToolBundle\Config\EventType;
 use NotificationCenter\Model\Notification;
 
 class CalendarEvents
@@ -52,10 +53,10 @@ class CalendarEvents
                 PaletteManipulator::create()
                     ->removeField('enableOnlineEventFeedback')
                     ->applyToPalette('default', 'tl_calendar_events')
-                    ->applyToPalette('tour', 'tl_calendar_events')
-                    ->applyToPalette('lastMinuteTour', 'tl_calendar_events')
-                    ->applyToPalette('course', 'tl_calendar_events')
-                    ->applyToPalette('generalEvent', 'tl_calendar_events')
+                    ->applyToPalette(EventType::TOUR, 'tl_calendar_events')
+                    ->applyToPalette(EventType::LAST_MINUTE_TOUR, 'tl_calendar_events')
+                    ->applyToPalette(EventType::COURSE, 'tl_calendar_events')
+                    ->applyToPalette(EventType::GENERAL_EVENT, 'tl_calendar_events')
                 ;
             }
         }
