@@ -98,7 +98,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback'] = [
             'sorting'   => true,
             'flag'      => 6,
             'eval'      => ['rgxp' => 'datim', 'datepicker' => true, 'tl_class' => 'w50 wizard'],
-            'sql'       => 'int(10) unsigned NOT NULL default 0',
+            'sql'       => 'int(11) unsigned NOT NULL default 0',
         ],
         'form'                          => [
             'inputType'  => 'select',
