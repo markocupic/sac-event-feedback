@@ -14,14 +14,15 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback\Contao\Controller;
 
+use Contao\Backend;
 use Contao\BackendUser;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Exception\AccessDeniedException;
 use Contao\CoreBundle\Exception\InvalidResourceException;
 use Contao\CoreBundle\Exception\ResponseException;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
-use JustSteveKing\UriBuilder\Uri;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
@@ -36,6 +37,7 @@ use Twig\Environment as TwigEnvironment;
 class EventFeedbackController
 {
     public function __construct(
+        private readonly ContaoFramework $framework,
         private readonly Security $security,
         private readonly RequestStack $requestStack,
         private readonly TwigEnvironment $twig,
@@ -62,9 +64,8 @@ class EventFeedbackController
 
         $objFeedback = new Feedback($event);
 
-        $url = Uri::fromString($request->getUri());
-        $url->addQueryParam('key', 'showEventFeedbacksAsPdf');
-        $pdfLink = $url->toString();
+        $backend = $this->framework->getAdapter(Backend::class);
+        $pdfHref = $backend->addToUrl('key=showEventFeedbacksAsPdf');
 
         return new Response($this->twig->render(
             '@MarkocupicSacEventFeedback/sac_event_feedback.html.twig',
@@ -73,7 +74,7 @@ class EventFeedbackController
                 'has_feedbacks' => $objFeedback->countFeedbacks(false) > 0,
                 'feedbacks' => $objFeedback->getDataAll(false),
                 'feedback_count' => $objFeedback->countFeedbacks(false),
-                'pdf_link' => '/'.$pdfLink,
+                'pdf_link' => $pdfHref,
             ]
         ));
     }
