@@ -30,39 +30,39 @@ class EventFeedbackHelper
     ) {
     }
 
-    public function eventHasValidFeedbackConfiguration(CalendarEventsModel $event): bool
+    public function eventHasValidFeedbackConfiguration(CalendarEventsModel $event): bool|string
     {
         if (!$event->enableOnlineEventFeedback) {
-            return false;
+            return 'online_feedback_disabled_on_event';
         }
 
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
-            return false;
+            return 'missing_related_parent_calendar';
         }
 
         // Test is online evaluation enabled on calendar level
         if (!$calendar->enableOnlineEventFeedback) {
-            return false;
+            return 'online_feedback_disabled_on_related_calendar';
         }
 
         // Test has configuration
         if (null === $this->getOnlineFeedbackConfiguration($event)) {
-            return false;
+            return 'online_feedback_configuration_not_found';
         }
 
         // Test has form
         if (null === $this->getForm($event)) {
-            return false;
+            return 'event_feedback_form_not_set';
         }
 
         // Test has notification
         if (null === $this->getNotification($event)) {
-            return false;
+            return 'event_feedback_notification_not_set';
         }
 
         // Test has valid page
         if (null === $this->getPage($event)) {
-            return false;
+            return 'online_feedback_page_not_found';
         }
 
         return true;

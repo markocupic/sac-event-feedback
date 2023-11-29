@@ -26,15 +26,16 @@ use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use ReallySimpleJWT\Token;
 
-class SendFeedbackReminder
+readonly class SendFeedbackReminder
 {
     public function __construct(
-        private readonly Connection $connection,
-        private readonly EventFeedbackHelper $eventFeedbackHelper,
-        private readonly FeedbackReminder $feedbackReminder,
-        private readonly array $feedbackConfig,
-        private readonly string $secret,
-        private readonly LoggerInterface|null $contaoGeneralLogger = null,
+        private Connection $connection,
+        private EventFeedbackHelper $eventFeedbackHelper,
+        private FeedbackReminder $feedbackReminder,
+        private array $feedbackConfig,
+        private string $secret,
+        private LoggerInterface|null $contaoGeneralLogger = null,
+        private LoggerInterface|null $contaoErrorLogger = null,
     ) {
     }
 
@@ -47,11 +48,16 @@ class SendFeedbackReminder
             $event = CalendarEventsModel::findByPk($objRegistration->eventId);
 
             if (null !== $event) {
-                if (!$this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($event)) {
-                    throw new \Exception($GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration']);
+                if (true !== ($errorCode = $this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($event))) {
+                    $this->writeErrorToContaoLog($errorCode, $event, $objReminder);
+
+                    return;
                 }
+
+                // The notification has already been checked for existence. See EventFeedbackHelper::eventHasValidFeedbackConfiguration()
                 $notification = $this->eventFeedbackHelper->getNotification($event);
-                $arrTokens = $this->getNotificationTokens($objRegistration, $objReminder);
+
+                $arrTokens = $this->getNotificationTokens($objRegistration, $event, $objReminder);
 
                 $arrResult = $notification->send($arrTokens, $objPage->language);
 
@@ -140,16 +146,8 @@ class SendFeedbackReminder
     /**
      * @throws \Exception
      */
-    private function getNotificationTokens(CalendarEventsMemberModel $member, EventFeedbackReminderModel $reminder): array
+    private function getNotificationTokens(CalendarEventsMemberModel $member, CalendarEventsModel $event, EventFeedbackReminderModel $reminder): array
     {
-        if (null === ($event = CalendarEventsModel::findByPk($member->eventId))) {
-            throw new \Exception('Could not find the event the member belongs to.');
-        }
-
-        if (!$this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($event)) {
-            throw new \Exception($GLOBALS['TL_LANG']['ERR']['sacEvFb']['invalidEventFeedbackConfiguration']);
-        }
-
         $page = $this->eventFeedbackHelper->getPage($event);
         $token = $this->generateJwt($member, $reminder);
 
@@ -166,6 +164,18 @@ class SendFeedbackReminder
         $arrTokens['feedback_url'] = sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
 
         return $arrTokens;
+    }
+
+    private function writeErrorToContaoLog(string $errorCode, CalendarEventsModel $event, EventFeedbackReminderModel $objReminder): void
+    {
+        $errorMsg = sprintf(
+            'Could not send event feedback reminder due to misconfiguration. Error code: "%s". Event ID: "%d". Reminder-UUID: "%s".',
+            $errorCode,
+            $event->id,
+            $objReminder->uuid,
+        );
+
+        $this->contaoErrorLogger->error($errorMsg);
     }
 
     private function generateJwt(CalendarEventsMemberModel $member, EventFeedbackReminderModel $reminder): string

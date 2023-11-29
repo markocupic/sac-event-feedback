@@ -37,7 +37,7 @@ class CalendarEventsMember
         $calendarEventsMemberModel = CalendarEventsMemberModel::findByPk($dc->id);
         $calendarEventsModel = CalendarEventsModel::findByPk($calendarEventsMemberModel->eventId);
 
-        if (null === $calendarEventsMemberModel || null === $calendarEventsModel || !$this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($calendarEventsModel)) {
+        if (null === $calendarEventsMemberModel || null === $calendarEventsModel || true !== $this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($calendarEventsModel)) {
             return $value;
         }
 
