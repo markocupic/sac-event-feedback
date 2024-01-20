@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of SAC Event Feedback.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2024 <m.cupic@gmx.ch>
  * @license MIT
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -29,9 +29,12 @@ use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\Security\Core\Security;
+use Symfony\Component\String\UnicodeString;
 use Twig\Environment as TwigEnvironment;
 
 class EventFeedbackController
@@ -79,7 +82,7 @@ class EventFeedbackController
         ));
     }
 
-    public function getEventFeedbackAsPdfAction(DataContainer $dc): Response
+    public function getEventFeedbackAsPdfAction(DataContainer $dc): void
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -139,12 +142,26 @@ class EventFeedbackController
             $objPhpWord->addToClone('text_label', 'text_feedback', $text, ['multiline' => true]);
         }
 
-        $objPhpWord->sendToBrowser(false)
+        $objPhpWord
             ->generateUncached(true)
             ->generate()
         ;
 
-        throw new ResponseException($this->convertFile->file($this->projectDir.'/'.$targetSrc)->sendToBrowser(true)->uncached(true)->convertTo('pdf'));
+        $pdfRes = $this->convertFile
+            ->file($this->projectDir.'/'.$targetSrc)
+            ->uncached(true)
+            ->convertTo('pdf')
+        ;
+
+        $response = new BinaryFileResponse($pdfRes);
+
+        $response->setContentDisposition(
+            ResponseHeaderBag::DISPOSITION_INLINE,
+            '',
+            (new UnicodeString(basename($pdfRes)))->ascii()->toString(),
+        );
+
+        throw new ResponseException($response);
     }
 
     private function isAllowed(CalendarEventsModel $event): bool
