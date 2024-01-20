@@ -29,6 +29,7 @@ use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
+use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
@@ -99,19 +100,24 @@ class EventFeedbackController
 
         $objFeedback = new Feedback($event);
 
-        // Create phpword instance
+        $docxTemplateSrc = Path::makeAbsolute($this->docxTemplate, $this->projectDir);
         $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
-        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated = ?', 'eventId = ?'], ['1', $event->id]);
+        $targetSrc = Path::makeAbsolute($targetSrc, $this->projectDir);
 
-        $objPhpWord = new MsWordTemplateProcessor($this->docxTemplate, $targetSrc);
+        // Create phpword instance
+        $objPhpWord = new MsWordTemplateProcessor($docxTemplateSrc, $targetSrc);
         $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode($event->title)));
         $objPhpWord->replace('event_type', $event->eventType);
         $objPhpWord->replace('event_id', $event->id);
         $objPhpWord->replace('event_instructor', CalendarEventsHelper::getMainInstructorName($event));
+
         $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), CalendarEventsHelper::getEventTimestamps($event));
         $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
+
         $objPhpWord->replace('date', date('d.m.Y'));
         $objPhpWord->replace('count_fb', $objFeedback->countFeedbacks());
+
+        $countReg = CalendarEventsMemberModel::countBy(['hasParticipated = ?', 'eventId = ?'], ['1', $event->id]);
         $objPhpWord->replace('count_reg', (string) $countReg);
 
         // Dropdowns
@@ -142,23 +148,20 @@ class EventFeedbackController
             $objPhpWord->addToClone('text_label', 'text_feedback', $text, ['multiline' => true]);
         }
 
-        $objPhpWord
-            ->generateUncached(true)
-            ->generate()
-        ;
+        $objSplFileDocx = $objPhpWord->generate();
 
-        $pdfRes = $this->convertFile
-            ->file($this->projectDir.'/'.$targetSrc)
+        $objSplFilePdf = $this->convertFile
+            ->file($objSplFileDocx->getRealPath())
             ->uncached(true)
             ->convertTo('pdf')
         ;
 
-        $response = new BinaryFileResponse($pdfRes);
+        $response = new BinaryFileResponse($objSplFilePdf);
 
         $response->setContentDisposition(
             ResponseHeaderBag::DISPOSITION_INLINE,
             '',
-            (new UnicodeString(basename($pdfRes)))->ascii()->toString(),
+            (new UnicodeString(basename($objSplFilePdf->getRealPath())))->ascii()->toString(),
         );
 
         throw new ResponseException($response);
