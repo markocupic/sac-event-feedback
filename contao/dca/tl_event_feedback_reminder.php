@@ -112,7 +112,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             'filter'    => true,
             'sorting'   => true,
             'eval'      => ['isBoolean' => true, 'tl_class' => 'clr'],
-            'sql'       => "varchar(1) NOT NULL default ''",
+            'sql'       => ['type' => 'boolean', 'default' => false],
         ],
         'dispatchTime'  => [
             'inputType' => 'text',

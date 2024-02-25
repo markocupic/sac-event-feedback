@@ -125,7 +125,7 @@ readonly class SendFeedbackReminder
 
                     if (null !== $reminderModel) {
                         $set = [
-                            'dispatched' => '1',
+                            'dispatched' => true,
                             'dispatchTime' => time(),
                         ];
 
