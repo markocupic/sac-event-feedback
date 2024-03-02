@@ -36,17 +36,3 @@ $GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedb
  */
 $GLOBALS['TL_MODELS']['tl_event_feedback'] = EventFeedbackModel::class;
 $GLOBALS['TL_MODELS']['tl_event_feedback_reminder'] = EventFeedbackReminderModel::class;
-
-/*
- * Notification center
- */
-$GLOBALS['NOTIFICATION_CENTER']['NOTIFICATION_TYPE']['sac_event_tool']['event_feedback_reminder'] = [
-    // Field in tl_nc_language
-    'email_sender_name'    => ['instructor_name', 'instructor_email', 'admin_email'],
-    'email_sender_address' => ['instructor_email', 'instructor_email', 'admin_email'],
-    'recipients'           => ['participant_email', 'instructor_email', 'admin_email'],
-    'email_replyTo'        => ['instructor_email'],
-    'email_subject'        => ['event_name'],
-    'email_text'           => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
-    'email_html'           => ['event_name', 'instructor_name', 'participant_uuid', 'participant_firstname', 'participant_lastname', 'participant_email', 'feedback_url'],
-];

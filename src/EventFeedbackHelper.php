@@ -19,13 +19,16 @@ use Contao\CalendarModel;
 use Contao\FormModel;
 use Contao\MemberModel;
 use Contao\PageModel;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventFeedback\NotificationType\EventFeedbackReminderType;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
-use NotificationCenter\Model\Notification;
 
 class EventFeedbackHelper
 {
     public function __construct(
+        private readonly Connection $connection,
         private readonly array $feedbackConfig,
     ) {
     }
@@ -56,7 +59,7 @@ class EventFeedbackHelper
         }
 
         // Test has notification
-        if (null === $this->getNotification($event)) {
+        if (null === $this->getNotificationId($event)) {
             return 'event_feedback_notification_not_set';
         }
 
@@ -112,7 +115,7 @@ class EventFeedbackHelper
         return FormModel::findByPk($calendar->onlineFeedbackForm);
     }
 
-    public function getNotification(CalendarEventsModel $event): Notification|null
+    public function getNotificationId(CalendarEventsModel $event): int|null
     {
         if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
             return null;
@@ -122,7 +125,19 @@ class EventFeedbackHelper
             return null;
         }
 
-        return Notification::findByPk($calendar->onlineFeedbackNotification);
+        $notificationId = $this->connection->fetchOne(
+            'SELECT id FROM tl_nc_notification WHERE id = :id AND type = :type',
+            [
+                'id'   => (int)$calendar->onlineFeedbackNotification,
+                'type' => EventFeedbackReminderType::NAME,
+            ],
+            [
+                'id'   => Types::INTEGER,
+                'type' => Types::STRING,
+            ]
+        );
+
+        return (false !== $notificationId) ? $notificationId : null;
     }
 
     public function getPage(CalendarEventsModel $event): PageModel|null

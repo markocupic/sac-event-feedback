@@ -19,12 +19,14 @@ use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Contao\FormModel;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Types\Types;
 use Markocupic\SacEventToolBundle\Config\EventType;
-use NotificationCenter\Model\Notification;
 
 class CalendarEvents
 {
     public function __construct(
+        private readonly Connection $connection,
         private readonly array $feedbackConfig,
     ) {
     }
@@ -39,10 +41,20 @@ class CalendarEvents
                 if (null !== ($calendarModel = $eventsModel->getRelated('pid'))) {
                     if ($calendarModel->enableOnlineEventFeedback) {
                         $formModel = FormModel::findByPk($calendarModel->onlineFeedbackForm);
-                        $notificationModel = Notification::findByPk($calendarModel->onlineFeedbackNotification);
+
+                        $notificationId = $this->connection->fetchOne(
+                            'SELECT id FROM tl_nc_notification WHERE id = :id',
+                            [
+                                'id'   => (int)$calendarModel->onlineFeedbackNotification,
+                            ],
+                            [
+                                'id'   => Types::INTEGER,
+                            ]
+                        );
+
                         $hasConfig = $calendarModel->onlineFeedbackConfiguration && ($this->feedbackConfig[$calendarModel->onlineFeedbackConfiguration] ?? null);
 
-                        if (null !== $formModel && null !== $notificationModel && $hasConfig) {
+                        if (null !== $formModel && false !== $notificationId && $hasConfig) {
                             $blnRemoveField = false;
                         }
                     }

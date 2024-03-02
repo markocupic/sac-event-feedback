@@ -25,6 +25,7 @@ use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use ReallySimpleJWT\Token;
+use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 readonly class SendFeedbackReminder
 {
@@ -32,6 +33,7 @@ readonly class SendFeedbackReminder
         private Connection $connection,
         private EventFeedbackHelper $eventFeedbackHelper,
         private FeedbackReminder $feedbackReminder,
+        private NotificationCenter $notificationCenter,
         private array $feedbackConfig,
         private string $secret,
         private LoggerInterface|null $contaoGeneralLogger = null,
@@ -55,13 +57,13 @@ readonly class SendFeedbackReminder
                 }
 
                 // The notification has already been checked for existence. See EventFeedbackHelper::eventHasValidFeedbackConfiguration()
-                $notification = $this->eventFeedbackHelper->getNotification($event);
+                $notificationId = $this->eventFeedbackHelper->getNotificationId($event);
 
                 $arrTokens = $this->getNotificationTokens($objRegistration, $event, $objReminder);
 
-                $arrResult = $notification->send($arrTokens, $objPage->language);
+                $receiptCollection = $this->notificationCenter->sendNotification($notificationId,$arrTokens,$objPage->language);
 
-                if (!empty($arrResult) && \is_array($arrResult)) {
+                if ($receiptCollection->count()) {
                     ++$objRegistration->countOnlineEventFeedbackNotifications;
                     $objRegistration->save();
 
