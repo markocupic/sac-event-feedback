@@ -63,7 +63,7 @@ class EventFeedbackController
         }
 
         if (!$this->isAllowed($event)) {
-            throw new AccessDeniedException('User is not allowed to access the backend module "sac_calendar_events_tool".');
+            throw new AccessDeniedException('User is not allowed to access the backend module "calendar".');
         }
 
         $objFeedback = new Feedback($event);
@@ -95,7 +95,7 @@ class EventFeedbackController
         }
 
         if (!$this->isAllowed($event)) {
-            throw new AccessDeniedException('User is not allowed to access the backend module "sac_calendar_events_tool".');
+            throw new AccessDeniedException('User is not allowed to access the backend module "calendar".');
         }
 
         $objFeedback = new Feedback($event);
@@ -185,7 +185,7 @@ class EventFeedbackController
 
             $canAccessModule = $this->security->isGranted(
                 ContaoCorePermissions::USER_CAN_ACCESS_MODULE,
-                'sac_calendar_events_tool'
+                'calendar'
             );
 
             if ($canAccessModule && $canReadFeedbacks) {

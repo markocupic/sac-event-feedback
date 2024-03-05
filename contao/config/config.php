@@ -28,8 +28,8 @@ $GLOBALS['BE_MOD']['event_feedback'] = [
     ],
 ];
 
-$GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedbacks'] = [EventFeedbackController::class, 'getEventFeedbackAction'];
-$GLOBALS['BE_MOD']['sac_be_modules']['sac_calendar_events_tool']['showEventFeedbacksAsPdf'] = [EventFeedbackController::class, 'getEventFeedbackAsPdfAction'];
+$GLOBALS['BE_MOD']['sac_be_modules']['calendar']['showEventFeedbacks'] = [EventFeedbackController::class, 'getEventFeedbackAction'];
+$GLOBALS['BE_MOD']['sac_be_modules']['calendar']['showEventFeedbacksAsPdf'] = [EventFeedbackController::class, 'getEventFeedbackAsPdfAction'];
 
 /*
  * Models
