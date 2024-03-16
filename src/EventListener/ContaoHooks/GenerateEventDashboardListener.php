@@ -17,12 +17,12 @@ namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
 use Contao\BackendUser;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
-use Contao\Input;
 use Contao\System;
 use Knp\Menu\MenuItem;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Routing\RouterInterface;
 
 #[AsHook(GenerateEventDashboardListener::HOOK, priority: 100)]
 class GenerateEventDashboardListener
@@ -31,6 +31,7 @@ class GenerateEventDashboardListener
 
     public function __construct(
         private readonly Security $security,
+        private readonly RouterInterface $router,
     ) {
     }
 
@@ -46,7 +47,7 @@ class GenerateEventDashboardListener
             return;
         }
 
-        // Apply same permission rules like "teilnehmerliste"
+        // Apply same permission policy as "teilnehmerliste"
         if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
             return;
         }
@@ -65,17 +66,21 @@ class GenerateEventDashboardListener
             ->get('_contao_referer_id')
         ;
 
-        // Get the backend module name
-        $module = Input::get('do');
-
         // "Download event feedbacks" button
-        $eventListHref = sprintf('contao/main.php?do=%s&key=showEventFeedbacks&id=%s&rt=%s&ref=%s', $module, $objEvent->id, $requestToken, $refererId);
-        $menu->addChild('Event Auswertungen', ['uri' => $eventListHref])
+        $href = $this->router->generate('contao_backend', [
+            'do' => 'calendar',
+            'key' => 'showEventFeedbacks',
+            'id' => $objEvent->id,
+            'rt' => $requestToken,
+            'ref' => $refererId,
+        ]);
+
+        $menu->addChild('Event Auswertungen', ['uri' => $href])
             ->setLinkAttribute('role', 'button')
             ->setLinkAttribute('class', 'tl_submit')
             ->setLinkAttribute('target', '_blank')
             //->setLinkAttribute('accesskey', 'm')
-            ->setLinkAttribute('title', 'Event Ausertungen herunterladen')
+            ->setLinkAttribute('title', 'Event Auswertungen herunterladen')
         ;
     }
 }

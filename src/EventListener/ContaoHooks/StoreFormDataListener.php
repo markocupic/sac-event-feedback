@@ -24,7 +24,7 @@ use Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use ReallySimpleJWT\Token;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 #[AsHook(StoreFormDataListener::HOOK, priority: 100)]
 class StoreFormDataListener

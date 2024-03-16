@@ -128,16 +128,16 @@ class EventFeedbackHelper
         $notificationId = $this->connection->fetchOne(
             'SELECT id FROM tl_nc_notification WHERE id = :id AND type = :type',
             [
-                'id'   => (int)$calendar->onlineFeedbackNotification,
+                'id' => (int) $calendar->onlineFeedbackNotification,
                 'type' => EventFeedbackReminderType::NAME,
             ],
             [
-                'id'   => Types::INTEGER,
+                'id' => Types::INTEGER,
                 'type' => Types::STRING,
             ]
         );
 
-        return (false !== $notificationId) ? $notificationId : null;
+        return false !== $notificationId ? $notificationId : null;
     }
 
     public function getPage(CalendarEventsModel $event): PageModel|null

@@ -45,10 +45,10 @@ class CalendarEvents
                         $notificationId = $this->connection->fetchOne(
                             'SELECT id FROM tl_nc_notification WHERE id = :id',
                             [
-                                'id'   => (int)$calendarModel->onlineFeedbackNotification,
+                                'id' => (int) $calendarModel->onlineFeedbackNotification,
                             ],
                             [
-                                'id'   => Types::INTEGER,
+                                'id' => Types::INTEGER,
                             ]
                         );
 

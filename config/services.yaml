@@ -17,8 +17,16 @@ services:
     Markocupic\SacEventFeedback\Contao\Controller\EventFeedbackController:
         public: true
 
-    # Add a session bag
-    Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag:
+    # Register the session bag
+    markocupic.sac_event_feedback.session.factory:
+        class: Markocupic\SacEventFeedback\Session\SessionFactory
+        decorates: session.factory
+        arguments:
+            - '@markocupic.sac_event_feedback.session.factory.inner'
+            - '@markocupic.sac_event_feedback.session.attribute.array_attribute_bag'
+
+    markocupic.sac_event_feedback.session.attribute.array_attribute_bag:
+        class: Markocupic\SacEventFeedback\Session\Attribute\ArrayAttributeBag
         arguments:
             - '_markocupic_sac_event_feedback_attributes'
         calls:

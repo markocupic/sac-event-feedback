@@ -64,7 +64,7 @@ class EventFeedbackReminderType implements NotificationTypeInterface
                 'participant_lastname',
                 'participant_email',
                 'feedback_url',
-                ],
+            ],
         ];
     }
 }

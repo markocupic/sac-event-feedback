@@ -61,7 +61,7 @@ readonly class SendFeedbackReminder
 
                 $arrTokens = $this->getNotificationTokens($objRegistration, $event, $objReminder);
 
-                $receiptCollection = $this->notificationCenter->sendNotification($notificationId,$arrTokens,$objPage->language);
+                $receiptCollection = $this->notificationCenter->sendNotification($notificationId, $arrTokens, $objPage->language);
 
                 if ($receiptCollection->count()) {
                     ++$objRegistration->countOnlineEventFeedbackNotifications;

@@ -14,9 +14,6 @@ declare(strict_types=1);
 
 namespace Markocupic\SacEventFeedback;
 
-use Markocupic\SacEventFeedback\DependencyInjection\Compiler\AddSessionBagsPass;
-use Markocupic\SacEventFeedback\DependencyInjection\MarkocupicSacEventFeedbackExtension;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class MarkocupicSacEventFeedback extends Bundle
@@ -26,18 +23,5 @@ class MarkocupicSacEventFeedback extends Bundle
         return \dirname(__DIR__);
     }
 
-    public function getContainerExtension(): MarkocupicSacEventFeedbackExtension
-    {
-        return new MarkocupicSacEventFeedbackExtension();
-    }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function build(ContainerBuilder $container): void
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new AddSessionBagsPass());
-    }
 }
