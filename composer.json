@@ -23,7 +23,7 @@
     "require": {
         "php": "^8.2",
         "contao/core-bundle": "^5.0",
-        "markocupic/sac-event-tool-bundle": "dev-contao5",
+        "markocupic/sac-event-tool-bundle": "*",
         "terminal42/notification_center": "^2.0",
         "markocupic/cloudconvert-bundle": "^2.1",
         "rbdwllr/reallysimplejwt": "^4.0",
