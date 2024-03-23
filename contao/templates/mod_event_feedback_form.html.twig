@@ -10,13 +10,13 @@
             {% if mode == 'has_warning' %}
                 <h2>Leider ist ein Fehler aufgetreten</h2>
                 <div class="alert alert-warning mt-5 mb-5" role="alert">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fa-solid fa-exclamation-circle"></i>
                     <div>{{ warningMsg }}</div>
                 </div>
             {% elseif mode == 'form_already_filled_out' %}
                 {{ details|raw }}
                 <div class="alert alert-warning mt-5 mb-5" role="alert">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fa-solid fa-exclamation-circle"></i>
                     <div>{{ formAlreadyFilledOutMsg }}</div>
                 </div>
             {% elseif mode == 'show_form' %}
@@ -43,7 +43,7 @@
             {% elseif mode == 'checkout' %}
                 {{ details|raw }}
                 <div class="alert alert-success mt-4 mb-5" role="alert">
-                    <i class="fas fa-check-circle"></i>
+                    <i class="fa-solid fa-check-circle"></i>
                     <div>{{ checkoutMsg }}</div>
                 </div>
             {% endif %}
