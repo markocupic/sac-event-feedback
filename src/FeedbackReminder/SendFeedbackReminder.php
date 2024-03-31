@@ -17,6 +17,7 @@ namespace Markocupic\SacEventFeedback\FeedbackReminder;
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
 use Contao\PageModel;
+use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
@@ -162,7 +163,7 @@ readonly class SendFeedbackReminder
         $arrTokens['participant_lastname'] = $member->lastname;
         $arrTokens['participant_email'] = $member->email;
         $arrTokens['participant_uuid'] = $member->uuid;
-        $arrTokens['event_name'] = $event->title;
+        $arrTokens['event_name'] = StringUtil::revertInputEncoding($event->title);
         $arrTokens['feedback_url'] = sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
 
         return $arrTokens;

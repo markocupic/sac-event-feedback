@@ -23,18 +23,19 @@ use Contao\CoreBundle\Exception\ResponseException;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\DataContainer;
+use Contao\StringUtil;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
 use Markocupic\SacEventToolBundle\CalendarEventsHelper;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\String\UnicodeString;
 use Twig\Environment as TwigEnvironment;
 
@@ -71,10 +72,13 @@ class EventFeedbackController
         $backend = $this->framework->getAdapter(Backend::class);
         $pdfHref = $backend->addToUrl('key=showEventFeedbacksAsPdf');
 
+        $arrEvent = $objFeedback->getEvent(false)->row();
+        $arrEvent = array_map(fn($val) => StringUtil::revertInputEncoding((string) $val), $arrEvent);
+
         return new Response($this->twig->render(
             '@MarkocupicSacEventFeedback/sac_event_feedback.html.twig',
             [
-                'event' => $objFeedback->getEvent(false)->row(),
+                'event' => $arrEvent,
                 'has_feedbacks' => $objFeedback->countFeedbacks(false) > 0,
                 'feedbacks' => $objFeedback->getDataAll(false),
                 'feedback_count' => $objFeedback->countFeedbacks(false),
