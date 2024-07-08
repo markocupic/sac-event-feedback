@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\Cron;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
+use Contao\CoreBundle\Framework\ContaoFramework;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 
@@ -22,6 +23,7 @@ use Doctrine\DBAL\Exception;
 class DeleteOldFeedbacks
 {
     public function __construct(
+        private readonly ContaoFramework $framework,
         private readonly Connection $connection,
         private readonly string $deleteFeedbacksAfter,
     ) {
@@ -32,6 +34,8 @@ class DeleteOldFeedbacks
      */
     public function __invoke(): void
     {
+        $this->framework->initialize();
+
         $datimToday = new \DateTimeImmutable(date('Y-m-d'));
         $datimExpired = $datimToday->modify('-'.$this->deleteFeedbacksAfter.' day');
 

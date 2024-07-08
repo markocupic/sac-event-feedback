@@ -34,7 +34,7 @@ class ExecuteEventReminderTasks
     public function __invoke(): void
     {
         // Initialize the Contao framework
-        $this->framework->initialize(true);
+        $this->framework->initialize();
 
         $now = time();
         $this->sendFeedbackReminder->sendRemindersByExecutionDate($now, 20);
