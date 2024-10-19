@@ -22,7 +22,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
-use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Util\CalendarEventsUtil;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Psr\Log\LoggerInterface;
 use ReallySimpleJWT\Token;
@@ -154,9 +154,9 @@ readonly class SendFeedbackReminder
         $page = $this->eventFeedbackHelper->getPage($event);
         $token = $this->generateJwt($member, $reminder);
 
-        $objInstructor = CalendarEventsHelper::getMainInstructor($event);
+        $objInstructor = CalendarEventsUtil::getMainInstructor($event);
         $arrTokens = [];
-        $arrTokens['instructor_name'] = CalendarEventsHelper::getMainInstructorName($event);
+        $arrTokens['instructor_name'] = CalendarEventsUtil::getMainInstructorName($event);
         $arrTokens['instructor_email'] = $objInstructor ? $objInstructor->email : '';
         $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
         $arrTokens['participant_firstname'] = $member->firstname;

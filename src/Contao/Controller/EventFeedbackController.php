@@ -27,7 +27,7 @@ use Contao\StringUtil;
 use Markocupic\CloudconvertBundle\Conversion\ConvertFile;
 use Markocupic\PhpOffice\PhpWord\MsWordTemplateProcessor;
 use Markocupic\SacEventFeedback\Feedback\Feedback;
-use Markocupic\SacEventToolBundle\CalendarEventsHelper;
+use Markocupic\SacEventToolBundle\Util\CalendarEventsUtil;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -113,9 +113,9 @@ class EventFeedbackController
         $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode($event->title)));
         $objPhpWord->replace('event_type', $event->eventType);
         $objPhpWord->replace('event_id', $event->id);
-        $objPhpWord->replace('event_instructor', CalendarEventsHelper::getMainInstructorName($event));
+        $objPhpWord->replace('event_instructor', CalendarEventsUtil::getMainInstructorName($event));
 
-        $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), CalendarEventsHelper::getEventTimestamps($event));
+        $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), CalendarEventsUtil::getEventTimestamps($event));
         $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
 
         $objPhpWord->replace('date', date('d.m.Y'));

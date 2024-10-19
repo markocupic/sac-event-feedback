@@ -26,7 +26,7 @@
                     <div>Schritt <span class="mp-form-steps-current"><strong>{{ formManager.getCurrentStep() + 1 }}</strong></span> von <span class="mp-form-steps-total">{{ formManager.getNumberOfSteps() + 1 }}</span></div>
                     {{ form|raw }}
 
-                    <script>
+                    <script{{ attrs().setIfExists('nonce', csp_nonce('script-src')) }}>
                         // Convert integer option values to its corresponding labels
                         let oFormLabels = {{ formLabels|raw }};
                         Object.keys(oFormLabels).forEach(function (ffName) {
