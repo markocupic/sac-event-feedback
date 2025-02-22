@@ -16,10 +16,9 @@ namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
 use Contao\CalendarEventsModel;
 use Contao\CoreBundle\Monolog\ContaoContext;
-use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Types\Types;
 use Markocupic\SacEventFeedback\EventFeedbackHelper;
 use Markocupic\SacEventFeedback\Model\EventFeedbackReminderModel;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
@@ -42,11 +41,11 @@ readonly class SendFeedbackReminder
     ) {
     }
 
+    /**
+     * @throws \Exception
+     */
     public function sendReminder(EventFeedbackReminderModel $objReminder): void
     {
-        /** @var PageModel $objPage */
-        global $objPage;
-
         if (null !== ($objRegistration = CalendarEventsMemberModel::findOneByUuid($objReminder->uuid))) {
             $event = CalendarEventsModel::findByPk($objRegistration->eventId);
 
@@ -62,7 +61,7 @@ readonly class SendFeedbackReminder
 
                 $arrTokens = $this->getNotificationTokens($objRegistration, $event, $objReminder);
 
-                $receiptCollection = $this->notificationCenter->sendNotification($notificationId, $arrTokens, $objPage->language);
+                $receiptCollection = $this->notificationCenter->sendNotification($notificationId, $arrTokens);
 
                 if ($receiptCollection->count()) {
                     ++$objRegistration->countOnlineEventFeedbackNotifications;
@@ -92,7 +91,13 @@ readonly class SendFeedbackReminder
     }
 
     /**
-     * @throws Exception
+     * This method performs the following operations:
+     * 1. Deletes expired or invalid reminder records from the database.
+     * 2. Fetches the list of pending reminders that need to be sent.
+     * 3. Sends a limited number of reminders based on the defined execution date and ensures no more than the specified limit (`$limit`) records are processed.
+     * 4. Updates the database to mark reminders as dispatched after they are sent.
+     * 5. All operations are enclosed in a database transaction to ensure atomicity.
+     * *
      */
     public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20): void
     {
@@ -107,53 +112,73 @@ readonly class SendFeedbackReminder
                     0,
                     $tstamp - 60,
                 ],
+                [
+                    Types::INTEGER,
+                    Types::INTEGER,
+                    Types::INTEGER,
+                ]
             );
 
             // Queue competing queries/requests on table "tl_event_feedback_reminder" with "FOR UPDATE" until the transaction is completed.
             // This should prevent competing queries and double emailing
             $result = $this->connection->executeQuery(
-                sprintf('SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched = ? LIMIT 0,%d FOR UPDATE', $limit),
+                'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched = ? FOR UPDATE',
                 [
                     $tstamp,
-                    '',
+                    0,
+                ],
+                [
+                    Types::INTEGER,
+                    Types::INTEGER,
                 ]
             );
 
-            $arrIds = $result->fetchFirstColumn();
+            $reminderIds = $result->fetchFirstColumn();
 
-            if (!empty($arrIds)) {
-                foreach ($arrIds as $id) {
+            if (!empty($reminderIds)) {
+                $count = 0;
+
+                foreach ($reminderIds as $id) {
+                    if ($count >= $limit) {
+                        break;
+                    }
+
                     $reminderModel = EventFeedbackReminderModel::findByPk($id);
 
-                    if (null !== $reminderModel) {
-                        $configuration = $this->getConfiguration($reminderModel);
-
-                        $delay = 0;
-
-                        if (null !== $configuration) {
-                            $delay = $configuration['send_reminder_execution_delay'] ?? 0;
-                        }
-
-                        if ($reminderModel->executionDate > $tstamp - $delay) {
-                            continue;
-                        }
-
-                        $set = [
-                            'dispatched' => true,
-                            'dispatchTime' => time(),
-                        ];
-
-                        $this->connection->update('tl_event_feedback_reminder', $set, ['id' => $id]);
-
-                        // Send notification
-                        $this->sendReminder($reminderModel);
+                    if (null === $reminderModel) {
+                        continue;
                     }
+
+                    $configuration = $this->getConfiguration($reminderModel);
+
+                    $delay = 0;
+
+                    if (null !== $configuration) {
+                        $delay = $configuration['send_reminder_execution_delay'] ?? 0;
+                    }
+
+                    if ($reminderModel->executionDate > $tstamp - $delay) {
+                        continue;
+                    }
+
+                    $set = [
+                        'dispatched' => 1,
+                        'dispatchTime' => time(),
+                    ];
+
+                    $this->connection->update('tl_event_feedback_reminder', $set, ['id' => $id]);
+
+                    // Send notification
+                    $this->sendReminder($reminderModel);
+
+                    ++$count;
                 }
             }
 
             $this->connection->commit();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->connection->rollBack();
+            $this->contaoErrorLogger?->error((string) $e);
         }
     }
 
