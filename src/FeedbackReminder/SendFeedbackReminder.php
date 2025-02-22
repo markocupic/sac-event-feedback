@@ -185,14 +185,28 @@ readonly class SendFeedbackReminder
     private function getConfiguration(EventFeedbackReminderModel $eventFeedbackReminderModel): array|null
     {
         try {
-            $calendar = CalendarEventsModel::findByPk($eventFeedbackReminderModel->getRelated('pid')->eventId)->getRelated('pid');
+            $registration = $eventFeedbackReminderModel->getRelated('pid');
+
+            if (null === $registration) {
+                return null;
+            }
+
+            $event = $registration->getRelated('eventId');
+
+            if (null === $event) {
+                return null;
+            }
+
+            $calendar = $event->getRelated('pid');
 
             if (null === $calendar) {
                 return null;
             }
 
             return $this->feedbackConfig[$calendar->onlineFeedbackConfiguration];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
+            $this->contaoErrorLogger?->error((string) $e);
+
             return null;
         }
     }
