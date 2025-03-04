@@ -30,6 +30,7 @@ use Terminal42\NotificationCenterBundle\NotificationCenter;
 readonly class SendFeedbackReminder
 {
     public function __construct(
+        private CalendarEventsUtil $calendarEventsUtil,
         private Connection $connection,
         private EventFeedbackHelper $eventFeedbackHelper,
         private FeedbackReminder $feedbackReminder,
@@ -219,9 +220,9 @@ readonly class SendFeedbackReminder
         $page = $this->eventFeedbackHelper->getPage($event);
         $token = $this->generateJwt($member, $reminder);
 
-        $objInstructor = CalendarEventsUtil::getMainInstructor($event);
+        $objInstructor = $this->calendarEventsUtil->getMainInstructor($event);
         $arrTokens = [];
-        $arrTokens['instructor_name'] = CalendarEventsUtil::getMainInstructorName($event);
+        $arrTokens['instructor_name'] = $this->calendarEventsUtil->getMainInstructorName($event);
         $arrTokens['instructor_email'] = $objInstructor ? $objInstructor->email : '';
         $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
         $arrTokens['participant_firstname'] = $member->firstname;

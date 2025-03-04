@@ -39,16 +39,17 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\String\UnicodeString;
 use Twig\Environment as TwigEnvironment;
 
-class EventFeedbackController
+readonly class EventFeedbackController
 {
     public function __construct(
-        private readonly ContaoFramework $framework,
-        private readonly Security $security,
-        private readonly RequestStack $requestStack,
-        private readonly TwigEnvironment $twig,
-        private readonly ConvertFile $convertFile,
-        private readonly string $docxTemplate,
-        private readonly string $projectDir,
+        private CalendarEventsUtil $calendarEventsUtil,
+        private ContaoFramework $framework,
+        private ConvertFile $convertFile,
+        private RequestStack $requestStack,
+        private Security $security,
+        private TwigEnvironment $twig,
+        private string $docxTemplate,
+        private string $projectDir,
     ) {
     }
 
@@ -113,9 +114,9 @@ class EventFeedbackController
         $objPhpWord->replace('event_title', htmlspecialchars(html_entity_decode($event->title)));
         $objPhpWord->replace('event_type', $event->eventType);
         $objPhpWord->replace('event_id', $event->id);
-        $objPhpWord->replace('event_instructor', CalendarEventsUtil::getMainInstructorName($event));
+        $objPhpWord->replace('event_instructor', $this->calendarEventsUtil->getMainInstructorName($event));
 
-        $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), CalendarEventsUtil::getEventTimestamps($event));
+        $arrEventDates = array_map(static fn ($tstamp) => date('d.m.Y', (int) $tstamp), $this->calendarEventsUtil->getEventTimestamps($event));
         $objPhpWord->replace('event_date', implode("\r\n", $arrEventDates), ['multiline' => true]);
 
         $objPhpWord->replace('date', date('d.m.Y'));
@@ -140,7 +141,7 @@ class EventFeedbackController
             $objPhpWord->addToClone('dropdown_label', 'dropdown_feedback', $dropdownText, ['multiline' => true]);
         }
 
-        // Textareas
+        // textareas
         foreach ($objFeedback->getTextareas() as $arrFeedback) {
             $objPhpWord->createClone('text_label');
             $label = htmlspecialchars(html_entity_decode((string) $arrFeedback['label']));
