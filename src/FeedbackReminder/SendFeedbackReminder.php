@@ -102,9 +102,9 @@ readonly class SendFeedbackReminder
      */
     public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20): void
     {
-        try {
-            $this->connection->beginTransaction();
+        $this->connection->beginTransaction();
 
+        try {
             // Delete already dispatched or expired records.
             $this->connection->executeStatement(
                 'DELETE FROM tl_event_feedback_reminder WHERE expiration < ? OR (dispatchTime > ? AND dispatchTime < ?)',
@@ -178,7 +178,9 @@ readonly class SendFeedbackReminder
 
             $this->connection->commit();
         } catch (\Throwable $e) {
-            $this->connection->rollBack();
+            if($this->connection->isTransactionActive()){
+                $this->connection->rollBack();
+            }
             $this->contaoErrorLogger?->error((string) $e);
         }
     }
