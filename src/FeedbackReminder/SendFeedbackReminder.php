@@ -25,6 +25,7 @@ use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 use Markocupic\SacEventToolBundle\Util\CalendarEventsUtil;
 use Psr\Log\LoggerInterface;
 use ReallySimpleJWT\Token;
+use Symfony\Component\Lock\LockFactory;
 use Terminal42\NotificationCenterBundle\NotificationCenter;
 
 readonly class SendFeedbackReminder
@@ -35,6 +36,7 @@ readonly class SendFeedbackReminder
         private EventFeedbackHelper $eventFeedbackHelper,
         private FeedbackReminder $feedbackReminder,
         private NotificationCenter $notificationCenter,
+        private readonly LockFactory $lockFactory,
         private array $feedbackConfig,
         private string $secret,
         private LoggerInterface|null $contaoGeneralLogger = null,
@@ -48,7 +50,7 @@ readonly class SendFeedbackReminder
     public function sendReminder(EventFeedbackReminderModel $objReminder): void
     {
         if (null !== ($objRegistration = CalendarEventsMemberModel::findOneByUuid($objReminder->uuid))) {
-            $event = CalendarEventsModel::findByPk($objRegistration->eventId);
+            $event = CalendarEventsModel::findById($objRegistration->eventId);
 
             if (null !== $event) {
                 if (true !== ($errorCode = $this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($event))) {
@@ -57,7 +59,8 @@ readonly class SendFeedbackReminder
                     return;
                 }
 
-                // The notification has already been checked for existence. See EventFeedbackHelper::eventHasValidFeedbackConfiguration()
+                // The notification has already been checked for existence. See
+                // EventFeedbackHelper::eventHasValidFeedbackConfiguration()
                 $notificationId = $this->eventFeedbackHelper->getNotificationId($event);
 
                 $arrTokens = $this->getNotificationTokens($objRegistration, $event, $objReminder);
@@ -69,7 +72,7 @@ readonly class SendFeedbackReminder
                     $objRegistration->save();
 
                     if ($this->contaoGeneralLogger) {
-                        $message = sprintf(
+                        $message = \sprintf(
                             'An event feedback reminder for event "%s" ID %d has been sent to frontend user "%s %s" (event registration ID %d).',
                             $event->title,
                             $event->id,
@@ -100,8 +103,11 @@ readonly class SendFeedbackReminder
      * 5. All operations are enclosed in a database transaction to ensure atomicity.
      * *
      */
-    public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20): void
+    public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20, array &$log = []): void
     {
+        $lock = $this->lockFactory->createLock(self::class);
+        $lock->acquire(true);
+
         $this->connection->beginTransaction();
 
         try {
@@ -117,13 +123,17 @@ readonly class SendFeedbackReminder
                     Types::INTEGER,
                     Types::INTEGER,
                     Types::INTEGER,
-                ]
+                ],
             );
 
-            // Queue competing queries/requests on table "tl_event_feedback_reminder" with "FOR UPDATE" until the transaction is completed.
-            // This should prevent competing queries and double emailing
+            // Queue competing queries/requests on table "tl_event_feedback_reminder" with
+            // "FOR UPDATE" until the transaction is completed. This should prevent competing
+            // queries and double emailing
             $result = $this->connection->executeQuery(
-                'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched = ? FOR UPDATE',
+                // 'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched
+                // = ? FOR UPDATE',
+                'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched = ? LIMIT 0,1000',
+
                 [
                     $tstamp,
                     0,
@@ -131,7 +141,7 @@ readonly class SendFeedbackReminder
                 [
                     Types::INTEGER,
                     Types::INTEGER,
-                ]
+                ],
             );
 
             $reminderIds = $result->fetchFirstColumn();
@@ -144,7 +154,7 @@ readonly class SendFeedbackReminder
                         break;
                     }
 
-                    $reminderModel = EventFeedbackReminderModel::findByPk($id);
+                    $reminderModel = EventFeedbackReminderModel::findById($id);
 
                     if (null === $reminderModel) {
                         continue;
@@ -172,16 +182,23 @@ readonly class SendFeedbackReminder
                     // Send notification
                     $this->sendReminder($reminderModel);
 
+                    $log[] = [
+                        'tl_event_feedback_reminder' => $reminderModel->row(),
+                        'tl_calendar_events_member' => $reminderModel->getRelated('pid')?->row(),
+                    ];
+
                     ++$count;
                 }
             }
 
             $this->connection->commit();
         } catch (\Throwable $e) {
-            if($this->connection->isTransactionActive()){
+            if ($this->connection->isTransactionActive()) {
                 $this->connection->rollBack();
             }
             $this->contaoErrorLogger?->error((string) $e);
+        } finally {
+            $lock->release();
         }
     }
 
@@ -232,14 +249,14 @@ readonly class SendFeedbackReminder
         $arrTokens['participant_email'] = $member->email;
         $arrTokens['participant_uuid'] = $member->uuid;
         $arrTokens['event_name'] = StringUtil::revertInputEncoding($event->title);
-        $arrTokens['feedback_url'] = sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
+        $arrTokens['feedback_url'] = \sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
 
         return $arrTokens;
     }
 
     private function writeErrorToContaoLog(string $errorCode, CalendarEventsModel $event, EventFeedbackReminderModel $objReminder): void
     {
-        $errorMsg = sprintf(
+        $errorMsg = \sprintf(
             'Could not send event feedback reminder due to misconfiguration. Error code: "%s". Event ID: "%d". Reminder-UUID: "%s".',
             $errorCode,
             $event->id,

@@ -29,16 +29,21 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Terminal42\MultipageFormsBundle\FormManagerFactory;
 
-#[AsFrontendModule(EventFeedbackFormController::TYPE, category:'event_feedback', template:'mod_event_feedback_form')]
+#[AsFrontendModule(EventFeedbackFormController::TYPE, category: 'event_feedback', template: 'mod_event_feedback_form')]
 class EventFeedbackFormController extends AbstractFrontendModuleController
 {
     public const TYPE = 'event_feedback_form';
+
     public const MODE_WARNING = 'has_warning';
+
     public const MODE_SHOW_FORM = 'show_form';
+
     public const MODE_CHECKOUT = 'checkout';
+
     public const MODE_SHOW_FORM_ALREADY_FILLED_OUT = 'form_already_filled_out';
 
     private FrontendUser|null $user = null;
+
     private string $mode;
 
     public function __construct(
@@ -83,7 +88,7 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
 
         // Get the user id (tl_calendar_events_member.id) from JWT
         $arrPayload = Token::getPayload($token, $this->secret);
-        $registration = CalendarEventsMemberModel::findByPk($arrPayload['user_id']);
+        $registration = CalendarEventsMemberModel::findById($arrPayload['user_id']);
 
         if (null === $registration) {
             return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.eventRegistrationNotFound', [], 'contao_default'));
@@ -108,12 +113,12 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
         }
 
         /* Check if the event exists */
-        if (null === ($event = CalendarEventsModel::findByPk($registration->eventId))) {
+        if (null === ($event = CalendarEventsModel::findById($registration->eventId))) {
             return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.eventMatchingUuidNotFound', [], 'contao_default'));
         }
 
         /* Check if the calendar exists */
-        if (null === CalendarModel::findByPk($event->pid)) {
+        if (null === CalendarModel::findById($event->pid)) {
             return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.calendarMatchingUuidNotFound', [], 'contao_default'));
         }
 

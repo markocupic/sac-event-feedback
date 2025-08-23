@@ -58,10 +58,10 @@ readonly class EventFeedbackController
         $request = $this->requestStack->getCurrentRequest();
 
         $id = $request->query->get('id');
-        $event = CalendarEventsModel::findByPk($id);
+        $event = CalendarEventsModel::findById($id);
 
         if (null === $event) {
-            throw new InvalidResourceException(sprintf('Event with id %s not found.', $id));
+            throw new InvalidResourceException(\sprintf('Event with id %s not found.', $id));
         }
 
         if (!$this->isAllowed($event)) {
@@ -84,7 +84,7 @@ readonly class EventFeedbackController
                 'feedbacks' => $objFeedback->getDataAll(false),
                 'feedback_count' => $objFeedback->countFeedbacks(false),
                 'pdf_link' => $pdfHref,
-            ]
+            ],
         ));
     }
 
@@ -93,10 +93,10 @@ readonly class EventFeedbackController
         $request = $this->requestStack->getCurrentRequest();
 
         $id = $request->query->get('id');
-        $event = CalendarEventsModel::findByPk($id);
+        $event = CalendarEventsModel::findById($id);
 
         if (null === $event) {
-            throw new InvalidResourceException(sprintf('Event with id %s not found.', $id));
+            throw new InvalidResourceException(\sprintf('Event with id %s not found.', $id));
         }
 
         if (!$this->isAllowed($event)) {
@@ -106,7 +106,7 @@ readonly class EventFeedbackController
         $objFeedback = new Feedback($event);
 
         $docxTemplateSrc = Path::makeAbsolute($this->docxTemplate, $this->projectDir);
-        $targetSrc = sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
+        $targetSrc = \sprintf('system/tmp/event_feedback_%s_%s.docx', $event->id, time());
         $targetSrc = Path::makeAbsolute($targetSrc, $this->projectDir);
 
         // Create phpword instance
@@ -134,7 +134,7 @@ readonly class EventFeedbackController
             $dropdownText = '';
 
             foreach ($arrDropdown['values'] as $value) {
-                $dropdownText .= sprintf('%sx %s'."\r\n", $value['count'], $value['label']);
+                $dropdownText .= \sprintf('%sx %s'."\r\n", $value['count'], $value['label']);
             }
 
             $dropdownText = htmlspecialchars(html_entity_decode((string) $dropdownText));
@@ -190,7 +190,7 @@ readonly class EventFeedbackController
 
             $canAccessModule = $this->security->isGranted(
                 ContaoCorePermissions::USER_CAN_ACCESS_MODULE,
-                'calendar'
+                'calendar',
             );
 
             if ($canAccessModule && $canReadFeedbacks) {

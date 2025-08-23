@@ -37,10 +37,10 @@ class CalendarEvents
         $blnRemoveField = true;
 
         if ($dc->id) {
-            if (null !== ($eventsModel = CalendarEventsModel::findByPk($dc->id))) {
+            if (null !== ($eventsModel = CalendarEventsModel::findById($dc->id))) {
                 if (null !== ($calendarModel = $eventsModel->getRelated('pid'))) {
                     if ($calendarModel->enableOnlineEventFeedback) {
-                        $formModel = FormModel::findByPk($calendarModel->onlineFeedbackForm);
+                        $formModel = FormModel::findById($calendarModel->onlineFeedbackForm);
 
                         $notificationId = $this->connection->fetchOne(
                             'SELECT id FROM tl_nc_notification WHERE id = :id',
@@ -49,7 +49,7 @@ class CalendarEvents
                             ],
                             [
                                 'id' => Types::INTEGER,
-                            ]
+                            ],
                         );
 
                         $hasConfig = $calendarModel->onlineFeedbackConfiguration && ($this->feedbackConfig[$calendarModel->onlineFeedbackConfiguration] ?? null);

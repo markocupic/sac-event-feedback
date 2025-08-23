@@ -25,8 +25,8 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * Run "bin/contao-console sac-event-feedback:send-reminder" on the console.
  *
- * to send registered reminders. This ist very useful when developing,
- * and you don't feel like triggering cron jobs.
+ * to send registered reminders. This ist very useful when developing, and you
+ * don't feel like triggering cron jobs.
  */
 #[AsCommand(name: 'sac-event-feedback:send-reminder')]
 class SendReminderCommand extends Command

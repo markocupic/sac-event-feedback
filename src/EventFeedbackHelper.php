@@ -39,7 +39,7 @@ class EventFeedbackHelper
             return 'online_feedback_disabled_on_event';
         }
 
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+        if (null === ($calendar = CalendarModel::findById($event->pid))) {
             return 'missing_related_parent_calendar';
         }
 
@@ -81,7 +81,7 @@ class EventFeedbackHelper
         $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
         if (null !== $eventMember) {
-            if (null !== ($event = CalendarEventsModel::findByPk($eventMember->eventId))) {
+            if (null !== ($event = CalendarEventsModel::findById($eventMember->eventId))) {
                 return $event;
             }
         }
@@ -94,7 +94,7 @@ class EventFeedbackHelper
         $eventMember = CalendarEventsMemberModel::findOneByUuid($uuid);
 
         if (null !== $eventMember) {
-            if (null !== ($member = MemberModel::findByPk($eventMember->contaoMemberId))) {
+            if (null !== ($member = MemberModel::findById($eventMember->contaoMemberId))) {
                 return $member;
             }
         }
@@ -104,7 +104,7 @@ class EventFeedbackHelper
 
     public function getForm(CalendarEventsModel $event): FormModel|null
     {
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+        if (null === ($calendar = CalendarModel::findById($event->pid))) {
             return null;
         }
 
@@ -112,12 +112,12 @@ class EventFeedbackHelper
             return null;
         }
 
-        return FormModel::findByPk($calendar->onlineFeedbackForm);
+        return FormModel::findById($calendar->onlineFeedbackForm);
     }
 
     public function getNotificationId(CalendarEventsModel $event): int|null
     {
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+        if (null === ($calendar = CalendarModel::findById($event->pid))) {
             return null;
         }
 
@@ -134,7 +134,7 @@ class EventFeedbackHelper
             [
                 'id' => Types::INTEGER,
                 'type' => Types::STRING,
-            ]
+            ],
         );
 
         return false !== $notificationId ? $notificationId : null;
@@ -142,7 +142,7 @@ class EventFeedbackHelper
 
     public function getPage(CalendarEventsModel $event): PageModel|null
     {
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+        if (null === ($calendar = CalendarModel::findById($event->pid))) {
             return null;
         }
 
@@ -150,12 +150,12 @@ class EventFeedbackHelper
             return null;
         }
 
-        return PageModel::findByPk($calendar->onlineFeedbackPage);
+        return PageModel::findById($calendar->onlineFeedbackPage);
     }
 
     public function getOnlineFeedbackConfiguration(CalendarEventsModel $event): array|null
     {
-        if (null === ($calendar = CalendarModel::findByPk($event->pid))) {
+        if (null === ($calendar = CalendarModel::findById($event->pid))) {
             return null;
         }
 

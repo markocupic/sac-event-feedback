@@ -23,6 +23,7 @@ use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
 class Feedback
 {
     private array $arrData = [];
+
     private bool $hasCache = false;
 
     public function __construct(
@@ -83,7 +84,7 @@ class Feedback
         $feedback = EventFeedbackModel::findByPid($this->event->id);
 
         while ($feedback->next()) {
-            if (null === ($form = FormModel::findByPk($feedback->form))) {
+            if (null === ($form = FormModel::findById($feedback->form))) {
                 continue;
             }
 

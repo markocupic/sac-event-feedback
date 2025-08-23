@@ -34,8 +34,8 @@ class CalendarEventsMember
     #[AsCallback(table: 'tl_calendar_events_member', target: 'fields.hasParticipated.save')]
     public function onCompletedEvent(string $value, DataContainer $dc): string
     {
-        $calendarEventsMemberModel = CalendarEventsMemberModel::findByPk($dc->id);
-        $calendarEventsModel = CalendarEventsModel::findByPk($calendarEventsMemberModel->eventId);
+        $calendarEventsMemberModel = CalendarEventsMemberModel::findById($dc->id);
+        $calendarEventsModel = CalendarEventsModel::findById($calendarEventsMemberModel->eventId);
 
         if (null === $calendarEventsMemberModel || null === $calendarEventsModel || true !== $this->eventFeedbackHelper->eventHasValidFeedbackConfiguration($calendarEventsModel)) {
             return $value;

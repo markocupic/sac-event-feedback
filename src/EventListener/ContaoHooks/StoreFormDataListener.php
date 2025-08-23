@@ -67,7 +67,7 @@ class StoreFormDataListener
 
         $arrPayload = Token::getPayload($token, $this->secret);
 
-        if (null === ($objRegistration = CalendarEventsMemberModel::findByPk($arrPayload['user_id']))) {
+        if (null === ($objRegistration = CalendarEventsMemberModel::findById($arrPayload['user_id']))) {
             throw new \Exception('Could not find a registration that matches to the token.');
         }
 

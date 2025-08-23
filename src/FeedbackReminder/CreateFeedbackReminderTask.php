@@ -34,7 +34,7 @@ class CreateFeedbackReminderTask
      */
     public function create(CalendarEventsMemberModel $eventMember): void
     {
-        if (null === ($event = CalendarEventsModel::findByPk($eventMember->eventId))) {
+        if (null === ($event = CalendarEventsModel::findById($eventMember->eventId))) {
             return;
         }
 
@@ -66,10 +66,11 @@ class CreateFeedbackReminderTask
                 'expiration' => $objDateExpiration->getTimestamp(),
             ];
 
-            // Prevent inserting duplicate records
-            // See $GLOBALS['TL_DCA']['tl_event_feedback_reminder']['config']['sql']['keys']['uuid,executionDate'] = 'unique'
+            // Prevent inserting duplicate records See
+            // $GLOBALS['TL_DCA']['tl_event_feedback_reminder']['config']['sql']['keys']['uuid,executionDate']
+            // = 'unique'
             $sql = 'INSERT INTO tl_event_feedback_reminder (%s) VALUES (%s) ON DUPLICATE KEY UPDATE dateAdded=VALUES(dateAdded), tstamp=VALUES(tstamp)';
-            $stmt = sprintf(
+            $stmt = \sprintf(
                 $sql,
                 implode(',', array_keys($set)),
                 implode(',', array_fill(0, \count($set), '?')),
