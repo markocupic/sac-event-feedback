@@ -36,7 +36,7 @@ readonly class SendFeedbackReminder
         private EventFeedbackHelper $eventFeedbackHelper,
         private FeedbackReminder $feedbackReminder,
         private NotificationCenter $notificationCenter,
-        private readonly LockFactory $lockFactory,
+        private LockFactory $lockFactory,
         private array $feedbackConfig,
         private string $secret,
         private LoggerInterface|null $contaoGeneralLogger = null,
