@@ -21,7 +21,7 @@ class Configuration implements ConfigurationInterface
 {
     public const ROOT_KEY = 'markocupic_sac_event_feedback';
 
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder(self::ROOT_KEY);
 
