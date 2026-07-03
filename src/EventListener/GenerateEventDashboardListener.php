@@ -12,19 +12,18 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-namespace Markocupic\SacEventFeedback\EventListener\ContaoHooks;
+namespace Markocupic\SacEventFeedback\EventListener;
 
 use Contao\BackendUser;
-use Contao\CalendarEventsModel;
-use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\System;
-use Knp\Menu\MenuItem;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
+use Markocupic\SacEventToolBundle\Event\GenerateEventDashboardEvent;
 use Markocupic\SacEventToolBundle\Security\Voter\CalendarEventsVoter;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\Routing\RouterInterface;
 
-#[AsHook(GenerateEventDashboardListener::HOOK, priority: 100)]
+#[AsEventListener]
 class GenerateEventDashboardListener
 {
     public const HOOK = 'generateEventDashboard';
@@ -35,9 +34,11 @@ class GenerateEventDashboardListener
     ) {
     }
 
-    public function __invoke(MenuItem $menu, CalendarEventsModel $objEvent): void
+    public function __invoke(GenerateEventDashboardEvent $event): void
     {
-        if (null === EventFeedbackModel::findByPid($objEvent->id)) {
+        $calEvent = $event->getCalendarEvent();
+
+        if (null === EventFeedbackModel::findByPid($calEvent->id)) {
             return;
         }
 
@@ -48,7 +49,7 @@ class GenerateEventDashboardListener
         }
 
         // Apply same permission policy as "teilnehmerliste"
-        if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $objEvent->id) && (int) $objEvent->registrationGoesTo !== (int) $user->id) {
+        if (!$this->security->isGranted(CalendarEventsVoter::CAN_WRITE_EVENT, $calEvent->id) && (int) $calEvent->registrationGoesTo !== (int) $user->id) {
             return;
         }
 
@@ -70,12 +71,14 @@ class GenerateEventDashboardListener
         $href = $this->router->generate('contao_backend', [
             'do' => 'calendar',
             'key' => 'showEventFeedbacks',
-            'id' => $objEvent->id,
+            'id' => $calEvent->id,
             'rt' => $requestToken,
             'ref' => $refererId,
         ]);
 
-        $menu->addChild('Event Auswertungen', ['uri' => $href])
+        $menuItem = $event->getMenuItem();
+
+        $menuItem->addChild('Event Auswertungen', ['uri' => $href])
             ->setLinkAttribute('role', 'button')
             ->setLinkAttribute('class', 'tl_submit')
             ->setLinkAttribute('target', '_blank')
