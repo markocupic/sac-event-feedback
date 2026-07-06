@@ -17,6 +17,8 @@ namespace Markocupic\SacEventFeedback\Cron;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCronJob;
 use Contao\CoreBundle\Framework\ContaoFramework;
 use Contao\Date;
+use Contao\StringUtil;
+use Contao\Validator;
 use Doctrine\DBAL\Exception;
 use Markocupic\SacEventFeedback\FeedbackReminder\SendFeedbackReminder;
 use Symfony\Component\Filesystem\Filesystem;
@@ -39,19 +41,36 @@ class ExecuteEventReminderTasks
         // Initialize the Contao framework
         $this->framework->initialize();
 
-        $log = [];
+        $logs = [];
         $now = time();
-        $this->sendFeedbackReminder->sendRemindersByExecutionDate($now, 20, $log);
+        $this->sendFeedbackReminder->sendRemindersByExecutionDate($now, 20, $logs);
 
-        if (!empty($log)) {
-            $fs = new Filesystem();
+        $fs = new Filesystem();
 
-            foreach ($log as $message) {
+        if (!empty($logs)) {
+            foreach ($logs as $message) {
                 $fs->appendToFile($this->projectDir.'/sac-event-feedback.log', "\r\n");
                 $fs->appendToFile($this->projectDir.'/sac-event-feedback.log', '================='.Date::parse('Y-m-d H:i:s').'===================');
                 $fs->appendToFile($this->projectDir.'/sac-event-feedback.log', "\r\n");
-                $fs->appendToFile($this->projectDir.'/sac-event-feedback.log', json_encode(mb_convert_encoding((string) $message, 'UTF-8', 'UTF-8')));
+                $fs->appendToFile($this->projectDir.'/sac-event-feedback.log', self::jsonEncodeWithBinaryUuids($message));
             }
         }
+    }
+
+    private static function jsonEncodeWithBinaryUuids(array $data): string
+    {
+        array_walk_recursive(
+            $data,
+            static function (&$value): void {
+                // Nur echte Binärstrings anfassen (kein gültiges UTF-8)
+                if (\is_string($value) && !mb_check_encoding($value, 'UTF-8')) {
+                    $value = Validator::isBinaryUuid($value)
+                        ? StringUtil::binToUuid($value) // 16-Byte-UUID -> "550e8400-e29b-41d4-a716-446655440000"
+                        : bin2hex($value); // sonstiges Binär -> Hex
+                }
+            },
+        );
+
+        return json_encode($data, JSON_THROW_ON_ERROR);
     }
 }

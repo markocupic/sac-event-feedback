@@ -103,7 +103,7 @@ readonly class SendFeedbackReminder
      * 5. All operations are enclosed in a database transaction to ensure atomicity.
      * *
      */
-    public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20, array &$log = []): void
+    public function sendRemindersByExecutionDate(int $tstamp, int $limit = 20, array &$logs = []): void
     {
         $lock = $this->lockFactory->createLock(self::class);
         $lock->acquire(true);
@@ -129,11 +129,10 @@ readonly class SendFeedbackReminder
             // Queue competing queries/requests on table "tl_event_feedback_reminder" with
             // "FOR UPDATE" until the transaction is completed. This should prevent competing
             // queries and double emailing
-            $result = $this->connection->executeQuery(
+            $reminderIds = $this->connection->fetchFirstColumn(
                 // 'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched
                 // = ? FOR UPDATE',
                 'SELECT id FROM tl_event_feedback_reminder WHERE expiration > ? AND dispatched = ? LIMIT 0,1000',
-
                 [
                     $tstamp,
                     0,
@@ -143,8 +142,6 @@ readonly class SendFeedbackReminder
                     Types::INTEGER,
                 ],
             );
-
-            $reminderIds = $result->fetchFirstColumn();
 
             if (!empty($reminderIds)) {
                 $count = 0;
@@ -157,6 +154,12 @@ readonly class SendFeedbackReminder
                     $reminderModel = EventFeedbackReminderModel::findById($id);
 
                     if (null === $reminderModel) {
+                        continue;
+                    }
+
+                    $memberModel = $reminderModel->getRelated('pid');
+
+                    if (null === $memberModel) {
                         continue;
                     }
 
@@ -179,12 +182,12 @@ readonly class SendFeedbackReminder
 
                     $this->connection->update('tl_event_feedback_reminder', $set, ['id' => $id]);
 
-                    // Send notification
+                    // Send the notification
                     $this->sendReminder($reminderModel);
 
-                    $log[] = [
+                    $logs[] = [
                         'tl_event_feedback_reminder' => $reminderModel->row(),
-                        'tl_calendar_events_member' => $reminderModel->getRelated('pid')?->row(),
+                        'tl_calendar_events_member' => $memberModel->row(),
                     ];
 
                     ++$count;
@@ -193,9 +196,8 @@ readonly class SendFeedbackReminder
 
             $this->connection->commit();
         } catch (\Throwable $e) {
-            if ($this->connection->isTransactionActive()) {
-                $this->connection->rollBack();
-            }
+            $this->connection->rollBack();
+
             $this->contaoErrorLogger?->error((string) $e);
         } finally {
             $lock->release();
