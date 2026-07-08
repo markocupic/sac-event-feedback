@@ -15,29 +15,31 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\EventSubscriber;
 
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Symfony\Component\Asset\Packages;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class BackendAssetsSubscriber implements EventSubscriberInterface
+class AssetsSubscriber implements EventSubscriberInterface
 {
     public function __construct(
         protected ScopeMatcher $scopeMatcher,
+        protected Packages $packages,
     ) {
     }
 
     public static function getSubscribedEvents(): array
     {
-        return [KernelEvents::REQUEST => 'registerBackendAssets'];
+        return [KernelEvents::REQUEST => 'registerAssets'];
     }
 
-    public function registerBackendAssets(RequestEvent $e): void
+    public function registerAssets(RequestEvent $e): void
     {
         $request = $e->getRequest();
 
         if ($this->scopeMatcher->isBackendRequest($request)) {
             // Add Backend CSS
-            $GLOBALS['TL_CSS'][] = 'bundles/markocupicsaceventfeedback/css/styles.css|static';
+            $GLOBALS['TL_CSS'][] = $this->packages->getUrl('css/backend.css', 'markocupic_sac_event_feedback');
         }
     }
 }

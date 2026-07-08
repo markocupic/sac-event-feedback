@@ -175,12 +175,9 @@ readonly class SendFeedbackReminder
                         continue;
                     }
 
-                    $set = [
-                        'dispatched' => 1,
-                        'dispatchTime' => time(),
-                    ];
-
-                    $this->connection->update('tl_event_feedback_reminder', $set, ['id' => $id]);
+                    $reminderModel->dispatched = 1;
+                    $reminderModel->dispatchTime = time();
+                    $reminderModel->save();
 
                     // Send the notification
                     $this->sendReminder($reminderModel);
