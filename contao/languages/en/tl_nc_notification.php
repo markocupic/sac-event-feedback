@@ -12,4 +12,6 @@ declare(strict_types=1);
  * @link https://github.com/markocupic/sac-event-feedback
  */
 
-$GLOBALS['TL_LANG']['tl_nc_notification']['type']['event_feedback_reminder'] = ['Aufforderung Online Tour-/Kurs-Auswertung', 'Senden Sie über eine Benachrichtigung eine Aufforderung die Touren-/Kursauswertung online zu erledigen.'];
+use Markocupic\SacEventFeedback\NotificationType\EventFeedbackReminderNotificationType;
+
+$GLOBALS['TL_LANG']['tl_nc_notification']['type'][EventFeedbackReminderNotificationType::NAME] = ['Aufforderung Online Tour-/Kurs-Auswertung', 'Senden Sie über eine Benachrichtigung eine Aufforderung die Touren-/Kursauswertung online zu erledigen.'];

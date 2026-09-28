@@ -26,9 +26,8 @@ class Feedback
 
     private bool $hasCache = false;
 
-    public function __construct(
-        private readonly CalendarEventsModel $event,
-    ) {
+    public function __construct(private readonly CalendarEventsModel $event)
+    {
         $this->arrData = [
             'event' => $event,
             'count' => 0,

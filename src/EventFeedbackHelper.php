@@ -22,7 +22,7 @@ use Contao\PageModel;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
 use Markocupic\SacEventFeedback\Model\EventFeedbackModel;
-use Markocupic\SacEventFeedback\NotificationType\EventFeedbackReminderType;
+use Markocupic\SacEventFeedback\NotificationType\EventFeedbackReminderNotificationType;
 use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class EventFeedbackHelper
@@ -129,7 +129,7 @@ class EventFeedbackHelper
             'SELECT id FROM tl_nc_notification WHERE id = :id AND type = :type',
             [
                 'id' => (int) $calendar->onlineFeedbackNotification,
-                'type' => EventFeedbackReminderType::NAME,
+                'type' => EventFeedbackReminderNotificationType::NAME,
             ],
             [
                 'id' => Types::INTEGER,

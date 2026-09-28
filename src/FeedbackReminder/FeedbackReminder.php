@@ -20,9 +20,8 @@ use Markocupic\SacEventToolBundle\Model\CalendarEventsMemberModel;
 
 class FeedbackReminder
 {
-    public function __construct(
-        private readonly Connection $connection,
-    ) {
+    public function __construct(private readonly Connection $connection)
+    {
     }
 
     /**

@@ -247,7 +247,7 @@ readonly class SendFeedbackReminder
         $arrTokens['participant_lastname'] = $member->lastname;
         $arrTokens['participant_email'] = $member->email;
         $arrTokens['participant_uuid'] = $member->uuid;
-        $arrTokens['event_name'] = StringUtil::revertInputEncoding($event->title);
+        $arrTokens['event_title'] = StringUtil::revertInputEncoding($event->title);
         $arrTokens['feedback_url'] = \sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
 
         return $arrTokens;
