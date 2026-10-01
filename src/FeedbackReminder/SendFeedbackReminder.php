@@ -15,7 +15,9 @@ declare(strict_types=1);
 namespace Markocupic\SacEventFeedback\FeedbackReminder;
 
 use Contao\CalendarEventsModel;
+use Contao\Config;
 use Contao\CoreBundle\Monolog\ContaoContext;
+use Contao\PageModel;
 use Contao\StringUtil;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Types;
@@ -242,7 +244,7 @@ readonly class SendFeedbackReminder
         $arrTokens = [];
         $arrTokens['instructor_name'] = $this->calendarEventsUtil->getMainInstructorName($event);
         $arrTokens['instructor_email'] = $objInstructor ? $objInstructor->email : '';
-        $arrTokens['admin_email'] = $GLOBALS['TL_ADMIN_EMAIL'];
+        $arrTokens['admin_email'] = $this->getAdminEmail($page);
         $arrTokens['participant_firstname'] = $member->firstname;
         $arrTokens['participant_lastname'] = $member->lastname;
         $arrTokens['participant_email'] = $member->email;
@@ -251,6 +253,24 @@ readonly class SendFeedbackReminder
         $arrTokens['feedback_url'] = \sprintf('%s?token=%s', $page->getAbsoluteUrl(), $token);
 
         return $arrTokens;
+    }
+
+    /**
+     * $GLOBALS['TL_ADMIN_EMAIL'] is only set while a frontend page is rendered and is
+     * therefore not available in the CLI cron context. Resolve the admin email from
+     * the root page and fall back to the system settings.
+     */
+    private function getAdminEmail(PageModel|null $page): string
+    {
+        if (null !== $page) {
+            $page->loadDetails();
+
+            if (!empty($page->adminEmail)) {
+                return (string) $page->adminEmail;
+            }
+        }
+
+        return (string) Config::get('adminEmail');
     }
 
     private function writeErrorToContaoLog(string $errorCode, CalendarEventsModel $event, EventFeedbackReminderModel $objReminder): void
