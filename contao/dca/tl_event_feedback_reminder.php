@@ -54,7 +54,7 @@ $GLOBALS['TL_DCA']['tl_event_feedback_reminder'] = [
             'sql' => 'int(10) unsigned NOT NULL auto_increment',
         ],
         'pid'           => [
-            'foreignKey' => 'tl_calendar_events_member.CONCAT(firstname," ",lastname, " [", sacMemberId, "]")',
+            'foreignKey' => 'tl_calendar_events_member.CONCAT(firstname, " ", lastname, IF(sacMemberId > 0, CONCAT(" [", sacMemberId, "]"), ""))',
             'sql'        => 'int(10) unsigned NOT NULL default 0',
             'relation'   => [
                 'type' => 'belongsTo',

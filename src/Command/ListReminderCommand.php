@@ -83,7 +83,7 @@ class ListReminderCommand extends Command
                 continue;
             }
 
-            $text = \sprintf('Reminder exec-time: %s member: %s [%s]',
+            $text = \sprintf('Reminder exec-time: %s member: %s [%d]',
                 Date::parse('Y-m-d H:i', $reminderModel->executionDate),
                 $memberModel->firstname.' '.$memberModel->lastname,
                 $memberModel->sacMemberId,

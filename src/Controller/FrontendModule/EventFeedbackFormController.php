@@ -117,8 +117,10 @@ class EventFeedbackFormController extends AbstractFrontendModuleController
             }
         }
 
-        /* Check if member exists */
-        if (trim((string) $registration->sacMemberId) !== trim((string) $this->user->sacMemberId)) {
+        /* Check if the registration belongs to the logged-in member (0 = no SAC member, never a match) */
+        $sacMemberId = (int) $registration->sacMemberId;
+
+        if (0 === $sacMemberId || $sacMemberId !== (int) $this->user->sacMemberId) {
             return $this->returnWithWarning($this->translator->trans('ERR.sacEvFb.invalidUuidForLoggedInUser', [], 'contao_default'));
         }
 
