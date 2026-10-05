@@ -1,7 +1,7 @@
 ![Alt text](docs/logo.png?raw=true "logo")
 
 # SAC Pilatus - Digitale Angebotsauswertung
-
+## Nur noch Read-Only und seit 05.10.2026 Bestandteil des SAC Event Tool
 
 ## Ziel
 Diese Erweiterung für das Contao CMS ermöglicht es Events online auf der Webseite auzuwerten.
